@@ -287,7 +287,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <span className="node-label">Community</span>
-                <div className="node-tooltip tooltip-right">
+                <div className="node-tooltip tooltip-left">
                   Mobilizing grassroots leaders, teachers, Anganwadi workers, and village child protection committees.
                 </div>
               </div>
@@ -304,7 +304,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <span className="node-label">Government</span>
-                <div className="node-tooltip tooltip-right visible-card">
+                <div className="node-tooltip tooltip-left visible-card">
                   Partnering with district, state and national level governments to strengthen policy and advocacy systems for children
                 </div>
               </div>

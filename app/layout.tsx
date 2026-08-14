@@ -1,23 +1,34 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Montserrat, Caveat } from "next/font/google";
 import "./globals.css";
+import "./theme.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  weight: ["400", "600", "700", "800", "900"],
   subsets: ["latin"],
+  display: "swap",
+});
+
+const caveat = Caveat({
+  variable: "--font-caveat",
+  weight: ["600", "700"],
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Kautike Charitable Foundation | Growing brighter futures together",
-  description: "Kautike Charitable Foundation supports education, health, social welfare and relief efforts for communities in need.",
+  title: "Kautike Charitable Foundation | Ensuring Brighter Futures for Children & Communities",
+  description: "Kautike Charitable Foundation works for child rights, education, health & nutrition, and community welfare across India.",
   openGraph: {
     title: "Kautike Charitable Foundation",
-    description: "Growing brighter futures together.",
+    description: "Ensuring Brighter Futures for Children & Communities.",
     images: ["/og.png"],
   },
   icons: {
@@ -32,10 +43,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en" className={`${inter.variable} ${montserrat.variable} ${caveat.variable}`}>
+      <body>
         {children}
       </body>
     </html>

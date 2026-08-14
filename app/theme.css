@@ -1,0 +1,24 @@
+/* Brand Theme Extras */
+:root {
+  --kautike-green: #3a9638;
+  --kautike-navy: #1a3a5c;
+  --kautike-orange: #ed8420;
+  --kautike-red: #cc2929;
+  --kautike-teal: #227d93;
+  --kautike-purple: #74328a;
+}
+
+/* Animations */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .65s cubic-bezier(.2,.8,.2,1), transform .65s cubic-bezier(.2,.8,.2,1);
+}
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll { opacity: 1; transform: none; transition: none; }
+}
+

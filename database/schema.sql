@@ -1,0 +1,3 @@
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE TABLE IF NOT EXISTS donation_intents (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), donor_name TEXT NOT NULL, email TEXT NOT NULL, amount_inr INTEGER NOT NULL CHECK (amount_inr >= 100), campaign TEXT NOT NULL DEFAULT 'General fund', status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'failed', 'cancelled')), created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+CREATE TABLE IF NOT EXISTS contact_messages (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name TEXT NOT NULL, email TEXT NOT NULL, phone TEXT, message TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());

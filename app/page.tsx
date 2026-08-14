@@ -629,7 +629,7 @@ export default function Home() {
           ▲
           <span>Back To Top</span>
         </a>
-        <a href="https://wa.me/918108362688" target="_blank" rel="noopener noreferrer" className="floating-help-btn">
+        <a href="#donate" className="floating-help-btn">
           Help?
         </a>
       </div>

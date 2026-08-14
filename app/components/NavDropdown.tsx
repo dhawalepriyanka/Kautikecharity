@@ -48,6 +48,11 @@ const menus: DropdownMenu[] = [
 export function NavDropdown() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState<number | null>(0);
+
+  const toggleCategory = (idx: number) => {
+    setExpandedCategory(expandedCategory === idx ? null : idx);
+  };
 
   return (
     <>
@@ -88,34 +93,49 @@ export function NavDropdown() {
         ))}
       </nav>
 
-      {/* Mobile Overlay Drawer Menu */}
+      {/* Mobile Accordion Navbar Dropdown (Directly under Header Bar like CRY.org) */}
       {mobileOpen && (
-        <div className="mobile-drawer-overlay">
-          <div className="mobile-drawer-inner">
-            {menus.map((menu) => (
-              <div key={menu.title} className="mobile-menu-group">
-                <div className="mobile-group-title">{menu.title}</div>
-                <div className="mobile-group-links">
-                  {menu.links.map((link) => (
-                    <a 
-                      key={link.label} 
-                      href={link.href} 
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      {link.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            ))}
+        <div className="cry-mobile-nav-panel">
+          <div className="cry-mobile-nav-inner">
+            {menus.map((menu, idx) => {
+              const isExpanded = expandedCategory === idx;
+              return (
+                <div key={menu.title} className="cry-mobile-accordion-group">
+                  <button 
+                    className={`cry-mobile-category-header ${isExpanded ? "active" : ""}`}
+                    onClick={() => toggleCategory(idx)}
+                  >
+                    <span>{menu.title}</span>
+                    <span className="cry-mobile-caret">{isExpanded ? "−" : "+"}</span>
+                  </button>
 
-            <a 
-              href="#donate" 
-              className="mobile-drawer-donate-btn"
-              onClick={() => setMobileOpen(false)}
-            >
-              ♥ Donate Now
-            </a>
+                  {isExpanded && (
+                    <div className="cry-mobile-category-links">
+                      {menu.links.map((link) => (
+                        <a 
+                          key={link.label} 
+                          href={link.href} 
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          <span className="link-arrow">›</span>
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            <div className="cry-mobile-nav-footer">
+              <a 
+                href="#donate" 
+                className="cry-mobile-donate-btn"
+                onClick={() => setMobileOpen(false)}
+              >
+                ♥ DONATE NOW
+              </a>
+            </div>
           </div>
         </div>
       )}

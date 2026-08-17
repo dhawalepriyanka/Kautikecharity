@@ -4949,5 +4949,237 @@ footer {
   }
 }
 
+/* =========================================================
+   COMPREHENSIVE ALL-PAGE MOBILE RESPONSIVENESS (< 768px & < 480px)
+   ========================================================= */
+@media (max-width: 768px) {
+  /* Global Layout & Padding */
+  .about-container,
+  .story-carousel-container,
+  .utility-inner,
+  .hero-cry-inner,
+  .section-container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .section-pad {
+    padding: 44px 0 !important;
+  }
+  .section-heading {
+    font-size: clamp(24px, 5.5vw, 32px) !important;
+    margin-bottom: 12px !important;
+  }
+  .section-lead {
+    font-size: 14.5px !important;
+    line-height: 1.7 !important;
+    margin-bottom: 28px !important;
+  }
+
+  /* Utility Top Bar & Header */
+  .utility-bar {
+    display: none; /* Clean mobile header */
+  }
+  .site-header {
+    padding: 0 16px !important;
+    height: 68px !important;
+  }
+  .logo-badge {
+    height: 74px !important;
+    padding: 6px 10px !important;
+  }
+  .logo-badge img {
+    height: 38px !important;
+  }
+  .logo-badge strong {
+    font-size: 13px !important;
+  }
+  .logo-badge span {
+    font-size: 9px !important;
+  }
+  .header-donate {
+    padding: 9px 16px !important;
+    font-size: 12.5px !important;
+  }
+
+  /* Home Hero Section */
+  .hero-cry-section {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+    padding-top: 20px !important;
+    padding-bottom: 30px !important;
+  }
+  .hero-cry-copy {
+    padding: 20px 16px 24px !important;
+    text-align: center !important;
+    align-items: center !important;
+  }
+  .hero-cry-copy h1 {
+    font-size: clamp(28px, 7vw, 38px) !important;
+    margin-bottom: 20px !important;
+  }
+  .hero-cry-copy .cry-yellow-btn {
+    align-self: center !important;
+  }
+  .hero-artistic-frame {
+    padding: 10px 16px 20px !important;
+    height: auto !important;
+    min-height: 320px !important;
+  }
+  .artistic-main-img-wrap {
+    height: 300px !important;
+  }
+  .cry-scroll-hint {
+    display: none !important;
+  }
+
+  /* Subpage Hero Headers */
+  .subpage-hero {
+    padding: 40px 16px 32px !important;
+  }
+  .subpage-hero-inner h1 {
+    font-size: clamp(26px, 6.5vw, 36px) !important;
+    line-height: 1.2 !important;
+  }
+  .subpage-hero-inner p {
+    font-size: 14px !important;
+  }
+
+  /* About Page & Team ID Cards */
+  .team-grid-clean {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    gap: 16px !important;
+  }
+  .team-card-sheet-clean {
+    height: auto !important;
+    border-radius: 14px !important;
+  }
+  .vision-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  .vision-card {
+    padding: 24px 18px !important;
+  }
+
+  /* What We Do & Pillars */
+  .what-pillars-grid,
+  .pillars-detail-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .pillar-detail-card {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  .pillar-detail-img {
+    height: 220px !important;
+  }
+
+  /* Impact Metrics & Financials */
+  .impact-hero-metrics,
+  .financials-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+  }
+  .financial-table {
+    min-width: 520px !important;
+  }
+
+  /* Volunteer & Get Involved Forms */
+  .form-grid-2col {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px !important; /* Prevents iOS auto-zoom */
+    padding: 12px 14px !important;
+  }
+
+  /* Donation Page Mobile */
+  .donate-layout-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .donation-amounts-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+  .amount-btn {
+    padding: 10px 6px !important;
+    font-size: 14px !important;
+  }
+  .qr-code-box img {
+    max-width: 200px !important;
+  }
+
+  /* Contact Page */
+  .contact-layout-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+
+  /* Stories & FAQs */
+  .stories-masonry-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  .faq-accordion-item {
+    padding: 16px !important;
+  }
+  .faq-question {
+    font-size: 15.5px !important;
+  }
+
+  /* Footer */
+  .site-footer {
+    padding: 48px 16px 30px !important;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+  .footer-bottom {
+    flex-direction: column !important;
+    gap: 14px !important;
+    text-align: center !important;
+  }
+
+  /* Floating Actions on Mobile */
+  .floating-actions-wrap {
+    bottom: 16px !important;
+    right: 16px !important;
+    gap: 10px !important;
+  }
+  .floating-btn {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 20px !important;
+  }
+}
+
+/* Extra small devices (phones < 480px) */
+@media (max-width: 480px) {
+  .donation-amounts-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .cta-btn-group {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .cta-btn-group a {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+}
+
+
 
 

@@ -17,6 +17,8 @@ const routes = [
   { path: "/contact", output: "../dist/client/contact/index.html" },
   { path: "/privacy", output: "../dist/client/privacy/index.html" },
   { path: "/terms", output: "../dist/client/terms/index.html" },
+  { path: "/refund-policy", output: "../dist/client/refund-policy/index.html" },
+  { path: "/shipping-policy", output: "../dist/client/shipping-policy/index.html" },
 ];
 
 async function generateStaticHtml() {

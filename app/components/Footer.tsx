@@ -68,8 +68,10 @@ export function Footer() {
         <span>© 2026 Kautike Charitable Foundation · Mumbai, Maharashtra, India. All Rights Reserved.</span>
         <div className="footer-legal">
           <a href="/privacy">Privacy Policy</a>
-          <a href="/terms">Terms & Conditions</a>
-          <a href="/faqs">80G Tax Exemption FAQs</a>
+          <a href="/terms">Terms &amp; Conditions</a>
+          <a href="/refund-policy">Refund Policy</a>
+          <a href="/shipping-policy">80G Receipt &amp; Delivery</a>
+          <a href="/faqs">80G Tax FAQs</a>
         </div>
       </div>
     </footer>

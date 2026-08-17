@@ -3,7 +3,7 @@ import { NavDropdown } from "./NavDropdown";
 export function Header() {
   return (
     <>
-      {/* 1. TOP UTILITY BAR (EXACT CRY.ORG TOP CONTACT & SOCIAL BAR) */}
+      {/* 1. TOP UTILITY BAR */}
       <div className="utility-bar">
         <div className="utility-inner">
           <div className="contact-links">
@@ -23,22 +23,28 @@ export function Header() {
         </div>
       </div>
 
-      {/* 2. STICKY HEADER WITH HANGING YELLOW LOGO */}
+      {/* 2. STICKY HEADER */}
       <header className="site-header">
-        <a href="/" className="logo-badge" aria-label="Kautike Charitable Foundation Home">
-          <img src="/kautike-logo.png" alt="Kautike Foundation Logo" />
-          <strong>KAUTIKE</strong>
-          <span>Charitable</span>
-        </a>
+        <div className="site-header-container">
+          <div className="site-header-left">
+            <NavDropdown />
+            <a href="/" className="logo-badge" aria-label="Kautike Charitable Foundation Home">
+              <img src="/kautike-logo.png" alt="Kautike Foundation Logo" />
+              <div className="logo-text-wrap">
+                <strong>KAUTIKE</strong>
+                <span>Charitable Foundation</span>
+              </div>
+            </a>
+          </div>
 
-        <div className="topbar">
-          <NavDropdown />
-
-          <a href="/donate" className="header-donate">
-            ♥ Donate Now
-          </a>
+          <div className="site-header-right">
+            <a href="/donate" className="header-donate">
+              ♥ Donate Now
+            </a>
+          </div>
         </div>
       </header>
     </>
   );
 }
+

@@ -33,7 +33,7 @@ html, body {
 a { color: inherit; text-decoration: none; }
 img, video { max-width: 100%; display: block; }
 
-/* ===== UTILITY BAR ===== */
+/* ===== DESKTOP HEADER & NAVBAR STYLING (EXACT CRY.ORG HANGING GOLD LOGO) ===== */
 .utility-bar {
   background: var(--navy-dark);
   color: rgba(255,255,255,0.85);
@@ -53,34 +53,85 @@ img, video { max-width: 100%; display: block; }
 }
 .utility-bar .socials a:hover { background: var(--gold); color: var(--navy-dark); }
 
-/* ===== CRY.ORG EXACT TOP HEADER & NAVBAR STYLING ===== */
 .site-header {
   position: sticky; top: 0; z-index: 100;
   background: #ffffff;
   border-bottom: 2px solid #F1F5F9;
   box-shadow: 0 4px 20px rgba(15,23,42,0.06);
 }
-.topbar {
-  height: 76px; padding: 0 7vw 0 16vw;
-  display: flex; align-items: center; gap: 24px;
+.site-header-container {
+  height: 76px;
+  padding: 0 7vw 0 16vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
 }
+.site-header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.site-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+}
+
+/* Desktop Hanging Gold Logo Badge */
 .logo-badge {
   position: absolute;
-  top: -38px; left: 3.5vw; z-index: 110;
-  width: 124px; height: 148px;
+  top: -38px;
+  left: 3.5vw;
+  z-index: 110;
+  width: 124px;
+  height: 148px;
   background: var(--gold);
   border-radius: 0 0 16px 16px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 14px 8px; text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 8px;
+  text-align: center;
   box-shadow: 0 10px 28px rgba(245,166,35,0.42);
   transition: transform .2s, box-shadow .2s;
   text-decoration: none;
 }
-.logo-badge:hover { transform: translateY(3px); box-shadow: 0 14px 32px rgba(245,166,35,0.52); }
-.logo-badge img { width: 72px; height: 72px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15)); }
-.logo-badge strong { font-family: var(--font-montserrat), sans-serif; font-size: 11.5px; font-weight: 900; color: var(--navy-dark); margin-top: 4px; display: block; line-height: 1.1; letter-spacing: .08em; text-transform: uppercase; }
-.logo-badge span { font-size: 8px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: rgba(15,23,42,0.8); }
+.logo-badge:hover {
+  transform: translateY(3px);
+  box-shadow: 0 14px 32px rgba(245,166,35,0.52);
+}
+.logo-badge img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+.logo-text-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.logo-text-wrap strong {
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 11.5px;
+  font-weight: 900;
+  color: var(--navy-dark);
+  margin-top: 4px;
+  display: block;
+  line-height: 1.1;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.logo-text-wrap span {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(15,23,42,0.8);
+}
 
 /* Exact CRY.org Uppercase Navigation Links */
 .main-nav { display: flex; align-items: center; gap: 8px; margin-left: auto; }
@@ -1740,7 +1791,7 @@ footer {
   }
 
   .mobile-hamburger {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     background: none;
@@ -1748,78 +1799,81 @@ footer {
     font-size: 26px;
     color: #0f172a;
     cursor: pointer;
-    padding: 4px 8px;
+    padding: 4px 6px 4px 0;
     z-index: 120;
-    order: -1;
   }
-  .utility-bar { display: none; }
-  .main-nav { display: none; }
+  .utility-bar { display: none !important; }
+  .main-nav { display: none !important; }
+  
   .site-header {
-    padding: 0 16px;
+    padding: 0 !important;
     position: sticky;
     top: 0;
-    background: var(--gold);
+    background: #ffffff !important;
     z-index: 100;
-    height: 60px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
+    height: 64px !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+    border-bottom: 2px solid #F1F5F9;
   }
-  .topbar {
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+  .site-header-container {
+    padding: 0 14px !important;
+    height: 64px !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  .site-header-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
   }
   .logo-badge {
-    position: relative;
-    left: auto;
-    top: auto;
-    width: 50px;
-    height: 50px;
-    background: #000000;
-    border-radius: 8px;
-    padding: 3px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-    border: 1.5px solid #000000;
-    text-decoration: none;
+    position: static !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
   }
   .logo-badge img {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
-    background: #ffffff;
-    border-radius: 4px;
-    padding: 2px;
+    width: 38px !important;
+    height: 38px !important;
+    object-fit: contain !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
   }
-  .logo-badge strong {
-    font-size: 7px;
-    color: #ffffff;
-    margin-top: 1px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+  .logo-text-wrap strong {
+    font-size: 14.5px !important;
+    color: #0f172a !important;
+    letter-spacing: 0.04em !important;
   }
-  .logo-badge span { display: none; }
+  .logo-text-wrap span {
+    font-size: 8.5px !important;
+    color: #D97706 !important;
+    display: block !important;
+  }
   
   .header-donate {
-    margin-left: auto;
-    padding: 8px 18px;
-    background: #0f172a;
-    color: var(--gold);
+    padding: 8px 16px !important;
+    background: #F5A623 !important;
+    color: #0f172a !important;
     font-family: var(--font-montserrat), sans-serif;
-    font-size: 12.5px;
-    font-weight: 900;
+    font-size: 12.5px !important;
+    font-weight: 900 !important;
     text-transform: uppercase;
-    border-radius: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border-radius: 20px !important;
+    box-shadow: 0 4px 14px rgba(245,166,35,0.4) !important;
     letter-spacing: 0.04em;
+    border: none !important;
   }
 
   .section-pad { padding: 36px 16px; }
@@ -5280,6 +5334,449 @@ footer {
     justify-content: center !important;
   }
 }
+
+/* =========================================================
+   RAZORPAY PAYMENT GATEWAY & POLICY STYLES
+   ========================================================= */
+.donate-portal-grid {
+  display: grid;
+  grid-template-columns: 42% 58%;
+  gap: 40px;
+  align-items: start;
+}
+@media (max-width: 960px) {
+  .donate-portal-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.portal-impact-summary {
+  background: #FAF8F5;
+  border-radius: 20px;
+  padding: 32px 26px;
+  border: 1px solid #EAE5DE;
+}
+.impact-tier-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed #E2E8F0;
+}
+.impact-tier-item:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.tier-pill {
+  background: #FEF3C7;
+  color: #D97706;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+.impact-tier-item p {
+  font-size: 13.5px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+}
+.payment-modes-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.payment-modes-row span {
+  font-size: 11px;
+  font-weight: 700;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  padding: 3px 8px;
+  border-radius: 6px;
+  color: #334155;
+}
+
+/* Donation Card Box & Tabs */
+.donation-card-box {
+  background: #FFFFFF;
+  border-radius: 20px;
+  box-shadow: 0 16px 45px rgba(15,23,42,0.08);
+  border: 1px solid #E2E8F0;
+  overflow: hidden;
+}
+.donation-tabs-header {
+  display: flex;
+  border-bottom: 2px solid #F1F5F9;
+  background: #F8FAFC;
+}
+.d-tab-btn {
+  flex: 1;
+  padding: 16px 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #64748B;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.d-tab-btn.active {
+  color: #1E293B;
+  background: #FFFFFF;
+  border-bottom: 3px solid #F5A623;
+  margin-bottom: -2px;
+}
+.donation-form-body {
+  padding: 32px 28px;
+}
+@media (max-width: 600px) {
+  .donation-tabs-header {
+    flex-direction: column;
+  }
+  .donation-form-body {
+    padding: 24px 18px;
+  }
+}
+
+/* Frequency Selector */
+.frequency-selector {
+  display: flex;
+  background: #F1F5F9;
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+.freq-btn {
+  flex: 1;
+  padding: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #64748B;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.freq-btn.active {
+  background: #FFFFFF;
+  color: #1E293B;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* Amount Pills */
+.preset-amounts-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+}
+@media (max-width: 600px) {
+  .preset-amounts-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.amt-pill {
+  padding: 12px 6px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #1E293B;
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.amt-pill:hover,
+.amt-pill.selected {
+  background: #FFFBEB;
+  border-color: #F5A623;
+  color: #B45309;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(245,166,35,0.2);
+}
+
+.custom-amt-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.currency-symbol {
+  position: absolute;
+  left: 14px;
+  font-weight: 800;
+  font-size: 16px;
+  color: #64748B;
+}
+.custom-amt-field {
+  width: 100%;
+  padding: 12px 14px 12px 34px;
+  font-size: 15px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 10px;
+  outline: none;
+  font-weight: 600;
+  transition: border-color 0.2s;
+}
+.custom-amt-field:focus {
+  border-color: #F5A623;
+  box-shadow: 0 0 0 3px rgba(245,166,35,0.15);
+}
+.tax-benefit-banner {
+  background: #F0FDF4;
+  color: #166534;
+  font-size: 12.5px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 10px;
+  border: 1px solid #BBF7D0;
+}
+
+/* Donor Info & Inputs */
+.donor-info-block {
+  border-top: 1px solid #E2E8F0;
+  padding-top: 24px;
+}
+.donor-info-title {
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: #1E293B;
+  margin-bottom: 16px;
+}
+.input-field-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 6px;
+}
+.form-input-field,
+.form-select-field {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 14.5px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+  background: #FFFFFF;
+}
+.form-input-field:focus,
+.form-select-field:focus {
+  border-color: #F5A623;
+  box-shadow: 0 0 0 3px rgba(245,166,35,0.15);
+}
+
+.razorpay-submit-btn {
+  width: 100%;
+  padding: 16px;
+  background: #F5A623;
+  color: #0F172A;
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(245,166,35,0.4);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.razorpay-submit-btn:hover {
+  background: #D98E14;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(245,166,35,0.5);
+}
+.razorpay-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.security-notice-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748B;
+}
+
+/* Success Receipt Card */
+.donation-success-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 36px 28px;
+  border: 2px solid #86EFAC;
+  box-shadow: 0 18px 45px rgba(15,23,42,0.1);
+  text-align: center;
+}
+.success-badge-icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+.success-tag {
+  font-size: 12px;
+  font-weight: 900;
+  color: #15803D;
+  background: #DCFCE7;
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.donation-success-card h2 {
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: #1E293B;
+  margin: 0 0 8px;
+}
+.success-sub {
+  color: #475569;
+  font-size: 15px;
+  margin-bottom: 24px;
+}
+
+.official-receipt-box {
+  background: #FAF8F5;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 24px;
+  text-align: left;
+  margin: 20px 0 24px;
+}
+.receipt-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.receipt-badge-80g {
+  font-size: 11px;
+  font-weight: 900;
+  color: #FFFFFF;
+  background: #D81B60;
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+}
+.receipt-divider {
+  height: 1px;
+  background: #E2E8F0;
+  margin: 14px 0;
+}
+.receipt-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+}
+@media (max-width: 600px) {
+  .receipt-meta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.meta-label {
+  display: block;
+  font-size: 11.5px;
+  color: #64748B;
+  font-weight: 600;
+}
+.meta-val {
+  font-size: 13.5px;
+  color: #1E293B;
+  font-weight: 700;
+}
+.receipt-footer-note {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed #CBD5E1;
+  font-size: 11.5px;
+  color: #64748B;
+  line-height: 1.6;
+}
+.receipt-actions-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* Compliance Bar */
+.razorpay-compliance-bar {
+  background: #FAF8F5;
+  border-top: 1px solid #EAE5DE;
+  padding: 24px 20px;
+}
+.compliance-text {
+  font-size: 12.5px;
+  color: #64748B;
+  margin: 0;
+}
+.compliance-text a {
+  color: #D97706;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* Policy Card Content */
+.policy-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: clamp(32px, 5vw, 56px);
+  box-shadow: 0 16px 45px rgba(15,23,42,0.06);
+  border: 1px solid #E2E8F0;
+}
+.policy-block {
+  margin-bottom: 32px;
+}
+.policy-block:last-of-type {
+  margin-bottom: 0;
+}
+.policy-block h3 {
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  color: #1E293B;
+  margin: 0 0 12px;
+  border-left: 4px solid #F5A623;
+  padding-left: 12px;
+}
+.policy-block p {
+  font-size: 14.5px;
+  color: #475569;
+  line-height: 1.8;
+  margin: 0;
+}
+.policy-list {
+  padding-left: 20px;
+  margin: 12px 0 0;
+  color: #475569;
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.contact-callout-box {
+  background: #FAF8F5;
+  border-radius: 12px;
+  padding: 18px 22px;
+  border: 1px solid #EAE5DE;
+  margin-top: 12px;
+}
+.contact-callout-box p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
 
 
 

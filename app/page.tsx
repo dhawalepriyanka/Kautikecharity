@@ -2,8 +2,9 @@ import { CampaignSlider } from "./components/CampaignSlider";
 import { DonationWidget } from "./components/DonationWidget";
 import { HeroMedia } from "./components/HeroMedia";
 import { ImpactStats } from "./components/ImpactStats";
-import { NavDropdown } from "./components/NavDropdown";
-import { NewsletterForm } from "./components/NewsletterForm";
+import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
+import { FloatingActions } from "./components/FloatingActions";
 import { PageMotion } from "./components/PageMotion";
 import { StoryCarousel } from "./components/StoryCarousel";
 
@@ -13,65 +14,37 @@ const causes = [
     title: "Tree Plantation & Plant Conservation Drives",
     text: "Planting saplings, restoring urban green cover, nurturing local flora, and involving school children in environmental care.",
     photo: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1000&q=80",
-    href: "#donate",
+    href: "/what-we-do#plantation",
   },
   {
     tag: "Child Education",
     title: "Ensure Every Child Goes to School",
     text: "Providing school kits, academic support centers, and teacher training to keep children in classrooms.",
     photo: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1000&q=80",
-    href: "#donate",
+    href: "/what-we-do#education",
   },
   {
     tag: "Health & Nutrition",
     title: "Combat Malnutrition & Support Healthcare",
     text: "Increasing access to essential medical care, growth monitoring, and nutritious meals for infants and mothers.",
     photo: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1000&q=80",
-    href: "#donate",
+    href: "/what-we-do#health",
   },
   {
     tag: "Safety & Protection",
     title: "Protect Children from Labour & Abuse",
     text: "Mobilizing local protection committees, preventing child marriages, and safeguarding vulnerable youth.",
     photo: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1000&q=80",
-    href: "#donate",
+    href: "/what-we-do#protection",
   },
 ];
 
 export default function Home() {
   return (
-    <main className="page-fade-in">
+    <main className="page-fade-in" id="top">
       <PageMotion />
 
-      {/* 1. UTILITY BAR */}
-      <div className="utility-bar">
-        <span>✉ kautikecharitable@gmail.com</span>
-        <span>☎ +91 810 836 2688</span>
-        <span className="ub-spacer" />
-        <div className="socials">
-          <a href="#" aria-label="Facebook">fb</a>
-          <a href="#" aria-label="X">x</a>
-          <a href="#" aria-label="Instagram">ig</a>
-          <a href="#" aria-label="LinkedIn">in</a>
-        </div>
-      </div>
-
-      {/* 2. STICKY HEADER WITH HANGING YELLOW LOGO */}
-      <header className="site-header">
-        <a href="#top" className="logo-badge" aria-label="Kautike Charitable Foundation Home">
-          <img src="/kautike-logo.png" alt="Kautike Foundation Logo" />
-          <strong>KAUTIKE</strong>
-          <span>Charitable</span>
-        </a>
-
-        <div className="topbar">
-          <NavDropdown />
-
-          <a href="#donate" className="header-donate">
-            ♥ Donate Now
-          </a>
-        </div>
-      </header>
+      <Header />
 
       {/* 3. EXACT CRY.ORG HERO WITH VIDEO & ORGANIC PAINT STROKE FRAME */}
       <section className="hero-cry-split" id="top">
@@ -565,74 +538,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 12. FOOTER */}
-      <footer>
-        <div className="footer-grid">
-          <div className="footer-brand">
-            <img src="/kautike-logo.png" alt="Kautike Foundation Logo" />
-            <h3>Kautike Charitable Foundation</h3>
-            <p>
-              Promoting education, health, social welfare, relief, and the overall well-being of underprivileged children and communities.
-            </p>
-            <div className="social-links">
-              <a href="#" className="social-link" aria-label="Facebook">fb</a>
-              <a href="#" className="social-link" aria-label="X">x</a>
-              <a href="#" className="social-link" aria-label="Instagram">ig</a>
-              <a href="#" className="social-link" aria-label="LinkedIn">in</a>
-            </div>
-          </div>
-
-          <div className="footer-col">
-            <h4>Quick Links</h4>
-            <ul>
-              <li><a href="#about">Who We Are</a></li>
-              <li><a href="#focus">What We Do</a></li>
-              <li><a href="#approach">Our Approach</a></li>
-              <li><a href="#impact">Our Impact</a></li>
-              <li><a href="#stories">Stories & Blog</a></li>
-            </ul>
-          </div>
-
-          <div className="footer-col">
-            <h4>Focus Areas</h4>
-            <ul>
-              <li><a href="#focus">Child Education</a></li>
-              <li><a href="#focus">Health & Nutrition</a></li>
-              <li><a href="#focus">Child Protection</a></li>
-              <li><a href="#focus">Girl Child Empowerment</a></li>
-              <li><a href="#focus">Emergency Relief</a></li>
-            </ul>
-          </div>
-
-          <div className="footer-col">
-            <h4>Stay Updated</h4>
-            <p style={{ fontSize: "13px", marginBottom: "12px" }}>
-              Subscribe to receive story updates and impact reports.
-            </p>
-            <NewsletterForm />
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <span>© 2026 Kautike Charitable Foundation · Mumbai, Maharashtra, India</span>
-          <div className="footer-legal">
-            <a href="#privacy">Privacy Policy</a>
-            <a href="#terms">Terms & Conditions</a>
-            <a href="#donate">Tax Exemption FAQs</a>
-          </div>
-        </div>
-      </footer>
-
-      {/* FLOATING BACK TO TOP & HELP BUTTONS (MATCHING CRY.ORG MOCKUP) */}
-      <div className="floating-actions">
-        <a href="#top" className="floating-top-btn" title="Back To Top">
-          ▲
-          <span>Back To Top</span>
-        </a>
-        <a href="#donate" className="floating-help-btn">
-          Help?
-        </a>
-      </div>
+      <Footer />
+      <FloatingActions />
     </main>
   );
 }

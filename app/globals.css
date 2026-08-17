@@ -4934,24 +4934,62 @@ footer {
   align-self: flex-start;
 }
 
-/* Responsive */
-@media (max-width: 960px) {
+/* =========================================================
+   COMPREHENSIVE ALL-PAGE RESPONSIVE OPTIMIZATIONS (< 992px & < 768px & < 480px)
+   ========================================================= */
+@media (max-width: 992px) {
+  /* Why Children & Approach Hero */
+  .cry-wc-stat-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+  .cry-wc-icons-box {
+    max-width: 280px !important;
+    margin: 0 auto !important;
+  }
+  .cry-wc-stat-heading {
+    font-size: clamp(20px, 4vw, 26px) !important;
+    text-align: center !important;
+  }
+  .cry-wc-stat-desc {
+    text-align: center !important;
+    font-size: 14px !important;
+  }
+  .cry-wc-two-cards-row {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  .cry-wc-program-grid,
+  .cry-wc-program-grid.reverse {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+  .cry-wc-brush-photo-wrap {
+    order: -1;
+  }
+  .cry-wc-brush-frame {
+    max-width: 320px !important;
+    height: 340px !important;
+    margin: 0 auto !important;
+  }
+  .cry-wc-pillars-row {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .cry-wc-trust-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
   .approach-levels-container {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
   }
   .approach-pillars-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-@media (max-width: 600px) {
-  .approach-pillars-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
   }
 }
 
-/* =========================================================
-   COMPREHENSIVE ALL-PAGE MOBILE RESPONSIVENESS (< 768px & < 480px)
-   ========================================================= */
 @media (max-width: 768px) {
   /* Global Layout & Padding */
   .about-container,
@@ -4977,7 +5015,7 @@ footer {
 
   /* Utility Top Bar & Header */
   .utility-bar {
-    display: none; /* Clean mobile header */
+    display: none !important; /* Clean mobile header */
   }
   .site-header {
     padding: 0 16px !important;
@@ -4999,6 +5037,35 @@ footer {
   .header-donate {
     padding: 9px 16px !important;
     font-size: 12.5px !important;
+  }
+
+  /* Why Children Hero & Overlap */
+  .cry-wc-hero-header {
+    padding: 36px 16px 20px !important;
+  }
+  .cry-wc-main-title {
+    font-size: 28px !important;
+  }
+  .cry-wc-fs-wrapper {
+    height: clamp(340px, 85vw, 500px) !important;
+  }
+  .cry-wc-card-wrapper {
+    margin: -35px auto 0 !important;
+    padding: 0 14px !important;
+  }
+  .cry-wc-stat-card {
+    padding: 24px 16px !important;
+    border-radius: 16px !important;
+  }
+  .cry-wc-icons-box {
+    max-width: 250px !important;
+    padding: 4px !important;
+  }
+  .cry-wc-icons-grid {
+    gap: 4px 3px !important;
+  }
+  .cry-wc-person svg {
+    max-height: 18px !important;
   }
 
   /* Home Hero Section */
@@ -5166,6 +5233,9 @@ footer {
 
 /* Extra small devices (phones < 480px) */
 @media (max-width: 480px) {
+  .approach-pillars-grid {
+    grid-template-columns: 1fr !important;
+  }
   .donation-amounts-grid {
     grid-template-columns: repeat(2, 1fr) !important;
   }

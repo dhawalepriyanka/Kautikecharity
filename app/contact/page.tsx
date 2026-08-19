@@ -11,155 +11,290 @@ export default function ContactPage() {
     name: "",
     email: "",
     phone: "",
-    subject: "general",
+    subject: "80g-receipt",
     message: "",
   });
 
+  const [submitting, setSubmitting] = useState(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
+    setSubmitting(true);
+    setTimeout(() => {
+      setSubmitting(false);
+      setSent(true);
+    }, 600);
   };
 
   return (
     <main className="page-fade-in" id="top">
       <Header />
 
-      {/* Hero */}
-      <section className="subpage-hero">
-        <div className="subpage-hero-inner">
+      <div className="cry-wc-page">
+
+        {/* 1. Hero Header */}
+        <div className="cry-wc-hero-header text-center">
           <span className="subpage-badge">GET IN TOUCH</span>
-          <h1>We are here to <span className="yellow-hand">listen &amp; assist</span></h1>
-          <p>
-            Have a question regarding donations, 80G tax certificates, volunteer opportunities, or corporate CSR partnerships? Reach out to us anytime.
+          <h1 className="cry-wc-main-title">
+            We are here to <span className="cry-hand-gold">listen &amp; assist</span>
+          </h1>
+          <div className="cry-wc-yellow-bar" />
+          <p className="cry-wc-lead-text">
+            Have a question regarding online donations, 80G tax exemption certificates, volunteer drives, or corporate CSR partnerships? Connect with our team directly.
           </p>
         </div>
-      </section>
 
-      {/* Contact Info & Form Grid */}
-      <section className="section-pad bg-white">
-        <div className="contact-main-grid">
-          {/* Left Contact Details */}
-          <div className="contact-details-panel">
-            <h2>Head Office &amp; Operations</h2>
-            <p className="contact-intro">
-              Kautike Charitable Foundation works on the ground across multiple districts in Maharashtra, India.
-            </p>
+        {/* 2. Top 3 Direct Contact Cards */}
+        <section className="contact-quick-cards-section">
+          <div className="about-container">
+            <div className="contact-cards-grid">
+              
+              {/* Card 1: WhatsApp */}
+              <div className="contact-quick-card">
+                <div className="c-card-icon-wrap" style={{ background: "#DCFCE7", color: "#16A34A" }}>
+                  💬
+                </div>
+                <h3>WhatsApp Helpline</h3>
+                <p>Chat directly with our volunteer coordinator on WhatsApp for quick support.</p>
+                <a
+                  href="https://wa.me/918108362688?text=Hello%20Kautike%20Charitable%20Foundation,%20I%20would%20like%20to%20know%20more%20about%20your%20initiatives."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="contact-action-link"
+                >
+                  Chat on WhatsApp ➔
+                </a>
+              </div>
 
-            <div className="contact-info-list">
-              <div className="contact-info-item">
-                <div className="c-icon">📍</div>
-                <div>
-                  <strong>Head Office Address</strong>
-                  <p>Kautike Charitable Foundation<br />Mumbai, Maharashtra 400001, India</p>
+              {/* Card 2: Phone Call */}
+              <div className="contact-quick-card">
+                <div className="c-card-icon-wrap" style={{ background: "#FEF3C7", color: "#D97706" }}>
+                  📞
+                </div>
+                <h3>Call Our Office</h3>
+                <p>Available Monday to Saturday, 9:30 AM – 6:30 PM IST.</p>
+                <a href="tel:+918108362688" className="contact-action-link">
+                  +91 810 836 2688 ➔
+                </a>
+              </div>
+
+              {/* Card 3: Email */}
+              <div className="contact-quick-card">
+                <div className="c-card-icon-wrap" style={{ background: "#E0E7FF", color: "#4F46E5" }}>
+                  ✉️
+                </div>
+                <h3>Email Inquiries</h3>
+                <p>Send your queries, donation receipts, or proposal documents.</p>
+                <a href="mailto:kautikecharitable@gmail.com" className="contact-action-link">
+                  kautikecharitable@gmail.com ➔
+                </a>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* 3. Main Content & Form Grid */}
+        <section className="section-pad bg-white">
+          <div className="about-container">
+            <div className="contact-split-grid">
+              
+              {/* Left Column: NGO Transparency & Operation Hubs */}
+              <div className="contact-info-column">
+                
+                <div className="contact-info-box">
+                  <span className="mini-title">REGISTERED TRUST IDENTITY</span>
+                  <h2 className="contact-box-title">
+                    Head Office &amp; <span className="cry-hand-gold">Field Operations</span>
+                  </h2>
+                  <p className="contact-desc">
+                    Kautike Charitable Foundation is a registered non-profit charitable organization dedicated to child education, nutrition, and community welfare across Maharashtra.
+                  </p>
+
+                  <div className="contact-detail-items">
+                    <div className="c-detail-item">
+                      <div className="c-dot-icon">📍</div>
+                      <div>
+                        <strong>Registered Office Address</strong>
+                        <p>Kautike Charitable Foundation<br />Panvel, Navi Mumbai &amp; Raigad District, Maharashtra, India</p>
+                      </div>
+                    </div>
+
+                    <div className="c-detail-item">
+                      <div className="c-dot-icon">🛡️</div>
+                      <div>
+                        <strong>Legal &amp; Tax Certifications</strong>
+                        <p>Registered Charitable Trust · 80G &amp; 12A Certified · NITI Aayog NGO Darpan</p>
+                      </div>
+                    </div>
+
+                    <div className="c-detail-item">
+                      <div className="c-dot-icon">🕒</div>
+                      <div>
+                        <strong>Operational Hours</strong>
+                        <p>Monday to Saturday: 9:30 AM – 6:30 PM (Sunday: Ground field drives)</p>
+                      </div>
+                    </div>
+
+                    <div className="c-detail-item">
+                      <div className="c-dot-icon">🌱</div>
+                      <div>
+                        <strong>Primary Operational Districts</strong>
+                        <p>Raigad (Panvel, Kondap, Mahodar), Thane, Palghar, Mumbai Suburbs &amp; Rural Maharashtra</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Trust Badge */}
+                  <div className="contact-trust-pill mt-6">
+                    <span>✨ 100% Volunteer Driven · Transparent Governance</span>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Right Column: Send Message Form */}
+              <div className="contact-form-column">
+                <div className="contact-form-card">
+                  {sent ? (
+                    <div className="contact-success-state text-center">
+                      <div className="success-emoji">✉️</div>
+                      <h3>Thank You for Contacting Us!</h3>
+                      <p>
+                        Your message has been received by Kautike Charitable Foundation. A team member will reply to <strong>{form.email}</strong> within 24 hours.
+                      </p>
+                      <button
+                        onClick={() => {
+                          setSent(false);
+                          setForm({ name: "", email: "", phone: "", subject: "80g-receipt", message: "" });
+                        }}
+                        className="cry-yellow-btn mt-6"
+                      >
+                        Send Another Message
+                      </button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit} className="contact-actual-form">
+                      <h3 className="form-card-heading">Send Us a Direct Message</h3>
+                      <p className="form-card-sub">
+                        Fill out the form below and we will get back to you promptly.
+                      </p>
+
+                      <div className="form-group mt-4">
+                        <label className="input-field-label">Your Full Name *</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Nilesh Patil"
+                          value={form.name}
+                          onChange={(e) => setForm({ ...form, name: e.target.value })}
+                          className="form-input-field"
+                        />
+                      </div>
+
+                      <div className="form-grid-2col mt-4">
+                        <div className="form-group">
+                          <label className="input-field-label">Email Address *</label>
+                          <input
+                            type="email"
+                            required
+                            placeholder="e.g. nilesh@gmail.com"
+                            value={form.email}
+                            onChange={(e) => setForm({ ...form, email: e.target.value })}
+                            className="form-input-field"
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <label className="input-field-label">Phone / WhatsApp Number *</label>
+                          <input
+                            type="tel"
+                            required
+                            placeholder="e.g. 9820012345"
+                            value={form.phone}
+                            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                            className="form-input-field"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-group mt-4">
+                        <label className="input-field-label">Subject / Purpose of Inquiry *</label>
+                        <select
+                          value={form.subject}
+                          onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                          className="form-select-field"
+                        >
+                          <option value="80g-receipt">Donation &amp; 80G Tax Certificate Inquiry</option>
+                          <option value="volunteer">Volunteering &amp; Internship Opportunities</option>
+                          <option value="csr">Corporate CSR Partnership &amp; Grant Sponsorship</option>
+                          <option value="tree-plantation">Tree Plantation &amp; School Green Drives</option>
+                          <option value="general">General Feedback or Other Queries</option>
+                        </select>
+                      </div>
+
+                      <div className="form-group mt-4">
+                        <label className="input-field-label">Your Message *</label>
+                        <textarea
+                          required
+                          rows={4}
+                          placeholder="Please share details of your query, request, or feedback..."
+                          value={form.message}
+                          onChange={(e) => setForm({ ...form, message: e.target.value })}
+                          className="form-input-field"
+                          style={{ resize: "vertical" }}
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="cry-yellow-btn mt-6"
+                        style={{ width: "100%", justifyContent: "center" }}
+                      >
+                        {submitting ? "Sending..." : "✉ Send Message Now"}
+                      </button>
+
+                      <div className="form-security-footer">
+                        <span>🔒 Your information is confidential and never shared.</span>
+                      </div>
+                    </form>
+                  )}
                 </div>
               </div>
 
-              <div className="contact-info-item">
-                <div className="c-icon">✉️</div>
-                <div>
-                  <strong>Email Inquiries</strong>
-                  <p><a href="mailto:kautikecharitable@gmail.com">kautikecharitable@gmail.com</a></p>
-                </div>
-              </div>
+            </div>
+          </div>
+        </section>
 
-              <div className="contact-info-item">
-                <div className="c-icon">📞</div>
-                <div>
-                  <strong>Helpline / WhatsApp</strong>
-                  <p><a href="tel:+918108362688">+91 810 836 2688</a> (Mon–Sat, 9:30 AM – 6:30 PM)</p>
-                </div>
+        {/* 4. Trust Badges Row */}
+        <section className="cry-wc-trust-badges-section">
+          <div className="cry-wc-trust-grid">
+            <div className="cry-wc-trust-item">
+              <div className="cry-wc-trust-icon">🛡️</div>
+              <div>
+                <strong>100% Tax Deductible</strong>
+                <p>All eligible donations receive Form 10BE certificates under Section 80G.</p>
               </div>
-
-              <div className="contact-info-item">
-                <div className="c-icon">🛡️</div>
-                <div>
-                  <strong>NGO Registration &amp; Certifications</strong>
-                  <p>Registered Non-Profit Section 8 Organization · 80G &amp; 12A Certified · NITI Aayog Darpan</p>
-                </div>
+            </div>
+            <div className="cry-wc-trust-item">
+              <div className="cry-wc-trust-icon">⚡</div>
+              <div>
+                <strong>Quick 24h Response</strong>
+                <p>Our volunteer coordination team responds to all queries within 24 working hours.</p>
+              </div>
+            </div>
+            <div className="cry-wc-trust-item">
+              <div className="cry-wc-trust-icon">🤝</div>
+              <div>
+                <strong>Community Powered</strong>
+                <p>Every initiative is led transparently on the ground with local Gram Panchayats.</p>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Right Message Form */}
-          <div className="contact-form-panel">
-            {sent ? (
-              <div className="success-box text-center">
-                <div style={{ fontSize: "48px", marginBottom: "12px" }}>✉️</div>
-                <h3>Message Sent Successfully!</h3>
-                <p>Thank you for reaching out. Our support team will respond to <strong>{form.email}</strong> within 24 hours.</p>
-                <button onClick={() => setSent(false)} className="cry-yellow-btn mt-4">Send Another Message</button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="styled-app-form">
-                <h3>Send Us A Direct Message</h3>
-                <div className="form-group">
-                  <label>Your Name *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Enter your full name"
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  />
-                </div>
-
-                <div className="form-row-2">
-                  <div className="form-group">
-                    <label>Email Address *</label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="you@example.com"
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Phone Number *</label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="+91 98765 43210"
-                      value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>Subject / Purpose</label>
-                  <select
-                    value={form.subject}
-                    onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                  >
-                    <option value="general">General Inquiry</option>
-                    <option value="80g">80G Tax Exemption Certificate Query</option>
-                    <option value="donation">Donation Support &amp; Receipts</option>
-                    <option value="csr">Corporate CSR Partnership</option>
-                    <option value="volunteer">Volunteering &amp; Internships</option>
-                    <option value="plantation">Tree Plantation Drives</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>Your Message *</label>
-                  <textarea
-                    rows={4}
-                    required
-                    placeholder="Write your message or inquiry here..."
-                    value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  ></textarea>
-                </div>
-
-                <button type="submit" className="cry-yellow-btn w-full">
-                  Send Message
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      </section>
+      </div>
 
       <Footer />
       <FloatingActions />

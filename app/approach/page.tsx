@@ -203,20 +203,29 @@ export default function ApproachPage() {
           </div>
         </section>
 
-        {/* 7. Trust Badges Row */}
+        {/* 7. Premium Trust Badges Row */}
         <section className="cry-wc-trust-badges-section">
           <div className="cry-wc-trust-grid">
             <div className="cry-wc-trust-item">
               <div className="cry-wc-trust-icon">💛</div>
-              <p>All our efforts in Maharashtra are powered by generous donors and volunteers</p>
+              <div className="cry-wc-trust-text-wrap">
+                <h4 className="cry-trust-card-title">100% Grassroots Impact</h4>
+                <p>All our efforts in Maharashtra are powered by generous donors and volunteers</p>
+              </div>
             </div>
             <div className="cry-wc-trust-item">
               <div className="cry-wc-trust-icon">📋</div>
-              <p>Your donations are 100% tax exempted under Section 80G of the Income Tax Act</p>
+              <div className="cry-wc-trust-text-wrap">
+                <h4 className="cry-trust-card-title">80G Tax Exemption</h4>
+                <p>Your donations are 100% tax exempted under Section 80G of the Income Tax Act</p>
+              </div>
             </div>
             <div className="cry-wc-trust-item">
               <div className="cry-wc-trust-icon">🔒</div>
-              <p>100% Secure donation process with instant 80G tax receipt generation</p>
+              <div className="cry-wc-trust-text-wrap">
+                <h4 className="cry-trust-card-title">100% Safe &amp; Secure</h4>
+                <p>100% Secure donation process with instant 80G tax receipt generation</p>
+              </div>
             </div>
           </div>
         </section>

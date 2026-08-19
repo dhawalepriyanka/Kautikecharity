@@ -9,22 +9,22 @@ interface DropdownMenu {
 
 export const menus: DropdownMenu[] = [
   {
-    title: "Who We Are",
+    title: "Who We Are?",
     links: [
       { label: "About Kautike Foundation", href: "/about" },
       { label: "Why Children & Community?", href: "/why-children" },
       { label: "Our Approach", href: "/approach" },
-      { label: "Financials & Governance", href: "/impact#governance" },
+      { label: "Our Impact", href: "/impact" },
     ],
   },
   {
-    title: "What We Do",
+    title: "What We Do?",
     links: [
-      { label: "Child Education", href: "/what-we-do#education" },
-      { label: "Health & Nutrition", href: "/what-we-do#health" },
-      { label: "Community Relief", href: "/what-we-do#community" },
-      { label: "Social Welfare & Protection", href: "/what-we-do#protection" },
-      { label: "Tree Plantation Drives", href: "/what-we-do#plantation" },
+      { label: "Child Education", href: "/child-education" },
+      { label: "Health & Nutrition", href: "/health-nutrition" },
+      { label: "Community Relief", href: "/community-relief" },
+      { label: "Social Welfare & Protection", href: "/social-welfare" },
+      { label: "Tree Plantation Drives", href: "/tree-plantation" },
     ],
   },
   {
@@ -69,6 +69,9 @@ export function NavDropdown() {
 
       {/* Desktop Navigation */}
       <nav className="main-nav" aria-label="Main Navigation">
+        <a href="/" className="nav-link-home">
+          Home
+        </a>
         {menus.map((menu, i) => (
           <div
             key={menu.title}
@@ -82,7 +85,7 @@ export function NavDropdown() {
               aria-haspopup="true"
             >
               {menu.title}
-              <span className="caret">▼</span>
+              <span className="caret">▾</span>
             </button>
             <div className={`nav-dropdown ${openIndex === i ? "is-open" : ""}`} role="menu">
               {menu.links.map((link) => (

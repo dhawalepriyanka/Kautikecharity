@@ -24,7 +24,7 @@ interface PaymentSuccessData {
 }
 
 export default function DonatePage() {
-  const [activeTab, setActiveTab] = useState<"gateway" | "upi" | "bank">("gateway");
+  const [activeTab, setActiveTab] = useState<"gateway" | "bank">("gateway");
   const [isMonthly, setIsMonthly] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState<number>(1000);
   const [customAmount, setCustomAmount] = useState<string>("");
@@ -55,7 +55,7 @@ export default function DonatePage() {
     setTimeout(() => setCopiedKey(null), 2500);
   };
 
-  const handleRazorpayPayment = (e: React.FormEvent) => {
+  const handleRazorpayPayment = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!effectiveAmount || effectiveAmount < 100) {
@@ -73,15 +73,24 @@ export default function DonatePage() {
       return;
     }
 
+    if (isMonthly) {
+      alert("Monthly donations need a Razorpay Subscription setup. Please select One-Time Donation for now.");
+      return;
+    }
     setLoading(true);
-
-    // Razorpay Key: reads environment variable or defaults to sandbox test key
-    const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_1DP5mmOlF5G5ag";
-
-    const options = {
-      key: razorpayKey,
-      amount: effectiveAmount * 100, // Amount in paise
-      currency: "INR",
+    try {
+      const createOrder = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/donations/create-order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ donorName: donor.name, email: donor.email, phone: donor.phone, amount: effectiveAmount, purpose: cause }),
+      });
+      const order = await createOrder.json();
+      if (!createOrder.ok) throw new Error(order.message ?? "Unable to create your donation order.");
+      const options = {
+      key: order.keyId,
+      order_id: order.orderId,
+      amount: order.amount,
+      currency: order.currency,
       name: "Kautike Charitable Foundation",
       description: `Donation for ${cause} (${isMonthly ? "Monthly Pledge" : "One-Time"})`,
       image: "/kautike-logo.png",
@@ -99,34 +108,38 @@ export default function DonatePage() {
       theme: {
         color: "#F5A623", // Kautike Gold Brand Color
       },
-      handler: function (response: any) {
-        setLoading(false);
-        const receiptNo = `KCF-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
-        setSuccessData({
-          paymentId: response.razorpay_payment_id || `pay_${Math.random().toString(36).substring(2, 11)}`,
-          orderId: response.razorpay_order_id,
-          signature: response.razorpay_signature,
-          amount: effectiveAmount,
-          date: new Date().toLocaleDateString("en-IN", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          receiptNumber: receiptNo,
-        });
+      config: {
+        display: {
+          blocks: {
+            upi: {
+              name: "Pay using UPI",
+              instruments: [{ method: "upi" }],
+            },
+          },
+          sequence: ["block.upi", "card", "netbanking", "wallet", "paylater"],
+          preferences: { show_default_blocks: true },
+        },
+      },
+      handler: async function (payment: any) {
+        try {
+          const verification = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/donations/verify-payment`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ donationId: order.donationId, donorName: donor.name, ...payment }) });
+          const verified = await verification.json();
+          if (!verification.ok || !verified.status) throw new Error(verified.message ?? "Payment could not be verified.");
+          setSuccessData({ paymentId: verified.paymentId, orderId: order.orderId, signature: undefined, amount: verified.amount, date: new Date(verified.date).toLocaleString("en-IN"), receiptNumber: `KCF-${order.donationId.slice(0, 8).toUpperCase()}` });
+        } catch (verificationError) { alert(verificationError instanceof Error ? verificationError.message : "Payment verification failed. Please contact us with your payment ID."); }
+        finally { setLoading(false); }
       },
       modal: {
         ondismiss: function () {
+          void fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/donations/${order.donationId}/status`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: "cancelled" }) });
           setLoading(false);
         },
       },
     };
 
-    try {
       const rzp = new window.Razorpay(options);
       rzp.on("payment.failed", function (response: any) {
+        void fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/donations/${order.donationId}/status`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: "failed" }) });
         setLoading(false);
         alert(`Payment Failed: ${response.error.description || "Transaction could not be completed."}`);
       });
@@ -134,7 +147,7 @@ export default function DonatePage() {
     } catch (err) {
       setLoading(false);
       console.error("Razorpay error:", err);
-      alert("An error occurred opening the Razorpay checkout window.");
+      alert(err instanceof Error ? err.message : "An error occurred opening the Razorpay checkout window.");
     }
   };
 
@@ -153,7 +166,7 @@ export default function DonatePage() {
         {/* 1. Header Hero */}
         <div className="cry-wc-hero-header text-center">
           <span className="subpage-badge">SECURE 80G TAX EXEMPTION GATEWAY</span>
-          <h1 className="cry-wc-main-title">Donate with <span className="cry-hand-gold">Razorpay</span></h1>
+          <h1 className="cry-wc-main-title">Make a Donation for <span className="cry-hand-gold">Children&apos;s Future</span></h1>
           <div className="cry-wc-yellow-bar" />
           <p className="cry-wc-lead-text">
             Every contribution directly funds child education, nutrition meals, and grassroots community welfare in Maharashtra.
@@ -312,14 +325,7 @@ export default function DonatePage() {
                       className={`d-tab-btn ${activeTab === "gateway" ? "active" : ""}`}
                       onClick={() => setActiveTab("gateway")}
                     >
-                      💳 Razorpay (Card/UPI/Netbanking)
-                    </button>
-                    <button
-                      type="button"
-                      className={`d-tab-btn ${activeTab === "upi" ? "active" : ""}`}
-                      onClick={() => setActiveTab("upi")}
-                    >
-                      📱 Direct UPI QR
+                      💳 Online Payment (UPI / Cards / Netbanking)
                     </button>
                     <button
                       type="button"
@@ -330,7 +336,7 @@ export default function DonatePage() {
                     </button>
                   </div>
 
-                  {/* TAB 1: RAZORPAY GATEWAY CHECKOUT */}
+                  {/* TAB 1: ONLINE PAYMENT GATEWAY CHECKOUT */}
                   {activeTab === "gateway" && (
                     <form onSubmit={handleRazorpayPayment} className="donation-form-body">
                       
@@ -490,55 +496,25 @@ export default function DonatePage() {
                         </div>
                       </div>
 
-                      {/* Razorpay Submit Button */}
+                      {/* Submit Button */}
                       <button
                         type="submit"
                         disabled={loading}
                         className="razorpay-submit-btn mt-6"
                       >
-                        {loading ? "Connecting to Razorpay..." : `♥ Proceed to Pay ₹${effectiveAmount.toLocaleString("en-IN")} via Razorpay`}
+                        {loading ? "Opening Secure Payment..." : `♥ Proceed to Pay ₹${effectiveAmount.toLocaleString("en-IN")} Securely`}
                       </button>
 
                       <div className="security-notice-row">
                         <span>🔒 256-Bit SSL Encrypted</span>
-                        <span>⚡ Powered by Razorpay</span>
+                        <span>⚡ Instant 80G Tax Receipt</span>
                         <span>🛡️ PCI-DSS Certified</span>
                       </div>
 
                     </form>
                   )}
 
-                  {/* TAB 2: DIRECT UPI QR CODE */}
-                  {activeTab === "upi" && (
-                    <div className="upi-tab-content text-center">
-                      <div className="upi-qr-card">
-                        <img
-                          src="/images/payment-scanner.jpg"
-                          alt="Kautike Foundation UPI QR Code"
-                          className="upi-qr-image"
-                        />
-                        <div className="upi-details-box mt-4">
-                          <span className="upi-id-label">Official NGO UPI VPA:</span>
-                          <div className="upi-copy-row">
-                            <code>kautikecharitable@sbi</code>
-                            <button
-                              type="button"
-                              onClick={() => copyToClipboard("kautikecharitable@sbi", "upi")}
-                              className="copy-btn"
-                            >
-                              {copiedKey === "upi" ? "✓ Copied" : "Copy"}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="upi-instruction mt-4">
-                        Scan with any UPI app (Google Pay, PhonePe, Paytm, BHIM).
-                        After making payment, please send screenshot &amp; PAN details to <strong>kautikecharitable@gmail.com</strong> for your 80G receipt.
-                      </p>
-                    </div>
-                  )}
-
-                  {/* TAB 3: BANK NEFT / RTGS TRANSFER */}
+                  {/* Bank NEFT / RTGS Transfer */}
                   {activeTab === "bank" && (
                     <div className="bank-tab-content">
                       <h4 style={{ fontSize: "17px", fontWeight: 800, color: "#1E293B", marginBottom: "16px" }}>

@@ -16,80 +16,42 @@ export default function WhyChildrenPage() {
 
         {/* 1. Header Title & Subtitle */}
         <div className="cry-wc-hero-header text-center">
-          <h1 className="cry-wc-main-title">Why Children?</h1>
+          <span className="subpage-badge">OUR CORE MISSION · बाल हक्क व सक्षमीकरण</span>
+          <h1 className="cry-wc-main-title">
+            Why Children &amp; <span className="cry-hand-gold">Their Future?</span>
+          </h1>
           <div className="cry-wc-yellow-bar" />
           <p className="cry-wc-lead-text">
-            Children are the building blocks of our nation&apos;s future. Let&apos;s invest in their potential today, so that they can
-            become our scientists, politicians, sportspeople, journalists and teachers of tomorrow!
+            Children are the building blocks of our nation&apos;s future. Let&apos;s invest in their potential, education, and health today, so that they can
+            become tomorrow&apos;s scientists, doctors, educators, and changemakers!
           </p>
         </div>
 
-        {/* 2. Main Children Banner (100% Full Photo with Top Criss-Cross & Animated Yellow Splash) */}
+        {/* 2. Main Children Banner (Full Edge-to-Edge with Fluid Top Wave & Multi-layered Animated Golden Splash) */}
         <div className="cry-wc-banner-fullscreen">
           <div className="cry-wc-fs-wrapper">
-            {/* Top Sharp Criss-Cross Zigzag Cutout */}
+            {/* Top Fluid Organic Watercolor Wave */}
             <div className="cry-wc-top-crisscross">
               <svg viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true" className="cry-wc-top-svg">
                 <path
-                  d="M0,0 L1440,0 L1440,0 L1200,55 L960,10 L720,60 L480,8 L240,58 L0,5 Z"
+                  d="M0,0 L1440,0 L1440,40 C1300,75 1160,20 1020,55 C880,90 740,30 600,65 C460,95 320,35 180,60 C100,75 40,30 0,45 Z"
                   fill="#FAF8F5"
                 />
               </svg>
             </div>
 
-            {/* Full Photo filling 100% of the banner */}
+            {/* Full Photo */}
             <img
               src="/images/why-children-girls-event.jpg"
               alt="School girls in uniform - Kautike Charitable Foundation"
               className="cry-wc-full-photo-img"
             />
 
-            {/* 100% Full-Screen Edge-to-Edge Multi-layered Animated Yellow Powder Splash */}
+            {/* Bottom Clean Cream Watercolor Wave (No yellow lines) */}
             <div className="cry-wc-splash-overlay">
-              <svg viewBox="0 0 1440 220" fill="none" preserveAspectRatio="none" className="cry-wc-splash-svg">
-                <defs>
-                  <linearGradient id="yellowPowderGlow" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#F59E0B" stopOpacity="0" />
-                    <stop offset="35%" stopColor="#F59E0B" stopOpacity="0.75" />
-                    <stop offset="70%" stopColor="#FBBF24" stopOpacity="0.95" />
-                    <stop offset="100%" stopColor="#FAF8F5" stopOpacity="1" />
-                  </linearGradient>
-                  <filter id="softGlow" x="-10%" y="-10%" width="120%" height="120%">
-                    <feGaussianBlur stdDeviation="6" result="blur" />
-                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                  </filter>
-                </defs>
-
-                {/* Layer 1: Soft Golden Glow Base */}
-                <rect x="0" y="40" width="1440" height="180" fill="url(#yellowPowderGlow)" className="splash-glow-base" />
-
-                {/* Layer 2: Organic Textured Paint Powder Splash Clouds (Animated Wave 1) */}
+              <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="cry-wc-splash-svg">
                 <path
-                  d="M0,220 L0,75 C90,30 180,95 280,55 C380,20 460,105 560,55 C660,15 740,85 860,35 C960,5 1040,80 1160,30 C1260,5 1360,65 1440,25 L1440,220 Z"
-                  fill="#F59E0B"
-                  opacity="0.85"
-                  filter="url(#softGlow)"
-                  className="splash-wave-layer-1"
-                />
-
-                {/* Layer 3: Vibrant Sunlight Yellow Mid Splash (Animated Wave 2) */}
-                <path
-                  d="M0,220 L0,100 C110,60 220,120 340,80 C460,45 540,115 660,70 C780,35 880,105 1000,60 C1120,25 1220,95 1340,55 C1390,40 1420,70 1440,50 L1440,220 Z"
-                  fill="#FBBF24"
-                  opacity="0.94"
-                  className="splash-wave-layer-2"
-                />
-
-                {/* Layer 4: Intense Gold Lower Wave (Animated Wave 3) */}
-                <path
-                  d="M0,220 L0,130 C150,90 290,145 430,115 C570,80 690,140 830,105 C970,75 1090,130 1230,95 C1330,75 1400,110 1440,90 L1440,220 Z"
-                  fill="#F5A623"
-                  className="splash-wave-layer-3"
-                />
-
-                {/* Layer 5: Seamless Crisp Cream Grounding Base */}
-                <path
-                  d="M0,220 L0,160 C190,135 370,175 550,145 C730,120 890,165 1070,140 C1230,115 1350,155 1440,135 L1440,220 Z"
+                  d="M0,45 C150,95 320,15 480,65 C640,115 800,20 960,70 C1120,110 1280,35 1440,60 L1440,120 L0,120 Z"
                   fill="#FAF8F5"
                 />
               </svg>
@@ -101,38 +63,38 @@ export default function WhyChildrenPage() {
         <div className="cry-wc-card-wrapper">
           <div className="cry-wc-stat-card">
             <div className="cry-wc-stat-grid">
-              
-              {/* 10x10 Person Icons (40% gold) with India Map Watermark */}
+
+              {/* 100 Icons Grid with Map Watermark */}
               <div className="cry-wc-icons-box">
                 <div className="cry-wc-map-watermark">
-                  <svg viewBox="0 0 100 120" fill="none" opacity="0.08">
+                  <svg viewBox="0 0 200 240" fill="none">
                     <path
-                      d="M35 5 C40 2 60 5 65 15 C70 25 85 30 85 45 C85 60 75 75 65 95 C55 110 50 118 45 118 C40 118 35 105 25 85 C15 65 15 45 25 25 Z"
-                      fill="#0F172A"
+                      d="M100 20 C120 40, 140 30, 150 60 C160 90, 180 110, 170 140 C160 170, 140 190, 120 210 C100 230, 90 220, 80 190 C70 160, 50 140, 40 110 C30 80, 50 50, 70 30 Z"
+                      fill="#FEF3C7"
+                      opacity="0.6"
                     />
                   </svg>
                 </div>
                 <div className="cry-wc-icons-grid">
                   {Array.from({ length: 100 }).map((_, i) => (
-                    <div key={i} className={`cry-wc-person ${i < 40 ? "gold" : "gray"}`}>
-                      <svg viewBox="0 0 16 28" fill="currentColor">
-                        <circle cx="8" cy="4" r="3.2" />
-                        <path d="M2 9.5 C2 8 14 8 14 9.5 L13 18 L11 18 L11 26 L9 26 L9 18 L7 18 L7 26 L5 26 L5 18 L3 18 Z" />
-                      </svg>
-                    </div>
+                    <span
+                      key={i}
+                      className={`cry-wc-person ${i < 40 ? "gold" : "gray"}`}
+                      title={i < 40 ? "40% Children" : "60% Adult Population"}
+                    >
+                      ♟
+                    </span>
                   ))}
                 </div>
               </div>
 
-              {/* Text Info */}
-              <div className="cry-wc-stat-details">
-                <h2 className="cry-wc-stat-heading">
+              {/* Text Information */}
+              <div className="cry-wc-stat-info">
+                <h3 className="cry-wc-stat-h3">
                   At 472 million, children <span className="cry-hand-gold">account for 40%</span> of India&apos;s population
-                </h2>
-                <p className="cry-wc-stat-desc">
-                  And yet, only 2.46% of the 2021-22 Union Budget was allocated to their development and welfare. In fact, the
-                  National Plan of Action for Children recommends that budgetary allocations for children should be 5% of the
-                  country&apos;s GDP – ours has been stagnant at 0.43% of GDP for the last two years.
+                </h3>
+                <p className="cry-wc-stat-p">
+                  And yet, only 2.46% of the Union Budget is allocated to their development and welfare. In fact, the National Plan of Action for Children recommends that budgetary allocations for children should be 5% of the country&apos;s GDP – ours has been stagnant at 0.43% of GDP.
                 </p>
               </div>
 
@@ -142,16 +104,17 @@ export default function WhyChildrenPage() {
 
         {/* 4. Circumstances Title */}
         <div className="cry-wc-circumstances-header text-center">
+          <span className="mini-title">GROUND REALITIES</span>
           <h2>
             India&apos;s children battle <span className="cry-hand-gold">some of the worst circumstances</span> in the world.
           </h2>
         </div>
 
-        {/* 5. Complete Stat Cards Hierarchy (Matching Screenshot Exactly) */}
+        {/* 5. Complete Stat Cards Hierarchy (Balanced 3 + 2 Layout) */}
         <div className="cry-wc-stats-container">
           
-          {/* Row 1: 2 Cards */}
-          <div className="cry-wc-two-cards-row">
+          {/* Row 1: 3 Cards */}
+          <div className="cry-wc-three-cards-row">
             <div className="cry-wc-metric-card-lg">
               <div className="cry-wc-num-lg">33</div>
               <div className="cry-wc-num-script">million</div>
@@ -165,28 +128,25 @@ export default function WhyChildrenPage() {
               <p className="cry-wc-metric-text-lg">brides in the world is from India</p>
               <span className="cry-wc-metric-source-lg">UNICEF 2014</span>
             </div>
-          </div>
 
-          {/* Row 2: 2 Cards */}
-          <div className="cry-wc-two-cards-row mt-6">
             <div className="cry-wc-metric-card-lg">
               <div className="cry-wc-num-lg">2 of 3</div>
               <div className="cry-wc-num-script">child</div>
-              <p className="cry-wc-metric-text-lg">deaths, below the age of 5, are caused by malnutrition</p>
+              <p className="cry-wc-metric-text-lg">deaths, below age 5, are caused by malnutrition</p>
               <span className="cry-wc-metric-source-lg">UNICEF 2019</span>
             </div>
+          </div>
 
+          {/* Row 2: 2 Centered Cards */}
+          <div className="cry-wc-two-cards-centered-row mt-6">
             <div className="cry-wc-metric-card-lg">
               <div className="cry-wc-num-lg">2 of 5</div>
               <div className="cry-wc-num-script">children</div>
               <p className="cry-wc-metric-text-lg">do not receive complete immunization</p>
               <span className="cry-wc-metric-source-lg">NFHS 4 2016</span>
             </div>
-          </div>
 
-          {/* Row 3: 1 Centered Card */}
-          <div className="cry-wc-single-card-row mt-6">
-            <div className="cry-wc-metric-card-lg centered-single">
+            <div className="cry-wc-metric-card-lg">
               <div className="cry-wc-num-lg">500%</div>
               <div className="cry-wc-num-script">increase</div>
               <p className="cry-wc-metric-text-lg">in crimes against children between 2008-2018</p>
@@ -381,23 +341,32 @@ export default function WhyChildrenPage() {
 
 
 
-        {/* 12. 3 Trust Badges Row (100% Support, 80G Tax Exemption, Safe & Secure) */}
+        {/* 12. 3 Premium Trust Badges Cards */}
         <section className="cry-wc-trust-badges-section">
           <div className="cry-wc-trust-grid">
             
             <div className="cry-wc-trust-item">
               <div className="cry-wc-trust-icon">💛</div>
-              <p>All our efforts are made possible only because of your support</p>
+              <div className="cry-wc-trust-text-wrap">
+                <h4 className="cry-trust-card-title">100% Impact Driven</h4>
+                <p>All our efforts are made possible only because of your support</p>
+              </div>
             </div>
 
             <div className="cry-wc-trust-item">
               <div className="cry-wc-trust-icon">📋</div>
-              <p>Your donations are tax exempted under 80G of the Indian Income Tax Act</p>
+              <div className="cry-wc-trust-text-wrap">
+                <h4 className="cry-trust-card-title">80G Tax Exemption</h4>
+                <p>Your donations are tax exempted under 80G of the Indian Income Tax Act</p>
+              </div>
             </div>
 
             <div className="cry-wc-trust-item">
               <div className="cry-wc-trust-icon">🔒</div>
-              <p>Your donation transactions are completely safe and secure</p>
+              <div className="cry-wc-trust-text-wrap">
+                <h4 className="cry-trust-card-title">100% Safe &amp; Secure</h4>
+                <p>Your donation transactions are completely safe, encrypted and secure</p>
+              </div>
             </div>
 
           </div>

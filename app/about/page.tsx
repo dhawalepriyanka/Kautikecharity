@@ -7,113 +7,101 @@ export const metadata = {
   description: "Discover Kautike Charitable Foundation's vision, mission, story, core values, and grassroots team working for child rights and environmental care across India.",
 };
 
-// Sheet 1: 3 columns × 3 rows
-// Sheet 2: 3 cols × 2 rows
-const teamMembers = [
-  // Sheet 1
-  { name: "NILESH KUTE",         role: "Core Organizer / Volunteer", id: "#001", phone: "+91 83560 08675", sheet: 1, bgX: "0%",   bgY: "0%"   },
-  { name: "VIJAY JADHAV",        role: "Volunteer",                  id: "#002", phone: "+91 98206 23005", sheet: 1, bgX: "50%",  bgY: "0%"   },
-  { name: "ABHINAY SINGH",       role: "Volunteer",                  id: "#003", phone: "+91 91202 83508", sheet: 1, bgX: "100%", bgY: "0%"   },
-  { name: "ASHISH MISHRA",       role: "Volunteer",                  id: "#004", phone: "+91 76665 49586", sheet: 1, bgX: "0%",   bgY: "50%"  },
-  { name: "SANTOSH JADHAV",      role: "Volunteer",                  id: "#005", phone: "+91 93247 73738", sheet: 1, bgX: "50%",  bgY: "50%"  },
-  { name: "DNYANESHWAR J.",      role: "Volunteer",                  id: "#006", phone: "+91 93223 58458", sheet: 1, bgX: "100%", bgY: "50%"  },
-  { name: "YOGESH SHINDE",       role: "Volunteer",                  id: "#007", phone: "+91 98709 15575", sheet: 1, bgX: "0%",   bgY: "100%" },
-  { name: "SATISH JADHAV",       role: "Volunteer",                  id: "#008", phone: "+91 80828 08258", sheet: 1, bgX: "50%",  bgY: "100%" },
-  { name: "DEEPAK THORAT",       role: "Volunteer",                  id: "#009", phone: "+91 98700 44491", sheet: 1, bgX: "100%", bgY: "100%" },
-  // Sheet 2
-  { name: "VINAYAK JADHAV",      role: "Volunteer",                  id: "#010", phone: "+91 77386 82535", sheet: 2, bgX: "0%",   bgY: "0%"   },
-  { name: "VICKY JADHAV",        role: "Volunteer",                  id: "#011", phone: "+91 75886 31471", sheet: 2, bgX: "50%",  bgY: "0%"   },
-  { name: "ADV. ANAND KUMAR M.", role: "Legal Advisor & Volunteer",  id: "#012", phone: "+91 90048 36678", sheet: 2, bgX: "100%", bgY: "0%"   },
-  { name: "ABHISHEK SINGH",      role: "Volunteer",                  id: "#013", phone: "+91 90820 57164", sheet: 2, bgX: "0%",   bgY: "100%" },
-  { name: "AKASH MISHRA",        role: "Volunteer",                  id: "#014", phone: "+91 83692 50096", sheet: 2, bgX: "50%",  bgY: "100%" },
+const presidentData = {
+  name: "Nilesh Kute",
+  role: "President & Founder",
+  image: "/images/team/nilesh-kute.png",
+  location: "Maharashtra, India",
+  bio: "Leading Kautike Charitable Foundation with a relentless commitment to child welfare, education retention in rural schools, and community-driven social transformation.",
+  quote: "“Every child deserves the dignity of education, nutritious food, and an environment that fosters hope and dreams.”",
+};
+
+const volunteerList = [
+  { name: "Ashish Mishra", role: "Volunteer", image: "/images/team/ashish-mishra.png", location: "Panvel, Raigad" },
+  { name: "Abhinay Singh", role: "Volunteer", image: "/images/team/abhinay-singh-hd.png", location: "Mumbai & Raigad" },
+  { name: "Yogesh Shinde", role: "Volunteer", image: "/images/team/yogesh-shinde.png", location: "Maharashtra" },
+  { name: "Dnyaneshwar Jadhav", role: "Volunteer", image: "/images/team/dnyaneshwar-jadhav.png", location: "Panvel, Raigad" },
+  { name: "Jayshree Sutar", role: "Volunteer", image: "/images/team/jayshree-sutar.png", location: "Maharashtra" },
+  { name: "Santosh Jadhav", role: "Volunteer", image: "/images/team/santosh-jadhav.png", location: "Panvel, Raigad" },
+  { name: "Vijay Jadhav", role: "Volunteer", image: "/images/team/vijay-jadhav.png", location: "Mahodar, Panvel" },
+  { name: "Satish Jadhav", role: "Volunteer", image: "/images/team/satish-jadhav.png", location: "Panvel, Raigad" },
+  { name: "Deepak Thorat", role: "Volunteer", image: "/images/team/deepak-thorat.png", location: "Kondap, Panvel" },
 ];
 
 export default function AboutPage() {
   return (
-    <main className="page-fade-in" id="top">
+    <main className="page-fade-in bg-cream" id="top" style={{ backgroundColor: "#FAF8F5" }}>
       <Header />
 
-      {/* 1. CRY-STYLE VISION SECTION (MATCHING EXACT SCREENSHOT) */}
+      {/* 1. CRY-STYLE VISION SECTION */}
       <section className="cry-vision-section">
         <div className="cry-vision-content text-center">
-          <h2 className="cry-clean-title">Our Vision</h2>
-          <div className="cry-yellow-line" />
+          <span className="subpage-badge">WHO WE ARE</span>
+          <h1 className="cry-wc-main-title">Our <span className="cry-hand-gold">Vision</span></h1>
+          <div className="cry-wc-yellow-bar" />
           <p className="cry-vision-text">
             Kautike Charitable Foundation is dedicated to empowering communities through education, healthcare, and social welfare. From supporting underprivileged students with school supplies and scholarships to promoting community development and environmental sustainability, we are committed to building a more compassionate and equitable society.
           </p>
-          <p className="cry-vision-text" style={{marginTop: "18px"}}>
+          <p className="cry-vision-text" style={{ marginTop: "10px" }}>
             Together, we can nurture minds, strengthen communities, and create a greener tomorrow. Through our education programs and community welfare initiatives, every effort reflects our belief that education, health, and social support form the foundation of lasting change.
           </p>
         </div>
 
         <div className="cry-vision-banner-wrap">
-          {/* Top Sharp Criss-Cross Zigzag Cutout */}
+          {/* Top Fluid Organic Watercolor Wave */}
           <div className="cry-vision-top-wave">
             <svg className="cry-wave-svg" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
               <path
-                d="M0,0 L1440,0 L1440,0 L1200,55 L960,10 L720,60 L480,8 L240,58 L0,5 Z"
+                d="M0,0 L1440,0 L1440,40 C1300,75 1160,20 1020,55 C880,90 740,30 600,65 C460,95 320,35 180,60 C100,75 40,30 0,45 Z"
                 fill="#FAF8F5"
               />
             </svg>
           </div>
 
           <img 
-            src="/images/about-vision-user-photo.jpg"
-            alt="School children in uniform receiving nutrition snack boxes"
+            src="/images/about-vision-user-photo.jpg" 
+            alt="Kautike Foundation Vision - Indian School Girls Sharing Midday Snack" 
             className="cry-vision-img"
           />
 
-          {/* Bottom Sharp Criss-Cross Yellow Zigzag */}
-          <div className="cry-paint-splatter-wave">
-            <svg viewBox="0 0 1440 90" preserveAspectRatio="none" style={{position:'absolute',bottom:0,left:0,width:'100%',height:'100%',display:'block'}}>
+          {/* Bottom Golden Watercolor Wave */}
+          <div className="cry-vision-bottom-wave">
+            <svg className="cry-wave-svg" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
               <path
-                d="M0,90 L0,55 L240,10 L480,62 L720,8 L960,60 L1200,12 L1440,55 L1440,90 Z"
-                fill="#F5A623"
-              />
-              <path
-                d="M0,90 L0,68 L240,28 L480,75 L720,25 L960,75 L1200,30 L1440,68 L1440,90 Z"
-                fill="#FFC107"
-                opacity="0.6"
+                d="M0,45 C150,95 320,15 480,65 C640,115 800,20 960,70 C1120,110 1280,35 1440,60 L1440,120 L0,120 Z"
+                fill="#FAF8F5"
               />
             </svg>
           </div>
         </div>
       </section>
 
-      {/* 2. CRY.ORG EXACT OUR MISSION SECTION WITH 3 WHITE CARDS & WATERCOLOR SPLATTERS */}
+      {/* 2. THREE CORE MISSION PILLARS */}
       <section className="cry-mission-paint-section">
-        {/* Background Watercolor Splatter Accents */}
-        <div className="splatter-accent-left" aria-hidden="true" />
-        <div className="splatter-accent-right" aria-hidden="true" />
-
-        <div className="cry-mission-paint-inner text-center">
-          <h2 className="cry-mission-title">Our Mission</h2>
+        <div className="cry-mission-paint-inner">
+          <div className="text-center mb-10">
+            <span className="mini-title">OUR THREE PILLARS</span>
+            <h2 className="cry-mission-title">
+              What Drives Our <span className="cry-hand-gold">Mission</span>
+            </h2>
+            <div className="cry-yellow-line" style={{ margin: "14px auto 24px" }} />
+          </div>
 
           <div className="cry-3cards-grid">
+            
             {/* Card 1: Taking Responsibility */}
             <div className="cry-3card-item">
-              <div className="cry-3card-art art-hero">
+              <div className="cry-3card-art art-responsibility">
                 <svg viewBox="0 0 160 160" fill="none" className="cry-card-svg">
-                  {/* Background Soft Glow */}
-                  <circle cx="80" cy="80" r="60" fill="#FFF9E6" />
-                  <ellipse cx="80" cy="130" rx="45" ry="10" fill="#E2E8F0" opacity="0.6" />
-                  
-                  {/* Cape */}
+                  <circle cx="80" cy="80" r="60" fill="#FEF3C7" />
+                  <ellipse cx="80" cy="130" rx="46" ry="8" fill="#E2E8F0" opacity="0.6" />
                   <path d="M78 68 C100 68 125 80 135 110 C120 105 100 115 82 92 Z" fill="#E11D48" />
-                  
-                  {/* Body & Shirt */}
                   <path d="M68 66 L92 66 L98 108 L62 108 Z" fill="#2563EB" />
                   <polygon points="68,66 92,66 80,82" fill="#1D4ED8" />
-                  
-                  {/* Head & Hair */}
                   <circle cx="80" cy="46" r="14" fill="#FBBF24" />
                   <path d="M66 42 C68 28 92 28 94 42 C90 34 70 34 66 42 Z" fill="#1E293B" />
-                  
-                  {/* Hands on Hips */}
                   <path d="M68 72 L54 84 L64 96" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M92 72 L106 84 L96 96" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-                  
-                  {/* Legs */}
                   <line x1="72" y1="108" x2="72" y2="134" stroke="#1E293B" strokeWidth="6" strokeLinecap="round" />
                   <line x1="88" y1="108" x2="88" y2="134" stroke="#1E293B" strokeWidth="6" strokeLinecap="round" />
                 </svg>
@@ -128,11 +116,8 @@ export default function AboutPage() {
             <div className="cry-3card-item">
               <div className="cry-3card-art art-potential">
                 <svg viewBox="0 0 160 160" fill="none" className="cry-card-svg">
-                  {/* Background Soft Glow */}
                   <circle cx="80" cy="80" r="60" fill="#FFFDF0" />
                   <ellipse cx="80" cy="130" rx="50" ry="10" fill="#E2E8F0" opacity="0.6" />
-                  
-                  {/* Left Jumping Figure */}
                   <circle cx="58" cy="52" r="10" fill="#FBBF24" />
                   <path d="M52 48 C54 38 68 38 70 48 Z" fill="#1E293B" />
                   <path d="M50 64 L68 64 L72 94 L48 94 Z" fill="#7C3AED" />
@@ -140,8 +125,6 @@ export default function AboutPage() {
                   <path d="M68 68 L80 58" stroke="#FBBF24" strokeWidth="4" strokeLinecap="round" />
                   <line x1="54" y1="94" x2="48" y2="124" stroke="#1E293B" strokeWidth="5" strokeLinecap="round" />
                   <line x1="66" y1="94" x2="72" y2="120" stroke="#1E293B" strokeWidth="5" strokeLinecap="round" />
-
-                  {/* Right Dancing Figure with Yellow Dress */}
                   <circle cx="106" cy="56" r="10" fill="#FBBF24" />
                   <path d="M98 52 C100 42 114 42 118 52 Z" fill="#1E293B" />
                   <path d="M96 70 C88 95 86 115 124 115 C130 95 120 70 106 70 Z" fill="#F59E0B" />
@@ -164,23 +147,16 @@ export default function AboutPage() {
             <div className="cry-3card-item">
               <div className="cry-3card-art art-collective">
                 <svg viewBox="0 0 160 160" fill="none" className="cry-card-svg">
-                  {/* Background Soft Glow */}
                   <circle cx="80" cy="80" r="60" fill="#FFF8E7" />
                   <ellipse cx="80" cy="132" rx="50" ry="10" fill="#E2E8F0" opacity="0.6" />
-                  
-                  {/* Left Companion */}
                   <circle cx="54" cy="62" r="8" fill="#FBBF24" />
                   <path d="M46 72 L62 72 L64 104 L44 104 Z" fill="#0EA5E9" />
                   <line x1="50" y1="104" x2="48" y2="128" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
                   <line x1="58" y1="104" x2="60" y2="128" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
-
-                  {/* Right Companion */}
                   <circle cx="106" cy="62" r="8" fill="#FBBF24" />
                   <path d="M98 72 L114 72 L116 104 L96 104 Z" fill="#10B981" />
                   <line x1="102" y1="104" x2="100" y2="128" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
                   <line x1="110" y1="104" x2="112" y2="128" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
-
-                  {/* Center Leader Figure with Arms Crossed */}
                   <circle cx="80" cy="48" r="12" fill="#FBBF24" />
                   <path d="M68 44 C70 30 92 30 94 44 C90 36 72 36 68 44 Z" fill="#1E293B" />
                   <path d="M68 64 L92 64 L96 106 L64 106 Z" fill="#E11D48" />
@@ -199,7 +175,7 @@ export default function AboutPage() {
       </section>
 
       {/* 3. OUR STORY SECTION */}
-      <section className="section-pad bg-white" id="our-story">
+      <section className="section-pad bg-cream" id="our-story" style={{ backgroundColor: "#FAF8F5" }}>
         <div className="about-container">
           <div className="story-split-grid">
             <div className="story-split-copy">
@@ -232,37 +208,99 @@ export default function AboutPage() {
         </div>
       </section>
 
-
-
-      {/* 4. OUR DEDICATED TEAM & VOLUNTEERS */}
-      <section className="section-pad bg-cream" id="team">
+      {/* 4. EXACT CRY-STYLE LEADERSHIP & PEOPLE SECTION */}
+      <section className="section-pad cry-people-section" id="team" style={{ backgroundColor: "#FAF8F5" }}>
         <div className="about-container">
-          <div className="text-center mb-8">
-            <span className="mini-title">OUR PEOPLE</span>
-            <h2 className="section-heading">Meet Our <span className="yellow-hand">Dedicated Team</span> &amp; Volunteers</h2>
-            <p className="section-lead centered">
-              Meet the passionate ground leaders, organizers, and verified volunteers who make our daily mission possible across Maharashtra.
+          
+          {/* Header */}
+          <div className="text-center mb-12">
+            <span className="subpage-badge">OUR PEOPLE &amp; CHANGEMAKERS</span>
+            <h2 className="cry-wc-main-title">
+              The Dedicated Hearts <span className="cry-hand-gold">Behind The Mission</span>
+            </h2>
+            <div className="cry-wc-yellow-bar" />
+            <p className="cry-wc-lead-text">
+              Meet the visionary founder and passionate grassroots volunteers driving child rights, educational drives, and nutrition support across Maharashtra.
             </p>
           </div>
 
-          <div className="team-cards-grid">
-            {teamMembers.map((member) => (
-              <div key={member.id} className="team-id-card-v2">
-                <div
-                  className="team-id-card-img"
-                  style={{
-                    backgroundImage: `url(/images/team-sheet-${member.sheet}.jpg)`,
-                    backgroundPosition: `${member.bgX} ${member.bgY}`,
-                    backgroundSize: member.sheet === 1 ? "300% 300%" : "300% 200%",
-                    backgroundRepeat: "no-repeat",
-                  }}
-                />
+          {/* CRY-Style President Hero Showcase */}
+          <div className="cry-pres-hero-card mb-16">
+            <div className="cry-pres-grid">
+              
+              <div className="cry-pres-avatar-col">
+                <div className="cry-pres-avatar-frame">
+                  <img
+                    src={presidentData.image}
+                    alt={presidentData.name}
+                    className="cry-pres-avatar-img"
+                  />
+                  <div className="cry-pres-star-badge">
+                    ⭐ FOUNDER &amp; PRESIDENT
+                  </div>
+                </div>
+              </div>
+
+              <div className="cry-pres-info-col">
+                <div className="cry-pres-role-pill">LEADERSHIP &amp; GOVERNANCE</div>
+                <h3 className="cry-pres-title">{presidentData.name}</h3>
+                <span className="cry-pres-loc">📍 {presidentData.location}</span>
+                
+                <p className="cry-pres-bio-p">{presidentData.bio}</p>
+
+                <div className="cry-pres-quote-box">
+                  <span className="cry-quote-mark">“</span>
+                  <p>{presidentData.quote.replace(/[“”]/g, "")}</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Volunteers Section Divider */}
+          <div className="cry-vol-section-head text-center mb-10">
+            <span className="mini-title">GRASSROOTS CHANGEMAKERS</span>
+            <h3 className="cry-vol-main-title">
+              Our Active <span className="cry-hand-gold">Volunteers</span>
+            </h3>
+            <p className="cry-vol-lead">
+              The on-ground force leading school kit distributions, remedial classes, and nutrition outreach.
+            </p>
+          </div>
+
+          {/* 3x3 Symmetrical CRY-Style Volunteer Cards */}
+          <div className="cry-team-cards-grid">
+            {volunteerList.map((vol) => (
+              <div key={vol.name} className="cry-team-card-item">
+                <div className="cry-team-card-top-bar" />
+                
+                <div className="cry-team-avatar-wrapper">
+                  <div className="cry-team-avatar-ring">
+                    <img
+                      src={vol.image}
+                      alt={vol.name}
+                      className="cry-team-avatar-img"
+                      loading="lazy"
+                    />
+                  </div>
+                  <span className="cry-team-vol-pill">VOLUNTEER</span>
+                </div>
+
+                <div className="cry-team-card-body">
+                  <h4 className="cry-team-member-name">{vol.name}</h4>
+                  <span className="cry-team-loc-tag">📍 {vol.location}</span>
+                </div>
               </div>
             ))}
           </div>
 
-          {/* Official Registered Office & Motto Card */}
-          <div className="office-official-card mt-8">
+        </div>
+      </section>
+
+      {/* 5. OFFICIAL REGISTERED OFFICE & MOTTO */}
+      <section className="section-pad bg-cream" style={{ backgroundColor: "#FAF8F5" }}>
+        <div className="about-container">
+          <div className="office-official-card">
             <div className="office-card-inner">
               <div className="office-motto">
                 <h3>हर मदत एक नई उम्मीद</h3>
@@ -279,18 +317,26 @@ export default function AboutPage() {
                 </div>
 
                 <div className="office-info-block">
-                  <span className="o-icon">📞</span>
+                  <span className="o-icon">✉️</span>
                   <div>
-                    <strong>Official Helplines</strong>
-                    <p><a href="tel:+918356008675">+91 83560 08675</a> / <a href="tel:+918108362688">+91 81083 62688</a></p>
+                    <strong>Email Contact</strong>
+                    <p>kautikecharitable@gmail.com</p>
                   </div>
                 </div>
 
                 <div className="office-info-block">
-                  <span className="o-icon">✉️</span>
+                  <span className="o-icon">📞</span>
                   <div>
-                    <strong>Official Email Addresses</strong>
-                    <p><a href="mailto:kc.foundation2025@gmail.com">kc.foundation2025@gmail.com</a> / <a href="mailto:kautikecharitable@gmail.com">kautikecharitable@gmail.com</a></p>
+                    <strong>Helpline &amp; Contact</strong>
+                    <p>+91 810 836 2688</p>
+                  </div>
+                </div>
+
+                <div className="office-info-block">
+                  <span className="o-icon">🛡️</span>
+                  <div>
+                    <strong>Official Registration</strong>
+                    <p>Registered Non-Profit Charitable Organization · 80G &amp; 12A Certified · NITI Aayog Darpan</p>
                   </div>
                 </div>
               </div>
@@ -299,14 +345,16 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 5. CALL TO ACTION BANNER */}
+      {/* 6. CALL TO ACTION */}
       <section className="cry-cta-banner">
         <div className="cry-cta-inner">
-          <h2>Be a part of our journey</h2>
-          <p>Your contribution directly sponsors children&apos;s education, nutrition kits, and tree plantation drives across India.</p>
+          <h2>Be the reason a child stays in school today</h2>
+          <p>
+            Join hundreds of compassionate changemakers ensuring no child in Maharashtra is forced out of school into labour.
+          </p>
           <div className="cta-btn-group">
-            <a href="/donate" className="cry-yellow-btn">♥ Donate Now (80G Tax Exempt)</a>
-            <a href="/volunteer" className="cry-outline-btn">Join As A Volunteer</a>
+            <a href="/donate" className="cry-yellow-btn">♥ Donate Online (80G Tax Exempt)</a>
+            <a href="/volunteer" className="cry-outline-btn">Join Us as a Volunteer</a>
           </div>
         </div>
       </section>

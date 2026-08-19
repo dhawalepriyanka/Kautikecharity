@@ -317,17 +317,17 @@ export default function Home() {
 
       {/* 7. EXACT CRY.ORG STORIES & UPDATES PHOTO BANNER + YELLOW PAINT WAVE SECTION */}
       <section className="cry-stories-full-section" id="stories">
-        {/* Top Organic Paint Wave Transition (Removes Top Flat Line) */}
+        {/* Top Fluid Organic Watercolor Wave Transition */}
         <div className="cry-stories-top-paint-wave">
-          <svg className="cry-wave-svg" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+          <svg className="cry-wave-svg" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
             <path
-              d="M0,0 L1440,0 L1440,30 C1260,75 1080,15 900,60 C720,10 540,70 360,20 C180,65 0,25 0,30 Z"
+              d="M0,0 L1440,0 L1440,40 C1300,75 1160,20 1020,55 C880,90 740,30 600,65 C460,95 320,35 180,60 C100,75 40,30 0,45 Z"
               fill="#FAF8F5"
             />
           </svg>
         </div>
 
-        {/* Full-Bleed Photo Banner with Smiling Child */}
+        {/* Full-Bleed Photo Banner with Smiling Student */}
         <div className="cry-stories-photo-hero">
           <img
             src="/images/stories-banner.jpg"
@@ -444,24 +444,29 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 10. CRY.ORG TRUST BADGES BAR */}
-      <section className="cry-trust-bar">
-        <div className="cry-trust-item">
-          <div className="cry-trust-badge-icon yellow-heart">💛</div>
-          <div className="cry-trust-text">
-            All our efforts are made possible only because of your support
+      {/* 10. CRY.ORG PREMIUM TRUST BADGES BAR */}
+      <section className="cry-wc-trust-badges-section">
+        <div className="cry-trust-bar">
+          <div className="cry-trust-item">
+            <div className="cry-trust-badge-icon yellow-heart">💛</div>
+            <div className="cry-trust-text">
+              <h4 className="cry-trust-card-title">100% Impact Driven</h4>
+              <p className="cry-trust-card-desc">All our efforts are made possible only because of your support</p>
+            </div>
           </div>
-        </div>
-        <div className="cry-trust-item">
-          <div className="cry-trust-badge-icon yellow-doc">📋</div>
-          <div className="cry-trust-text">
-            Your donations are tax exempted under 80G of the Indian Income Tax Act
+          <div className="cry-trust-item">
+            <div className="cry-trust-badge-icon yellow-doc">📋</div>
+            <div className="cry-trust-text">
+              <h4 className="cry-trust-card-title">80G Tax Exemption</h4>
+              <p className="cry-trust-card-desc">Your donations are tax exempted under 80G of the Indian Income Tax Act</p>
+            </div>
           </div>
-        </div>
-        <div className="cry-trust-item">
-          <div className="cry-trust-badge-icon yellow-lock">🔒</div>
-          <div className="cry-trust-text">
-            Your donation transactions are completely safe and secure
+          <div className="cry-trust-item">
+            <div className="cry-trust-badge-icon yellow-lock">🔒</div>
+            <div className="cry-trust-text">
+              <h4 className="cry-trust-card-title">100% Safe &amp; Secure</h4>
+              <p className="cry-trust-card-desc">Your donation transactions are completely safe, encrypted and secure</p>
+            </div>
           </div>
         </div>
       </section>

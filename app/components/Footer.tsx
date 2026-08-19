@@ -38,6 +38,7 @@ export function Footer() {
           <ul>
             <li><a href="/what-we-do#education">Child Education & Digital Classrooms</a></li>
             <li><a href="/what-we-do#health">Health, Nutrition & Wellness</a></li>
+            <li><a href="/community-relief">Community Relief</a></li>
             <li><a href="/what-we-do#protection">Child Protection & Rights</a></li>
             <li><a href="/what-we-do#protection">Girl Child Empowerment</a></li>
             <li><a href="/what-we-do#plantation">Tree Plantation Drives</a></li>

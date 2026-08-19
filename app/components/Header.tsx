@@ -6,6 +6,12 @@ export function Header() {
       {/* 1. TOP UTILITY BAR */}
       <div className="utility-bar">
         <div className="utility-inner">
+          <div className="utility-brand">
+            <a href="/" className="utility-logo-link" aria-label="Kautike Charitable Foundation">
+              <img src="/kautike-logo.png" alt="Kautike Logo" className="utility-logo-img" />
+              <span>KAUTIKE CHARITABLE FOUNDATION</span>
+            </a>
+          </div>
           <div className="contact-links">
             <a href="mailto:kautikecharitable@gmail.com" aria-label="Email Kautike Charitable Foundation">
               ✉ kautikecharitable@gmail.com
@@ -23,18 +29,11 @@ export function Header() {
         </div>
       </div>
 
-      {/* 2. STICKY HEADER */}
+      {/* 2. STICKY HEADER (EXACT MOCKUP MATCH) */}
       <header className="site-header">
         <div className="site-header-container">
           <div className="site-header-left">
             <NavDropdown />
-            <a href="/" className="logo-badge" aria-label="Kautike Charitable Foundation Home">
-              <img src="/kautike-logo.png" alt="Kautike Foundation Logo" />
-              <div className="logo-text-wrap">
-                <strong>KAUTIKE</strong>
-                <span>Charitable Foundation</span>
-              </div>
-            </a>
           </div>
 
           <div className="site-header-right">

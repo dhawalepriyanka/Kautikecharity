@@ -3,6 +3,7 @@ import { URL } from "node:url";
 
 const routes = [
   { path: "/", output: "../dist/client/index.html" },
+  { path: "/admin", output: "../dist/client/admin/index.html" },
   { path: "/about", output: "../dist/client/about/index.html" },
   { path: "/why-children", output: "../dist/client/why-children/index.html" },
   { path: "/what-we-do", output: "../dist/client/what-we-do/index.html" },

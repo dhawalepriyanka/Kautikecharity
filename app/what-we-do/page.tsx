@@ -75,11 +75,37 @@ export default function WhatWeDoPage() {
         </div>
       </section>
 
-      {/* Focus Area 3: Child Protection & Rights */}
-      <section className="section-pad bg-white" id="protection">
+      {/* Focus Area 3: Community Relief */}
+      <section className="section-pad bg-white" id="community">
         <div className="focus-detail-grid">
           <div className="focus-detail-copy">
             <span className="focus-label">PILLAR 03</span>
+            <h2>Community Relief &amp; Essential Support</h2>
+            <p className="focus-lead">
+              Responding with dignity when families need practical support most — at school, at home, and during local emergencies.
+            </p>
+            <ul className="focus-bullets">
+              <li><strong>School Supply Drives:</strong> Distributing notebooks, pencils, learning materials and hygiene essentials so children can continue their education with confidence.</li>
+              <li><strong>Family Relief Kits:</strong> Supporting vulnerable households with essential food, sanitation and daily-use supplies during difficult periods.</li>
+              <li><strong>Community Service Days:</strong> Working with volunteers, schools and local groups to identify immediate needs and deliver help directly.</li>
+            </ul>
+            <div className="focus-stats-mini">
+              <div><strong>Direct</strong><span>Community Support</span></div>
+              <div><strong>Dignified</strong><span>Relief for Families</span></div>
+            </div>
+            <a href="/donate" className="cry-yellow-btn">Support Community Relief</a>
+          </div>
+          <div className="focus-detail-image" style={{ backgroundImage: `url(/images/stories/august-2026/field-story-03.jpeg)` }}>
+            <div className="image-overlay-badge">Community Care in Action</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Focus Area 4: Child Protection & Rights */}
+      <section className="section-pad bg-cream" id="protection">
+        <div className="focus-detail-grid">
+          <div className="focus-detail-copy">
+            <span className="focus-label">PILLAR 04</span>
             <h2>Child Protection, Anti-Labour &amp; Girl Dignity</h2>
             <p className="focus-lead">
               Creating safe, abuse-free community environments where children can play, learn, and grow fearlessly.
@@ -101,14 +127,14 @@ export default function WhatWeDoPage() {
         </div>
       </section>
 
-      {/* Focus Area 4: Tree Plantation & Environment */}
-      <section className="section-pad bg-cream" id="plantation">
+      {/* Focus Area 5: Tree Plantation & Environment */}
+      <section className="section-pad bg-white" id="plantation">
         <div className="focus-detail-grid reverse">
           <div className="focus-detail-image" style={{ backgroundImage: `url(/images/plantation-campaign.jpg)` }}>
             <div className="image-overlay-badge">🌱 Green India Initiative</div>
           </div>
           <div className="focus-detail-copy">
-            <span className="focus-label">PILLAR 04</span>
+            <span className="focus-label">PILLAR 05</span>
             <h2>Tree Plantation Drives &amp; Ecological Restoration</h2>
             <p className="focus-lead">
               Connecting child welfare to climate action by planting native trees, greening school campuses, and replenishing groundwater.

@@ -82,28 +82,7 @@ export default function FaqsPage() {
         </div>
       </section>
 
-      {/* Bank Account Direct Donation Box */}
-      <section className="section-pad bg-cream">
-        <div className="about-container">
-          <div className="bank-details-box">
-            <div className="text-center mb-6">
-              <span className="mini-title">DIRECT BANK TRANSFER DETAILS</span>
-              <h2>Bank Account for RTGS / NEFT / IMPS</h2>
-            </div>
-            <div className="bank-grid">
-              <div><strong>Account Name:</strong> KAUTIKE CHARITABLE FOUNDATION</div>
-              <div><strong>Account Number:</strong> 50200084729104</div>
-              <div><strong>IFSC Code:</strong> HDFC0000240</div>
-              <div><strong>Bank Name:</strong> HDFC Bank Ltd.</div>
-              <div><strong>Account Type:</strong> Current Account</div>
-              <div><strong>Branch:</strong> Mumbai, Maharashtra</div>
-            </div>
-            <p className="bank-note">
-              * Note: Please email your transfer receipt/UTR and PAN card copy to <strong>kautikecharitable@gmail.com</strong> to receive your 80G tax certificate.
-            </p>
-          </div>
-        </div>
-      </section>
+
 
       {/* CTA */}
       <section className="cry-cta-banner">

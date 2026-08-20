@@ -105,37 +105,160 @@ app.get("/api/donations/:id", adminOnly, async (request, response) => {
 
 app.post("/api/contact", async (request, response) => {
   const { name, email, phone, subject = "General inquiry", message } = request.body ?? {};
-  if (!name?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email?.trim() ?? "") || !message?.trim()) return response.status(400).json({ message: "Please enter a valid name, email, and message." });
+  if (!name?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email?.trim() ?? "") || !message?.trim()) {
+    return response.status(400).json({ message: "Please enter a valid name, email, and message." });
+  }
+
+  const newMsg = {
+    id: "msg-" + Date.now(),
+    name: name.trim().slice(0, 120),
+    email: email.trim().toLowerCase(),
+    phone: phone?.trim().slice(0, 30) || null,
+    message: `Subject: ${subject}\n\n${message.trim().slice(0, 5000)}`,
+    created_at: new Date().toISOString(),
+    status: "Unread",
+  };
+
+  // 1. Always save to JSON file fallback
+  const existingMsgs = readJsonFile("messages.json", []);
+  writeJsonFile("messages.json", [newMsg, ...existingMsgs]);
+
+  // 2. Try PostgreSQL if available
   try {
-    await pool.query("INSERT INTO contact_messages (name, email, phone, message) VALUES ($1, $2, $3, $4)", [name.trim().slice(0, 120), email.trim().toLowerCase(), phone?.trim().slice(0, 30) || null, `Subject: ${subject}\n\n${message.trim().slice(0, 5000)}`]);
-    response.status(201).json({ message: "Message saved." });
-  } catch (error) { console.error("Unable to save contact message", error); response.status(500).json({ message: "We could not save your message right now." }); }
+    await pool.query("INSERT INTO contact_messages (name, email, phone, message) VALUES ($1, $2, $3, $4)", [newMsg.name, newMsg.email, newMsg.phone, newMsg.message]);
+  } catch (err) {
+    console.log("DB message save fallback used:", err.message);
+  }
+
+  response.status(201).json({ ok: true, message: "Message saved successfully.", data: newMsg });
 });
 
 app.post("/api/admin/login", adminOnly, (_request, response) => response.json({ ok: true }));
 
 app.get("/api/admin/overview", adminOnly, async (_request, response) => {
+  const fileMsgs = readJsonFile("messages.json", []);
   try {
     const [donations, messages] = await Promise.all([
       pool.query("SELECT COALESCE(SUM(amount_inr) FILTER (WHERE status = 'paid'), 0)::int AS total_paid, COUNT(*) FILTER (WHERE status = 'paid')::int AS paid_count, COUNT(*) FILTER (WHERE status = 'pending')::int AS pending_count FROM donation_intents"),
       pool.query("SELECT COUNT(*)::int AS count FROM contact_messages"),
     ]);
-    response.json({ ...donations.rows[0], message_count: messages.rows[0].count });
-  } catch (error) { console.error("Unable to load admin overview", error); response.status(500).json({ message: "Unable to load dashboard data." }); }
+    response.json({ ...donations.rows[0], message_count: Math.max(messages.rows[0]?.count || 0, fileMsgs.length) });
+  } catch (error) {
+    response.json({ total_paid: 0, paid_count: 0, pending_count: 0, message_count: fileMsgs.length });
+  }
 });
 
 app.get("/api/admin/donations", adminOnly, async (_request, response) => {
   try {
     const result = await pool.query("SELECT id, donor_name, email, amount_inr, campaign, status, created_at FROM donation_intents ORDER BY created_at DESC LIMIT 100");
     response.json(result.rows);
-  } catch (error) { console.error("Unable to load donations", error); response.status(500).json({ message: "Unable to load donations." }); }
+  } catch (error) {
+    response.json([]);
+  }
 });
 
 app.get("/api/admin/messages", adminOnly, async (_request, response) => {
+  const fileMsgs = readJsonFile("messages.json", []);
   try {
     const result = await pool.query("SELECT id, name, email, phone, message, created_at FROM contact_messages ORDER BY created_at DESC LIMIT 100");
-    response.json(result.rows);
-  } catch (error) { console.error("Unable to load messages", error); response.status(500).json({ message: "Unable to load messages." }); }
+    if (result.rows && result.rows.length > 0) {
+      // Merge unique
+      const ids = new Set(result.rows.map(r => r.id));
+      const combined = [...result.rows, ...fileMsgs.filter(m => !ids.has(m.id))];
+      return response.json(combined);
+    }
+  } catch (_) {}
+  response.json(fileMsgs);
+});
+
+app.delete("/api/admin/messages/:id", adminOnly, async (request, response) => {
+  const { id } = request.params;
+  const fileMsgs = readJsonFile("messages.json", []);
+  const filtered = fileMsgs.filter((m) => m.id !== id);
+  writeJsonFile("messages.json", filtered);
+  try {
+    await pool.query("DELETE FROM contact_messages WHERE id = $1", [id]);
+  } catch (_) {}
+  response.json({ ok: true, message: "Message deleted." });
+});
+
+import fs from "node:fs";
+import path from "node:path";
+
+const dataDir = path.resolve("server/data");
+
+function readJsonFile(filename, fallback) {
+  try {
+    const filePath = path.join(dataDir, filename);
+    if (fs.existsSync(filePath)) {
+      return JSON.parse(fs.readFileSync(filePath, "utf8"));
+    }
+  } catch (err) {
+    console.error("Error reading " + filename, err);
+  }
+  return fallback;
+}
+
+function writeJsonFile(filename, data) {
+  try {
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+    fs.writeFileSync(path.join(dataDir, filename), JSON.stringify(data, null, 2), "utf8");
+    return true;
+  } catch (err) {
+    console.error("Error writing " + filename, err);
+    return false;
+  }
+}
+
+app.get("/api/settings", (_req, res) => {
+  res.json(readJsonFile("settings.json", null));
+});
+
+app.post("/api/admin/settings", adminOnly, (req, res) => {
+  const ok = writeJsonFile("settings.json", req.body);
+  if (ok) res.json({ ok: true, message: "Settings saved successfully." });
+  else res.status(500).json({ message: "Failed to save settings to server." });
+});
+
+app.get("/api/stories", (_req, res) => {
+  res.json(readJsonFile("stories.json", []));
+});
+
+app.post("/api/admin/stories", adminOnly, (req, res) => {
+  const ok = writeJsonFile("stories.json", req.body);
+  if (ok) res.json({ ok: true, message: "Stories saved successfully." });
+  else res.status(500).json({ message: "Failed to save stories to server." });
+});
+
+app.get("/api/volunteers", (_req, res) => {
+  res.json(readJsonFile("volunteers.json", []));
+});
+
+app.post("/api/admin/volunteers", adminOnly, (req, res) => {
+  const ok = writeJsonFile("volunteers.json", req.body);
+  if (ok) res.json({ ok: true, message: "Volunteers saved successfully." });
+  else res.status(500).json({ message: "Failed to save volunteers to server." });
+});
+
+app.get("/api/pages", (_req, res) => {
+  res.json(readJsonFile("pages.json", []));
+});
+
+app.post("/api/admin/pages", adminOnly, (req, res) => {
+  const ok = writeJsonFile("pages.json", req.body);
+  if (ok) res.json({ ok: true, message: "Pages saved successfully." });
+  else res.status(500).json({ message: "Failed to save pages to server." });
+});
+
+app.get("/api/news", (_req, res) => {
+  res.json(readJsonFile("news.json", []));
+});
+
+app.post("/api/admin/news", adminOnly, (req, res) => {
+  const ok = writeJsonFile("news.json", req.body);
+  if (ok) res.json({ ok: true, message: "News articles saved successfully." });
+  else res.status(500).json({ message: "Failed to save news articles to server." });
 });
 
 app.listen(port, () => console.log(`Kautike API listening on http://localhost:${port}`));
+

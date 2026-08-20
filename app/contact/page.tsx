@@ -17,13 +17,38 @@ export default function ContactPage() {
 
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setSent(true);
-    }, 600);
+
+    const newMsg = {
+      id: "msg-" + Date.now(),
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      message: `Subject: ${form.subject}\n\n${form.message}`,
+      created_at: new Date().toISOString(),
+      status: "Unread",
+    };
+
+    // 1. Save to local storage for immediate sync across tabs
+    try {
+      const saved = localStorage.getItem("kautike_admin_messages");
+      const currentList = saved ? JSON.parse(saved) : [];
+      localStorage.setItem("kautike_admin_messages", JSON.stringify([newMsg, ...currentList]));
+    } catch (_) {}
+
+    // 2. Post to API server
+    try {
+      await fetch("http://localhost:4000/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+    } catch (_) {}
+
+    setSubmitting(false);
+    setSent(true);
   };
 
   return (
@@ -85,8 +110,8 @@ export default function ContactPage() {
                 </div>
                 <h3>Email Inquiries</h3>
                 <p>Send your queries, donation receipts, or proposal documents.</p>
-                <a href="mailto:kautikecharitable@gmail.com" className="contact-action-link">
-                  kautikecharitable@gmail.com ➔
+                <a href="mailto:kc.chfoundation2025@gmail.com" className="contact-action-link">
+                  kc.chfoundation2025@gmail.com ➔
                 </a>
               </div>
 
@@ -185,7 +210,6 @@ export default function ContactPage() {
                         <input
                           type="text"
                           required
-                          placeholder="e.g. Nilesh Patil"
                           value={form.name}
                           onChange={(e) => setForm({ ...form, name: e.target.value })}
                           className="form-input-field"
@@ -198,7 +222,6 @@ export default function ContactPage() {
                           <input
                             type="email"
                             required
-                            placeholder="e.g. nilesh@gmail.com"
                             value={form.email}
                             onChange={(e) => setForm({ ...form, email: e.target.value })}
                             className="form-input-field"
@@ -210,7 +233,6 @@ export default function ContactPage() {
                           <input
                             type="tel"
                             required
-                            placeholder="e.g. 9820012345"
                             value={form.phone}
                             onChange={(e) => setForm({ ...form, phone: e.target.value })}
                             className="form-input-field"
@@ -238,7 +260,6 @@ export default function ContactPage() {
                         <textarea
                           required
                           rows={4}
-                          placeholder="Please share details of your query, request, or feedback..."
                           value={form.message}
                           onChange={(e) => setForm({ ...form, message: e.target.value })}
                           className="form-input-field"

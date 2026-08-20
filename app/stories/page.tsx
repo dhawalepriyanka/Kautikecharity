@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { FloatingActions } from "../components/FloatingActions";
 
-const mediaClippings = [
+const defaultMediaClippings = [
   {
     id: "news-lokmat",
     publication: "Lokmat (लोकमत)",
@@ -121,7 +121,24 @@ const mediaClippings = [
 ];
 
 export default function StoriesPage() {
+  const [mediaClippings, setMediaClippings] = useState(defaultMediaClippings);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("kautike_admin_news");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) setMediaClippings(parsed);
+      }
+      fetch("http://localhost:4000/api/news")
+        .then((res) => res.json())
+        .then((data) => {
+          if (Array.isArray(data) && data.length > 0) setMediaClippings(data);
+        })
+        .catch(() => {});
+    } catch (_) {}
+  }, []);
 
   return (
     <main className="page-fade-in" id="top">

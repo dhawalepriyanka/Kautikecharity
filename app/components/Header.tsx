@@ -1,6 +1,41 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { NavDropdown } from "./NavDropdown";
 
+const DEFAULT_SETTINGS = {
+  phone: "+91 810 836 2688",
+  email: "kc.chfoundation2025@gmail.com",
+};
+
 export function Header() {
+  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("kautike_admin_personal");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setSettings({
+          phone: parsed.phone || DEFAULT_SETTINGS.phone,
+          email: parsed.email || DEFAULT_SETTINGS.email,
+        });
+      }
+
+      fetch("http://localhost:4000/api/settings")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && (data.email || data.phone)) {
+            setSettings({
+              phone: data.phone || DEFAULT_SETTINGS.phone,
+              email: data.email || DEFAULT_SETTINGS.email,
+            });
+          }
+        })
+        .catch(() => {});
+    } catch (_) {}
+  }, []);
+
   return (
     <>
       {/* 1. TOP UTILITY BAR */}
@@ -13,11 +48,11 @@ export function Header() {
             </a>
           </div>
           <div className="contact-links">
-            <a href="mailto:kautikecharitable@gmail.com" aria-label="Email Kautike Charitable Foundation">
-              ✉ kautikecharitable@gmail.com
+            <a href={`mailto:${settings.email}`} aria-label="Email Kautike Charitable Foundation">
+              ✉ {settings.email}
             </a>
-            <a href="tel:+918108362688" aria-label="Call Kautike Charitable Foundation">
-              📞 +91 810 836 2688
+            <a href={`tel:${settings.phone.replace(/[^0-9+]/g, "")}`} aria-label="Call Kautike Charitable Foundation">
+              📞 {settings.phone}
             </a>
           </div>
           <div className="socials">
@@ -46,4 +81,3 @@ export function Header() {
     </>
   );
 }
-

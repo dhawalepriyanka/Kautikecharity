@@ -1,13 +1,11 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { FloatingActions } from "../components/FloatingActions";
 
-export const metadata = {
-  title: "About Us | Our Vision & Mission · Kautike Charitable Foundation",
-  description: "Discover Kautike Charitable Foundation's vision, mission, story, core values, and grassroots team working for child rights and environmental care across India.",
-};
-
-const presidentData = {
+const defaultPresidentData = {
   name: "Nilesh Kute",
   role: "President & Founder",
   image: "/images/team/nilesh-kute.png",
@@ -16,7 +14,7 @@ const presidentData = {
   quote: "“Every child deserves the dignity of education, nutritious food, and an environment that fosters hope and dreams.”",
 };
 
-const volunteerList = [
+const defaultVolunteers = [
   { name: "Ashish Mishra", role: "Volunteer", image: "/images/team/ashish-mishra.png", location: "Panvel, Raigad" },
   { name: "Abhinay Singh", role: "Volunteer", image: "/images/team/abhinay-singh-hd.png", location: "Mumbai & Raigad" },
   { name: "Yogesh Shinde", role: "Volunteer", image: "/images/team/yogesh-shinde.png", location: "Maharashtra" },
@@ -29,6 +27,82 @@ const volunteerList = [
 ];
 
 export default function AboutPage() {
+  const [volunteers, setVolunteers] = useState(defaultVolunteers);
+  const [president, setPresident] = useState(defaultPresidentData);
+  const [contactInfo, setContactInfo] = useState({
+    email: "kc.chfoundation2025@gmail.com",
+    phone: "+91 810 836 2688",
+    address: "Office No. A-1, D'Souza Sadan, Lokmanya Tilak Nagar, 90 Feet Road, Sakinaka, Mumbai - 400 072",
+  });
+
+  useEffect(() => {
+    try {
+      // 1. Load from localStorage for instantaneous updates in same browser
+      const savedVols = localStorage.getItem("kautike_admin_volunteers");
+      if (savedVols) {
+        const parsed = JSON.parse(savedVols);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setVolunteers(parsed);
+        }
+      }
+
+      const savedPersonal = localStorage.getItem("kautike_admin_personal");
+      if (savedPersonal) {
+        const p = JSON.parse(savedPersonal);
+        if (p.presidentName) {
+          setPresident({
+            name: p.presidentName,
+            role: p.presidentRole || "President & Founder",
+            image: p.presidentImage || "/images/team/nilesh-kute.png",
+            location: p.presidentLocation || "Maharashtra, India",
+            bio: p.presidentBio || defaultPresidentData.bio,
+            quote: p.presidentQuote || defaultPresidentData.quote,
+          });
+        }
+        if (p.email || p.phone) {
+          setContactInfo({
+            email: p.email || "kc.chfoundation2025@gmail.com",
+            phone: p.phone || "+91 810 836 2688",
+            address: p.address || contactInfo.address,
+          });
+        }
+      }
+
+      // 2. Fetch from backend API
+      fetch("http://localhost:4000/api/volunteers")
+        .then((res) => res.json())
+        .then((data) => {
+          if (Array.isArray(data) && data.length > 0) {
+            setVolunteers(data);
+          }
+        })
+        .catch(() => {});
+
+      fetch("http://localhost:4000/api/settings")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.presidentName) {
+            setPresident({
+              name: data.presidentName,
+              role: data.presidentRole || "President & Founder",
+              image: data.presidentImage || "/images/team/nilesh-kute.png",
+              location: data.presidentLocation || "Maharashtra, India",
+              bio: data.presidentBio || defaultPresidentData.bio,
+              quote: data.presidentQuote || defaultPresidentData.quote,
+            });
+            if (data.email || data.phone) {
+              setContactInfo({
+                email: data.email || "kc.chfoundation2025@gmail.com",
+                phone: data.phone || "+91 810 836 2688",
+                address: data.address || contactInfo.address,
+              });
+            }
+          }
+        })
+        .catch(() => {});
+    } catch (_) {}
+  }, []);
+
   return (
     <main className="page-fade-in bg-cream" id="top" style={{ backgroundColor: "#FAF8F5" }}>
       <Header />
@@ -48,105 +122,87 @@ export default function AboutPage() {
         </div>
 
         <div className="cry-vision-banner-wrap">
-          {/* Top Fluid Organic Watercolor Wave */}
+          {/* Top Sharp Criss-Cross Zigzag Cutout */}
           <div className="cry-vision-top-wave">
             <svg className="cry-wave-svg" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
               <path
-                d="M0,0 L1440,0 L1440,40 C1300,75 1160,20 1020,55 C880,90 740,30 600,65 C460,95 320,35 180,60 C100,75 40,30 0,45 Z"
+                d="M0,0 L1440,0 L1440,0 L1200,55 L960,10 L720,60 L480,8 L240,58 L0,5 Z"
                 fill="#FAF8F5"
               />
             </svg>
           </div>
 
-          <img 
-            src="/images/about-vision-user-photo.jpg" 
-            alt="Kautike Foundation Vision - Indian School Girls Sharing Midday Snack" 
+          <img
+            src="/images/about-vision-user-photo.jpg"
+            alt="School children in uniform receiving nutrition snack boxes"
             className="cry-vision-img"
           />
 
-          {/* Bottom Golden Watercolor Wave */}
-          <div className="cry-vision-bottom-wave">
-            <svg className="cry-wave-svg" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+          {/* Bottom Sharp Criss-Cross Yellow Zigzag */}
+          <div className="cry-paint-splatter-wave">
+            <svg viewBox="0 0 1440 90" preserveAspectRatio="none" style={{ position: "absolute", bottom: 0, left: 0, width: "100%", height: "100%", display: "block" }}>
               <path
-                d="M0,45 C150,95 320,15 480,65 C640,115 800,20 960,70 C1120,110 1280,35 1440,60 L1440,120 L0,120 Z"
-                fill="#FAF8F5"
+                d="M0,90 L0,55 L240,10 L480,62 L720,8 L960,60 L1200,12 L1440,55 L1440,90 Z"
+                fill="#F5A623"
+              />
+              <path
+                d="M0,90 L0,68 L240,28 L480,75 L720,25 L960,75 L1200,30 L1440,68 L1440,90 Z"
+                fill="#FFC107"
+                opacity="0.6"
               />
             </svg>
           </div>
         </div>
       </section>
 
-      {/* 2. THREE CORE MISSION PILLARS */}
-      <section className="cry-mission-paint-section">
-        <div className="cry-mission-paint-inner">
-          <div className="text-center mb-10">
-            <span className="mini-title">OUR THREE PILLARS</span>
-            <h2 className="cry-mission-title">
-              What Drives Our <span className="cry-hand-gold">Mission</span>
+      {/* 2. CRY-STYLE 3-PILLAR GOALS */}
+      <section className="section-pad bg-cream" style={{ backgroundColor: "#FAF8F5" }}>
+        <div className="about-container">
+          <div className="text-center mb-12">
+            <span className="subpage-badge">OUR CORE PILLARS</span>
+            <h2 className="cry-wc-main-title">
+              What Guides <span className="cry-hand-gold">Our Mission</span>
             </h2>
-            <div className="cry-yellow-line" style={{ margin: "14px auto 24px" }} />
+            <div className="cry-wc-yellow-bar" />
           </div>
 
           <div className="cry-3cards-grid">
-            
-            {/* Card 1: Taking Responsibility */}
-            <div className="cry-3card-item">
-              <div className="cry-3card-art art-responsibility">
-                <svg viewBox="0 0 160 160" fill="none" className="cry-card-svg">
-                  <circle cx="80" cy="80" r="60" fill="#FEF3C7" />
-                  <ellipse cx="80" cy="130" rx="46" ry="8" fill="#E2E8F0" opacity="0.6" />
-                  <path d="M78 68 C100 68 125 80 135 110 C120 105 100 115 82 92 Z" fill="#E11D48" />
-                  <path d="M68 66 L92 66 L98 108 L62 108 Z" fill="#2563EB" />
-                  <polygon points="68,66 92,66 80,82" fill="#1D4ED8" />
-                  <circle cx="80" cy="46" r="14" fill="#FBBF24" />
-                  <path d="M66 42 C68 28 92 28 94 42 C90 34 70 34 66 42 Z" fill="#1E293B" />
-                  <path d="M68 72 L54 84 L64 96" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M92 72 L106 84 L96 96" stroke="#FBBF24" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-                  <line x1="72" y1="108" x2="72" y2="134" stroke="#1E293B" strokeWidth="6" strokeLinecap="round" />
-                  <line x1="88" y1="108" x2="88" y2="134" stroke="#1E293B" strokeWidth="6" strokeLinecap="round" />
+            <div className="cry-3card">
+              <div className="cry-3card-art-wrap">
+                <svg className="cry-3card-svg" viewBox="0 0 160 140" fill="none" aria-hidden="true">
+                  <circle cx="80" cy="70" r="56" fill="#FFF8E7" />
+                  <circle cx="80" cy="50" r="22" fill="#FBBF24" />
+                  <path d="M60 92 C60 76 100 76 100 92 Z" fill="#F97316" />
+                  <path d="M50 108 C50 88 110 88 110 108 Z" fill="#0EA5E9" />
+                  <line x1="80" y1="92" x2="80" y2="124" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
+                  <line x1="68" y1="124" x2="92" y2="124" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
                 </svg>
               </div>
-              <h3 className="cry-3card-name">Taking Responsibility</h3>
+              <h3 className="cry-3card-name">Opportunity &amp; Potential</h3>
               <p className="cry-3card-desc">
-                To empower individuals and communities to take active ownership and responsibility for the situation of underprivileged Indian children.
+                To enable individuals and communities to discover and develop their potential for taking action to restore children&apos;s fundamental rights.
               </p>
             </div>
 
-            {/* Card 2: Mobilising Potential */}
-            <div className="cry-3card-item">
-              <div className="cry-3card-art art-potential">
-                <svg viewBox="0 0 160 160" fill="none" className="cry-card-svg">
-                  <circle cx="80" cy="80" r="60" fill="#FFFDF0" />
-                  <ellipse cx="80" cy="130" rx="50" ry="10" fill="#E2E8F0" opacity="0.6" />
-                  <circle cx="58" cy="52" r="10" fill="#FBBF24" />
-                  <path d="M52 48 C54 38 68 38 70 48 Z" fill="#1E293B" />
-                  <path d="M50 64 L68 64 L72 94 L48 94 Z" fill="#7C3AED" />
-                  <path d="M50 68 L36 50" stroke="#FBBF24" strokeWidth="4" strokeLinecap="round" />
-                  <path d="M68 68 L80 58" stroke="#FBBF24" strokeWidth="4" strokeLinecap="round" />
-                  <line x1="54" y1="94" x2="48" y2="124" stroke="#1E293B" strokeWidth="5" strokeLinecap="round" />
-                  <line x1="66" y1="94" x2="72" y2="120" stroke="#1E293B" strokeWidth="5" strokeLinecap="round" />
-                  <circle cx="106" cy="56" r="10" fill="#FBBF24" />
-                  <path d="M98 52 C100 42 114 42 118 52 Z" fill="#1E293B" />
-                  <path d="M96 70 C88 95 86 115 124 115 C130 95 120 70 106 70 Z" fill="#F59E0B" />
-                  <circle cx="100" cy="90" r="2" fill="#ffffff" />
-                  <circle cx="112" cy="86" r="2" fill="#ffffff" />
-                  <circle cx="106" cy="102" r="2.5" fill="#ffffff" />
-                  <path d="M98 72 L86 54" stroke="#FBBF24" strokeWidth="4" strokeLinecap="round" />
-                  <path d="M116 72 L128 58" stroke="#FBBF24" strokeWidth="4" strokeLinecap="round" />
-                  <line x1="102" y1="115" x2="100" y2="132" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
-                  <line x1="114" y1="115" x2="116" y2="132" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
+            <div className="cry-3card">
+              <div className="cry-3card-art-wrap">
+                <svg className="cry-3card-svg" viewBox="0 0 160 140" fill="none" aria-hidden="true">
+                  <circle cx="80" cy="70" r="56" fill="#F0FDF4" />
+                  <circle cx="80" cy="46" r="18" fill="#FBBF24" />
+                  <path d="M64 80 C64 68 96 68 96 80 Z" fill="#10B981" />
+                  <path d="M40 76 Q60 50 80 72 Q100 50 120 76 Q80 126 40 76 Z" fill="#EC4899" opacity="0.8" />
+                  <circle cx="80" cy="80" r="14" fill="#FBBF24" />
                 </svg>
               </div>
-              <h3 className="cry-3card-name">Mobilising Potential</h3>
+              <h3 className="cry-3card-name">Children at the Centre</h3>
               <p className="cry-3card-desc">
-                To motivate and mobilize individuals to act, both independently and collectively, to help children reach their full human potential.
+                To restore to children their rights to education, health, nutrition, and dignity through community participation and systemic advocacy.
               </p>
             </div>
 
-            {/* Card 3: Inspiring Collective Action */}
-            <div className="cry-3card-item">
-              <div className="cry-3card-art art-collective">
-                <svg viewBox="0 0 160 160" fill="none" className="cry-card-svg">
+            <div className="cry-3card">
+              <div className="cry-3card-art-wrap">
+                <svg className="cry-3card-svg" viewBox="0 0 160 140" fill="none" aria-hidden="true">
                   <circle cx="80" cy="80" r="60" fill="#FFF8E7" />
                   <ellipse cx="80" cy="132" rx="50" ry="10" fill="#E2E8F0" opacity="0.6" />
                   <circle cx="54" cy="62" r="8" fill="#FBBF24" />
@@ -231,8 +287,8 @@ export default function AboutPage() {
               <div className="cry-pres-avatar-col">
                 <div className="cry-pres-avatar-frame">
                   <img
-                    src={presidentData.image}
-                    alt={presidentData.name}
+                    src={president.image}
+                    alt={president.name}
                     className="cry-pres-avatar-img"
                   />
                   <div className="cry-pres-star-badge">
@@ -243,14 +299,14 @@ export default function AboutPage() {
 
               <div className="cry-pres-info-col">
                 <div className="cry-pres-role-pill">LEADERSHIP &amp; GOVERNANCE</div>
-                <h3 className="cry-pres-title">{presidentData.name}</h3>
-                <span className="cry-pres-loc">📍 {presidentData.location}</span>
+                <h3 className="cry-pres-title">{president.name}</h3>
+                <span className="cry-pres-loc">📍 {president.location}</span>
                 
-                <p className="cry-pres-bio-p">{presidentData.bio}</p>
+                <p className="cry-pres-bio-p">{president.bio}</p>
 
                 <div className="cry-pres-quote-box">
                   <span className="cry-quote-mark">“</span>
-                  <p>{presidentData.quote.replace(/[“”]/g, "")}</p>
+                  <p>{president.quote.replace(/[“”]/g, "")}</p>
                 </div>
               </div>
 
@@ -261,34 +317,49 @@ export default function AboutPage() {
           <div className="cry-vol-section-head text-center mb-10">
             <span className="mini-title">GRASSROOTS CHANGEMAKERS</span>
             <h3 className="cry-vol-main-title">
-              Our Active <span className="cry-hand-gold">Volunteers</span>
+              Our Active <span className="cry-hand-gold">Volunteers</span> ({volunteers.length})
             </h3>
             <p className="cry-vol-lead">
               The on-ground force leading school kit distributions, remedial classes, and nutrition outreach.
             </p>
           </div>
 
-          {/* 3x3 Symmetrical CRY-Style Volunteer Cards */}
+          {/* Dynamic Responsive CRY-Style Volunteer Cards */}
           <div className="cry-team-cards-grid">
-            {volunteerList.map((vol) => (
-              <div key={vol.name} className="cry-team-card-item">
+            {volunteers.map((vol, idx) => (
+              <div key={(vol as any).id || vol.name + idx} className="cry-team-card-item">
                 <div className="cry-team-card-top-bar" />
                 
                 <div className="cry-team-avatar-wrapper">
                   <div className="cry-team-avatar-ring">
-                    <img
-                      src={vol.image}
-                      alt={vol.name}
-                      className="cry-team-avatar-img"
-                      loading="lazy"
-                    />
+                    {vol.image ? (
+                      <img
+                        src={vol.image}
+                        alt={vol.name}
+                        className="cry-team-avatar-img"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          background: "#f1f5f9",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 32,
+                        }}
+                      >
+                        👤
+                      </div>
+                    )}
                   </div>
-                  <span className="cry-team-vol-pill">VOLUNTEER</span>
+                  <span className="cry-team-vol-pill">{vol.role ? vol.role.toUpperCase() : "VOLUNTEER"}</span>
                 </div>
 
                 <div className="cry-team-card-body">
                   <h4 className="cry-team-member-name">{vol.name}</h4>
-                  <span className="cry-team-loc-tag">📍 {vol.location}</span>
                 </div>
               </div>
             ))}
@@ -312,7 +383,7 @@ export default function AboutPage() {
                   <span className="o-icon">📍</span>
                   <div>
                     <strong>Head Office Address</strong>
-                    <p>Office No. A-1, D&apos;Souza Sadan, Lokmanya Tilak Nagar, 90 Feet Road, Sakinaka, Mumbai - 400 072</p>
+                    <p>{contactInfo.address}</p>
                   </div>
                 </div>
 
@@ -320,7 +391,7 @@ export default function AboutPage() {
                   <span className="o-icon">✉️</span>
                   <div>
                     <strong>Email Contact</strong>
-                    <p>kautikecharitable@gmail.com</p>
+                    <p>{contactInfo.email}</p>
                   </div>
                 </div>
 
@@ -328,7 +399,7 @@ export default function AboutPage() {
                   <span className="o-icon">📞</span>
                   <div>
                     <strong>Helpline &amp; Contact</strong>
-                    <p>+91 810 836 2688</p>
+                    <p>{contactInfo.phone}</p>
                   </div>
                 </div>
 

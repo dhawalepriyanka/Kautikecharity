@@ -244,7 +244,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <span className="node-label">Family</span>
-                <div className="node-tooltip tooltip-left">
+                <div className="node-tooltip tooltip-right">
                   Building awareness among parents &amp; guardians to change attitudes towards child education, health, and gender equality.
                 </div>
               </div>
@@ -265,8 +265,8 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* 3. Government (Bottom Right - Default Visible Matching CRY.org) */}
-              <div className="cry-orbit-node node-government active-tooltip-node">
+              {/* 3. Government (Bottom Right) */}
+              <div className="cry-orbit-node node-government">
                 <div className="node-icon-circle">
                   <svg viewBox="0 0 40 40" fill="none">
                     <path d="M8 16 L20 8 L32 16 L32 18 L8 18 Z" fill="#F5A623" />
@@ -277,8 +277,8 @@ export default function Home() {
                   </svg>
                 </div>
                 <span className="node-label">Government</span>
-                <div className="node-tooltip tooltip-left visible-card">
-                  Partnering with district, state and national level governments to strengthen policy and advocacy systems for children
+                <div className="node-tooltip tooltip-left">
+                  Partnering with district, state and national level governments to strengthen policy and advocacy systems for children.
                 </div>
               </div>
 
@@ -293,7 +293,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <span className="node-label">Public</span>
-                <div className="node-tooltip tooltip-left">
+                <div className="node-tooltip tooltip-right">
                   Sensitizing public society, youth, and volunteers to champion child rights and environmental care.
                 </div>
               </div>

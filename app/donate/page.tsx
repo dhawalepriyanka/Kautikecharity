@@ -22,7 +22,9 @@ interface PaymentSuccessData {
   receiptNumber: string;
 }
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+const apiUrl = typeof window !== "undefined" && window.location.hostname !== "localhost"
+  ? ""
+  : (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000");
 
 export default function DonatePage() {
   const [step, setStep] = useState<1 | 2>(1);

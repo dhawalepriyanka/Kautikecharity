@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import cors from "cors";
 import express from "express";
 import pg from "pg";
+import Razorpay from "razorpay";
 
 const { Pool } = pg;
 const app = express();
@@ -13,6 +14,9 @@ const adminPassword = process.env.ADMIN_PASSWORD;
 const razorpayKeyId = process.env.RAZORPAY_KEY_ID;
 const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET;
 const razorpayWebhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+const razorpay = razorpayKeyId && razorpayKeySecret
+  ? new Razorpay({ key_id: razorpayKeyId, key_secret: razorpayKeySecret })
+  : null;
 
 app.use(cors({ origin: process.env.CLIENT_ORIGIN ?? "http://localhost:3000" }));
 app.post("/api/donations/webhook", express.raw({ type: "application/json" }), async (request, response) => {
@@ -29,7 +33,9 @@ app.post("/api/donations/webhook", express.raw({ type: "application/json" }), as
     response.status(200).json({ ok: true });
   } catch (error) { console.error("Webhook processing failed", error); response.status(500).json({ message: "Webhook processing failed." }); }
 });
-app.use(express.json({ limit: "32kb" }));
+
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 function safeEqual(left, right) {
   const a = Buffer.from(left ?? "");
@@ -63,24 +69,26 @@ app.post("/api/donations", async (request, response) => {
 app.post("/api/donations/create-order", async (request, response) => {
   const { donorName, email, phone, amount, purpose = "General Donation" } = request.body ?? {};
   if (!donorName?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email?.trim() ?? "") || !/^[0-9+\-\s()]{8,20}$/.test(phone?.trim() ?? "") || !Number.isInteger(amount) || amount < 100 || amount > 1000000) return response.status(400).json({ message: "Enter a valid name, email, mobile number, and amount from ₹100 to ₹10,00,000." });
-  if (!razorpayKeyId || !razorpayKeySecret) return response.status(503).json({ message: "Razorpay Test Mode is not configured on the server." });
+  if (!razorpay) return response.status(503).json({ message: "Razorpay Test Mode is not configured on the server." });
   try {
     const created = await pool.query("INSERT INTO donation_intents (donor_name, email, phone, amount_inr, campaign) VALUES ($1,$2,$3,$4,$5) RETURNING id", [donorName.trim(), email.trim().toLowerCase(), phone.trim(), amount, String(purpose).slice(0, 180)]);
     const donationId = created.rows[0].id;
-    const result = await fetch("https://api.razorpay.com/v1/orders", { method: "POST", headers: { Authorization: `Basic ${Buffer.from(`${razorpayKeyId}:${razorpayKeySecret}`).toString("base64")}`, "Content-Type": "application/json" }, body: JSON.stringify({ amount: amount * 100, currency: "INR", receipt: `kcf_${donationId.replaceAll("-", "").slice(0, 28)}`, notes: { donation_id: donationId, purpose } }) });
-    const order = await result.json();
-    if (!result.ok || !order.id) throw new Error(order.error?.description ?? "Order creation failed");
+    const order = await razorpay.orders.create({ amount: amount * 100, currency: "INR", receipt: `kcf_${donationId.replaceAll("-", "").slice(0, 28)}`, notes: { donation_id: donationId, purpose } });
     await pool.query("UPDATE donation_intents SET razorpay_order_id = $1, updated_at = NOW() WHERE id = $2", [order.id, donationId]);
-    response.status(201).json({ donationId, orderId: order.id, amount: order.amount, currency: order.currency, keyId: razorpayKeyId });
-  } catch (error) { console.error("Razorpay order failed", error); response.status(502).json({ message: "Unable to start checkout. Please try again." }); }
+    response.status(201).json({ donationId, order_id: order.id, orderId: order.id, amount: order.amount, currency: order.currency, keyId: razorpayKeyId });
+  } catch (error) {
+    console.error("Razorpay order failed", error);
+    const status = error?.statusCode === 401 ? 401 : 502;
+    response.status(status).json({ message: status === 401 ? "Razorpay authentication failed. Check the server keys." : "Unable to start checkout. Please try again." });
+  }
 });
 
 app.post("/api/donations/verify-payment", async (request, response) => {
-  const { donationId, razorpay_payment_id: paymentId, razorpay_signature: signature } = request.body ?? {};
-  if (!donationId || !paymentId || !signature || !razorpayKeySecret) return response.status(400).json({ message: "Payment verification data is incomplete." });
+  const { donationId, razorpay_payment_id: paymentId, razorpay_order_id: orderId, razorpay_signature: signature } = request.body ?? {};
+  if (!donationId || !paymentId || !orderId || !signature || !razorpayKeySecret) return response.status(400).json({ message: "Payment verification data is incomplete." });
   try {
     const result = await pool.query("SELECT id, razorpay_order_id, amount_inr, status FROM donation_intents WHERE id = $1", [donationId]); const donation = result.rows[0];
-    if (!donation?.razorpay_order_id) return response.status(404).json({ message: "Donation order was not found." });
+    if (!donation?.razorpay_order_id || donation.razorpay_order_id !== orderId) return response.status(400).json({ message: "Payment order does not match this donation." });
     const expected = crypto.createHmac("sha256", razorpayKeySecret).update(`${donation.razorpay_order_id}|${paymentId}`).digest("hex");
     if (!safeEqual(signature, expected)) return response.status(400).json({ message: "Payment signature verification failed." });
     await pool.query("UPDATE donation_intents SET status = 'paid', razorpay_payment_id = $1, razorpay_signature = $2, updated_at = NOW() WHERE id = $3 AND status <> 'paid'", [paymentId, signature, donation.id]);
@@ -261,4 +269,3 @@ app.post("/api/admin/news", adminOnly, (req, res) => {
 });
 
 app.listen(port, () => console.log(`Kautike API listening on http://localhost:${port}`));
-

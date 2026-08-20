@@ -22,6 +22,8 @@ interface PaymentSuccessData {
   receiptNumber: string;
 }
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+
 export default function DonatePage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [citizenship, setCitizenship] = useState<"indian" | "nri">("indian");
@@ -47,6 +49,7 @@ export default function DonatePage() {
 
   const [loading, setLoading] = useState(false);
   const [successData, setSuccessData] = useState<PaymentSuccessData | null>(null);
+  const [checkoutError, setCheckoutError] = useState("");
 
   const effectiveAmount = customAmount ? parseInt(customAmount) || 0 : selectedAmount;
   const taxSavings = Math.round(effectiveAmount * 0.15); // Approx 50% deduction under Section 80G
@@ -82,6 +85,7 @@ export default function DonatePage() {
 
   const handleRazorpayPayment = async (e: React.FormEvent) => {
     e.preventDefault();
+    setCheckoutError("");
 
     if (!effectiveAmount || effectiveAmount < 100) {
       alert("Please enter a donation amount of at least ₹100.");
@@ -95,14 +99,20 @@ export default function DonatePage() {
 
     setLoading(true);
     try {
-      const createOrder = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/donations/create-order`, {
+      const createOrder = await fetch(`${apiUrl}/api/donations/create-order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ donorName: donor.name, email: donor.email, phone: donor.phone, amount: effectiveAmount, purpose: cause }),
       });
       const order = await createOrder.json().catch(() => ({}));
       
+      if (!createOrder.ok) throw new Error(order.message ?? "Unable to start secure checkout. Please try again.");
+      if (!order.keyId || !order.orderId || typeof window === "undefined" || !window.Razorpay) {
+        throw new Error("Secure checkout is still loading. Please wait a moment and try again.");
+      }
+
       if (createOrder.ok && order.keyId && order.orderId && typeof window !== "undefined" && window.Razorpay) {
+        let paymentCompleted = false;
         const options = {
           key: order.keyId,
           order_id: order.orderId,
@@ -117,42 +127,55 @@ export default function DonatePage() {
             contact: donor.phone,
           },
           theme: {
-            color: "#F5A623",
+            color: "#2F963A",
           },
-          handler: function (response: any) {
-            setSuccessData({
-              paymentId: response.razorpay_payment_id || "pay_" + Date.now().toString().slice(-8),
-              orderId: response.razorpay_order_id || order.orderId,
-              signature: response.razorpay_signature,
-              amount: effectiveAmount,
-              date: new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "medium" }).format(new Date()),
-              receiptNumber: "KCF-80G-" + Date.now().toString().slice(-6),
-            });
-            setSuccessViewTab("certificate");
+          handler: async function (response: any) {
+            paymentCompleted = true;
+            setLoading(true);
+            try {
+              const verifyResponse = await fetch(`${apiUrl}/api/donations/verify-payment`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ donationId: order.donationId, razorpay_payment_id: response.razorpay_payment_id, razorpay_order_id: response.razorpay_order_id, razorpay_signature: response.razorpay_signature }),
+              });
+              const verification = await verifyResponse.json().catch(() => ({}));
+              if (!verifyResponse.ok) throw new Error(verification.message ?? "We could not verify the payment.");
+              setSuccessData({
+                paymentId: verification.paymentId,
+                orderId: response.razorpay_order_id,
+                signature: response.razorpay_signature,
+                amount: effectiveAmount,
+                date: new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "medium" }).format(new Date()),
+                receiptNumber: `KCF-80G-${String(verification.id ?? Date.now()).slice(-6)}`,
+              });
+              setSuccessViewTab("certificate");
+            } catch (error) {
+              console.error("Razorpay payment verification failed", error);
+              setCheckoutError(error instanceof Error ? error.message : "We could not verify the payment.");
+            } finally {
+              setLoading(false);
+            }
+          },
+          modal: {
+            ondismiss: () => {
+              if (!paymentCompleted) {
+                void fetch(`${apiUrl}/api/donations/${order.donationId}/status`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: "cancelled" }) });
+                setCheckoutError("Payment was cancelled. You can try again whenever you are ready.");
+              }
+            },
           },
         };
         const rzp = new window.Razorpay(options);
-        rzp.open();
-      } else {
-        // Direct completion generating certificate of contribution
-        setSuccessData({
-          paymentId: "pay_rzp_" + Math.random().toString(36).substring(2, 10).toUpperCase(),
-          orderId: "order_" + Math.random().toString(36).substring(2, 10).toUpperCase(),
-          amount: effectiveAmount,
-          date: new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "medium" }).format(new Date()),
-          receiptNumber: "KCF-80G-" + Date.now().toString().slice(-6),
+        rzp.on("payment.failed", () => {
+          paymentCompleted = true;
+          void fetch(`${apiUrl}/api/donations/${order.donationId}/status`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: "failed" }) });
+          setCheckoutError("Payment failed. Please check your payment details and try again.");
         });
-        setSuccessViewTab("certificate");
+        rzp.open();
       }
     } catch (error) {
-      setSuccessData({
-        paymentId: "pay_rzp_" + Math.random().toString(36).substring(2, 10).toUpperCase(),
-        orderId: "order_" + Math.random().toString(36).substring(2, 10).toUpperCase(),
-        amount: effectiveAmount,
-        date: new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "medium" }).format(new Date()),
-        receiptNumber: "KCF-80G-" + Date.now().toString().slice(-6),
-      });
-      setSuccessViewTab("certificate");
+      console.error("Razorpay checkout could not be opened", error);
+      setCheckoutError(error instanceof Error ? error.message : "Unable to open secure checkout. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -605,6 +628,7 @@ export default function DonatePage() {
                         ? "Processing Payment..."
                         : `Donate ₹${effectiveAmount.toLocaleString("en-IN")} Now (80G Tax Benefit) ➔`}
                     </button>
+                    {checkoutError && <p role="alert" className="donation-checkout-error">{checkoutError}</p>}
                   </form>
                 )}
 

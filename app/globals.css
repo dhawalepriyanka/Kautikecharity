@@ -1907,11 +1907,17 @@ footer {
   margin-bottom: 6px;
 }
 
-.cry-mobile-category-links a {
+.cry-mobile-category-links a,
+.cry-mobile-category-links button {
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 8px;
   padding: 10px 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
   font-size: 13.5px;
   font-weight: 600;
   color: #334155;
@@ -1919,11 +1925,13 @@ footer {
   border-bottom: 1px dashed #E2E8F0;
 }
 
-.cry-mobile-category-links a:last-child {
+.cry-mobile-category-links a:last-child,
+.cry-mobile-category-links button:last-child {
   border-bottom: none;
 }
 
-.cry-mobile-category-links a .link-arrow {
+.cry-mobile-category-links a .link-arrow,
+.cry-mobile-category-links button .link-arrow {
   color: var(--gold-dark);
   font-size: 16px;
   font-weight: 900;
@@ -1935,6 +1943,7 @@ footer {
 
 .cry-mobile-donate-btn {
   display: flex;
+  width: 100%;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -1946,7 +1955,9 @@ footer {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 13px;
+  border: 0;
   border-radius: 30px;
+  cursor: pointer;
   text-decoration: none;
   box-shadow: 0 6px 18px rgba(245,166,35,0.45);
 }

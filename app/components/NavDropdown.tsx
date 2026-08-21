@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface DropdownMenu {
   title: string;
@@ -49,6 +49,7 @@ export const menus: DropdownMenu[] = [
 ];
 
 export function NavDropdown() {
+  const router = useRouter();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   // Show the programme pages as soon as the mobile menu opens.
@@ -56,6 +57,11 @@ export function NavDropdown() {
 
   const toggleCategory = (idx: number) => {
     setExpandedCategory((current) => (current === idx ? null : idx));
+  };
+
+  const navigateFromMobileMenu = (href: string) => {
+    setMobileOpen(false);
+    router.push(href);
   };
 
   return (
@@ -131,13 +137,14 @@ export function NavDropdown() {
                   {isExpanded && (
                     <div id={`mobile-category-${idx}`} className="cry-mobile-category-links">
                       {menu.links.map((link) => (
-                        <Link
-                          key={link.label} 
-                          href={link.href}
+                        <button
+                          key={link.label}
+                          type="button"
+                          onClick={() => navigateFromMobileMenu(link.href)}
                         >
                           <span className="link-arrow">›</span>
                           {link.label}
-                        </Link>
+                        </button>
                       ))}
                     </div>
                   )}
@@ -146,13 +153,13 @@ export function NavDropdown() {
             })}
 
             <div className="cry-mobile-nav-footer">
-              <a 
-                href="/donate" 
+              <button
+                type="button"
                 className="cry-mobile-donate-btn"
-                onClick={() => setMobileOpen(false)}
+                onClick={() => navigateFromMobileMenu("/donate")}
               >
                 ♥ DONATE NOW
-              </a>
+              </button>
             </div>
           </div>
         </div>

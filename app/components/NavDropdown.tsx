@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 interface DropdownMenu {
   title: string;
@@ -130,17 +131,13 @@ export function NavDropdown() {
                   {isExpanded && (
                     <div id={`mobile-category-${idx}`} className="cry-mobile-category-links">
                       {menu.links.map((link) => (
-                        <a 
+                        <Link
                           key={link.label} 
                           href={link.href}
-                          onClick={(event) => {
-                            event.preventDefault();
-                            window.location.assign(link.href);
-                          }}
                         >
                           <span className="link-arrow">›</span>
                           {link.label}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   )}

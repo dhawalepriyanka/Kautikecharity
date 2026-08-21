@@ -101,23 +101,23 @@ export default function DonatePage() {
 
     setLoading(true);
     try {
-      let order: any = null;
-      try {
-        const createOrder = await fetch(`${apiUrl}/api/donations/create-order`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ donorName: donor.name, email: donor.email, phone: donor.phone, amount: effectiveAmount, purpose: cause }),
-        });
-        if (createOrder.ok) {
-          order = await createOrder.json();
-        }
-      } catch (apiErr) {
-        console.log("Server API order creation fallback:", apiErr);
+      const createOrder = await fetch(`${apiUrl}/api/donations/create-order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ donorName: donor.name, email: donor.email, phone: donor.phone, amount: effectiveAmount, purpose: cause }),
+      });
+      const orderPayload = await createOrder.json().catch(() => null);
+      if (!createOrder.ok) {
+        throw new Error(orderPayload?.message || "Unable to start secure checkout. Please try again.");
       }
+      const order = orderPayload;
 
-      const activeKey = order?.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_SP2gZ469jWj3Uq";
+      const activeKey = order?.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
       const activeOrderId = order?.orderId || order?.order_id;
-      const donationId = order?.donationId || ("d_" + Date.now());
+      const donationId = order?.donationId;
+      if (!activeKey || !activeOrderId || !donationId) {
+        throw new Error("Secure checkout could not be prepared. Please try again.");
+      }
 
       if (typeof window === "undefined" || !window.Razorpay) {
         // Dynamically load Razorpay SDK script if not ready yet
@@ -155,28 +155,40 @@ export default function DonatePage() {
         handler: async function (response: any) {
           paymentCompleted = true;
           setLoading(true);
-          const payId = response?.razorpay_payment_id || ("pay_" + Date.now());
-          const ordId = response?.razorpay_order_id || activeOrderId || ("ord_" + Date.now());
-          const sig = response?.razorpay_signature || "sig_verified";
+          const payId = response?.razorpay_payment_id;
+          const ordId = response?.razorpay_order_id;
+          const sig = response?.razorpay_signature;
 
-          // 1. Try server verification if endpoint available
+          // A certificate is shown only after the server verifies Razorpay's signature.
           try {
-            await fetch(`${apiUrl}/api/donations/verify-payment`, {
+            const verification = await fetch(`${apiUrl}/api/donations/verify-payment`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ donationId, razorpay_payment_id: payId, razorpay_order_id: ordId, razorpay_signature: sig, amount: effectiveAmount }),
             });
-          } catch (_) {}
+            const verifiedPayment = await verification.json().catch(() => null);
+            if (!verification.ok || verifiedPayment?.status !== "SUCCESS") {
+              throw new Error(verifiedPayment?.message || "We could not verify this payment. Please contact us with your payment ID.");
+            }
 
-          // 2. Save donation record to localStorage for immediate admin sync
-          const receiptNum = `KCF-80G-${String(Date.now()).slice(-6)}`;
-          try {
+            const receiptNum = `KCF-80G-${String(Date.now()).slice(-6)}`;
+            setSuccessData({
+              paymentId: payId,
+              orderId: ordId,
+              signature: sig,
+              amount: verifiedPayment.amount || effectiveAmount,
+              date: new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "medium" }).format(new Date()),
+              receiptNumber: receiptNum,
+            });
+            setSuccessViewTab("certificate");
+
+            // Preserve a donor-facing record on this device after verification.
             const newRecord = {
               id: donationId,
               donor_name: donor.name,
               email: donor.email,
               phone: donor.phone,
-              amount_inr: effectiveAmount,
+              amount_inr: verifiedPayment.amount || effectiveAmount,
               campaign: cause,
               status: "paid",
               razorpay_payment_id: payId,
@@ -184,42 +196,33 @@ export default function DonatePage() {
             };
             const existingDonations = JSON.parse(localStorage.getItem("kautike_admin_donations") || "[]");
             localStorage.setItem("kautike_admin_donations", JSON.stringify([newRecord, ...existingDonations]));
-          } catch (_) {}
 
-          // 3. Dispatch Automated Email with Certificate & 80G Tax Receipt
-          try {
-            await fetch(`${apiUrl}/api/donations/send-email`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                donorName: donor.name,
-                email: donor.email,
-                phone: donor.phone,
-                amount: effectiveAmount,
-                pan: donor.pan,
-                cause: cause,
-                paymentId: payId,
-                receiptNumber: receiptNum,
-                certificateUrl: `${typeof window !== "undefined" ? window.location.origin : ""}/certificate?name=${encodeURIComponent(donor.name)}&amount=${effectiveAmount}`,
-              }),
-            });
-          } catch (mailErr) {
-            console.log("Email notification logged:", mailErr);
+            try {
+              await fetch(`${apiUrl}/api/donations/send-email`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  donorName: donor.name,
+                  email: donor.email,
+                  phone: donor.phone,
+                  amount: verifiedPayment.amount || effectiveAmount,
+                  pan: donor.pan,
+                  cause,
+                  paymentId: payId,
+                  receiptNumber: receiptNum,
+                  certificateUrl: `${window.location.origin}/certificate?name=${encodeURIComponent(donor.name)}&amount=${verifiedPayment.amount || effectiveAmount}`,
+                }),
+              });
+            } catch (mailErr) {
+              console.log("Email notification logged:", mailErr);
+            }
+          } catch (verificationError) {
+            console.error("Payment verification error", verificationError);
+            setCheckoutError(verificationError instanceof Error ? verificationError.message : "We could not verify this payment.");
+          } finally {
+            setLoading(false);
           }
-
-          setSuccessData({
-            paymentId: payId,
-            orderId: ordId,
-            signature: sig,
-            amount: effectiveAmount,
-            date: new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "medium" }).format(new Date()),
-            receiptNumber: receiptNum,
-          });
-          setSuccessViewTab("certificate");
-          setLoading(false);
-          try {
-            window.scrollTo({ top: 140, behavior: "smooth" });
-          } catch (_) {}
+          try { window.scrollTo({ top: 140, behavior: "smooth" }); } catch (_) {}
         },
         modal: {
           ondismiss: () => {

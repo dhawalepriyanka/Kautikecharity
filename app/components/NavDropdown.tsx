@@ -50,7 +50,8 @@ export const menus: DropdownMenu[] = [
 export function NavDropdown() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
+  // Show the programme pages as soon as the mobile menu opens.
+  const [expandedCategory, setExpandedCategory] = useState<number | null>(1);
 
   const toggleCategory = (idx: number) => {
     setExpandedCategory((current) => (current === idx ? null : idx));
@@ -62,7 +63,13 @@ export function NavDropdown() {
       <button 
         className="mobile-hamburger" 
         type="button"
-        onClick={() => setMobileOpen((current) => !current)}
+        onClick={() =>
+          setMobileOpen((current) => {
+            const next = !current;
+            if (next) setExpandedCategory(1);
+            return next;
+          })
+        }
         aria-label="Toggle mobile menu"
         aria-expanded={mobileOpen}
         aria-controls="mobile-navigation"

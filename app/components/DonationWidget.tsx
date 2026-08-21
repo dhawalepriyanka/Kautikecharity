@@ -18,8 +18,8 @@ export function DonationWidget() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (finalAmount < 100) {
-      setMessage({ text: "Please enter a donation amount of at least ₹100.", error: true });
+    if (finalAmount < 1) {
+      setMessage({ text: "Please enter a donation amount of at least ₹1.", error: true });
       return;
     }
 
@@ -48,15 +48,15 @@ export function DonationWidget() {
       }
 
       setMessage({
-        text: `Thank you, ${name}! Your ${freq === "monthly" ? "monthly" : "one-time"} donation pledge of ₹${finalAmount.toLocaleString("en-IN")} has been received. Our team will contact you shortly to complete payment.`,
+        text: `Thank you! Your donation intent of ₹${finalAmount.toLocaleString("en-IN")} has been registered.`,
       });
       setName("");
       setEmail("");
       setPhone("");
       setCustomAmount("");
-    } catch (err) {
+    } catch (error) {
       setMessage({
-        text: err instanceof Error ? err.message : "Something went wrong. Please try again.",
+        text: error instanceof Error ? error.message : "Could not complete donation.",
         error: true,
       });
     } finally {
@@ -65,34 +65,37 @@ export function DonationWidget() {
   }
 
   return (
-    <form className="donation-card" onSubmit={handleSubmit}>
-      <p className="card-title">Choose your contribution</p>
-
-      {/* Monthly / One-time toggle */}
-      <div className="toggle-group" role="radiogroup" aria-label="Donation frequency">
-        <button
-          type="button"
-          className={`toggle-btn ${freq === "monthly" ? "active" : ""}`}
-          onClick={() => setFreq("monthly")}
-        >
-          Give Monthly ♥
-        </button>
-        <button
-          type="button"
-          className={`toggle-btn ${freq === "once" ? "active" : ""}`}
-          onClick={() => setFreq("once")}
-        >
-          Give One-Time
-        </button>
+    <form className="donation-widget" onSubmit={handleSubmit} id="donate">
+      <div className="donation-widget-head">
+        <div>
+          <span className="mini-title">SUPPORT THE CAUSE</span>
+          <h2>Make a Contribution</h2>
+        </div>
+        <div className="donation-toggle">
+          <button
+            type="button"
+            className={freq === "monthly" ? "active" : ""}
+            onClick={() => setFreq("monthly")}
+          >
+            Monthly
+          </button>
+          <button
+            type="button"
+            className={freq === "once" ? "active" : ""}
+            onClick={() => setFreq("once")}
+          >
+            One-time
+          </button>
+        </div>
       </div>
 
-      {/* Preset Amounts */}
-      <div className="amounts-grid">
+      {/* Amount Buttons */}
+      <div className="donation-amounts">
         {amountPresets.map((val) => (
           <button
-            key={val}
             type="button"
-            className={`amount-btn ${!customAmount && amount === val ? "selected" : ""}`}
+            key={val}
+            className={amount === val && !customAmount ? "active" : ""}
             onClick={() => {
               setAmount(val);
               setCustomAmount("");
@@ -108,7 +111,7 @@ export function DonationWidget() {
         Custom amount (₹)
         <input
           type="number"
-          min="100"
+          min="1"
           placeholder="Other amount"
           value={customAmount}
           onChange={(e) => setCustomAmount(e.target.value)}

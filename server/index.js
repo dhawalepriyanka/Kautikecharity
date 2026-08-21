@@ -59,7 +59,7 @@ app.get("/api/health", async (_request, response) => {
 
 app.post("/api/donations", async (request, response) => {
   const { donorName, email, amount, campaign = "General fund" } = request.body ?? {};
-  if (!donorName?.trim() || !email?.trim() || !Number.isInteger(amount) || amount < 100) return response.status(400).json({ message: "Please provide a name, email and a donation amount of at least ₹100." });
+  if (!donorName?.trim() || !email?.trim() || !Number.isInteger(amount) || amount < 1) return response.status(400).json({ message: "Please provide a name, email and a donation amount of at least ₹1." });
   try {
     const result = await pool.query("INSERT INTO donation_intents (donor_name, email, amount_inr, campaign) VALUES ($1, $2, $3, $4) RETURNING id", [donorName.trim(), email.trim().toLowerCase(), amount, campaign]);
     response.status(201).json({ id: result.rows[0].id, message: "Donation request saved." });
@@ -68,7 +68,7 @@ app.post("/api/donations", async (request, response) => {
 
 app.post("/api/donations/create-order", async (request, response) => {
   const { donorName, email, phone, amount, purpose = "General Donation" } = request.body ?? {};
-  if (!donorName?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email?.trim() ?? "") || !/^[0-9+\-\s()]{8,20}$/.test(phone?.trim() ?? "") || !Number.isInteger(amount) || amount < 100 || amount > 1000000) return response.status(400).json({ message: "Enter a valid name, email, mobile number, and amount from ₹100 to ₹10,00,000." });
+  if (!donorName?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email?.trim() ?? "") || !/^[0-9+\-\s()]{8,20}$/.test(phone?.trim() ?? "") || !Number.isInteger(amount) || amount < 1 || amount > 1000000) return response.status(400).json({ message: "Enter a valid name, email, mobile number, and amount from ₹1 to ₹10,00,000." });
   if (!razorpay) return response.status(503).json({ message: "Razorpay Test Mode is not configured on the server." });
   try {
     const created = await pool.query("INSERT INTO donation_intents (donor_name, email, phone, amount_inr, campaign) VALUES ($1,$2,$3,$4,$5) RETURNING id", [donorName.trim(), email.trim().toLowerCase(), phone.trim(), amount, String(purpose).slice(0, 180)]);

@@ -77,8 +77,8 @@ export default function DonatePage() {
 
   const handleStep1Proceed = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!effectiveAmount || effectiveAmount < 100) {
-      alert("Please choose or enter a donation amount of at least ₹100.");
+    if (!effectiveAmount || effectiveAmount < 1) {
+      alert("Please choose or enter a donation amount of at least ₹1.");
       return;
     }
     setStep(2);
@@ -89,8 +89,8 @@ export default function DonatePage() {
     e.preventDefault();
     setCheckoutError("");
 
-    if (!effectiveAmount || effectiveAmount < 100) {
-      alert("Please enter a donation amount of at least ₹100.");
+    if (!effectiveAmount || effectiveAmount < 1) {
+      alert("Please enter a donation amount of at least ₹1.");
       return;
     }
 
@@ -462,7 +462,7 @@ export default function DonatePage() {
                       <span className="cry-other-amount-label">₹ Other Amount</span>
                       <input
                         type="number"
-                        min="100"
+                        min="1"
                         placeholder="Other Amount"
                         value={customAmount}
                         onChange={(e) => setCustomAmount(e.target.value)}

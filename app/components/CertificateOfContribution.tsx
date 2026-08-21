@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 interface CertificateProps {
   donorName: string;
@@ -12,70 +12,96 @@ interface CertificateProps {
 
 export function CertificateOfContribution({
   donorName,
-  amount,
-  date,
-  onPrint,
   onClose,
 }: CertificateProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [downloading, setDownloading] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
-  const handleDirectDownload = async () => {
+  const cleanName = (donorName || "DHANASHRI WALE").trim().toUpperCase();
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = "/certificate-template.png";
+
+    img.onload = () => {
+      // High-resolution internal canvas dimensions matching template
+      canvas.width = img.naturalWidth || 1024;
+      canvas.height = img.naturalHeight || 723;
+
+      // 1. Draw original template
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // 2. Clear original sample name with matching white background
+      // The name box is centered at X: 512, Y: 320-375
+      const clearX = 180;
+      const clearY = 300;
+      const clearW = canvas.width - clearX * 2;
+      const clearH = 75;
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(clearX, clearY, clearW, clearH);
+
+      // 3. Draw dynamic donor name in the exact gold serif styling
+      const centerX = canvas.width / 2;
+      const centerY = 350;
+
+      // Auto-fit font size based on name length
+      let fontSize = 38;
+      if (cleanName.length > 28) fontSize = 26;
+      else if (cleanName.length > 22) fontSize = 30;
+      else if (cleanName.length > 16) fontSize = 34;
+
+      ctx.font = `800 ${fontSize}px Georgia, "Times New Roman", serif`;
+      ctx.fillStyle = "#C59B27";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      // Subtle letter spacing effect
+      const spacedName = cleanName.split("").join(cleanName.length > 20 ? " " : "  ");
+      ctx.fillText(spacedName, centerX, centerY);
+
+      // 4. Subtle gold underline bar under name if needed
+      ctx.strokeStyle = "#B8860B";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      const lineHalfW = Math.min(220, Math.max(140, cleanName.length * 9));
+      ctx.moveTo(centerX - lineHalfW, centerY + 22);
+      ctx.lineTo(centerX + lineHalfW, centerY + 22);
+      ctx.stroke();
+
+      // Center decorative dot
+      ctx.fillStyle = "#B8860B";
+      ctx.beginPath();
+      ctx.arc(centerX, centerY + 22, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      setImageLoaded(true);
+    };
+  }, [cleanName]);
+
+  const handleDirectDownload = () => {
     setDownloading(true);
     try {
-      const el = document.getElementById("certificate-print-area");
-      if (!el) {
+      const canvas = canvasRef.current;
+      if (!canvas) {
         setDownloading(false);
         return;
       }
 
-      // Load html2canvas if not present
-      if (!(window as any).html2canvas) {
-        await new Promise((resolve, reject) => {
-          const script = document.createElement("script");
-          script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
-          script.onload = () => resolve(true);
-          script.onerror = reject;
-          document.body.appendChild(script);
-        });
-      }
-
-      const html2canvas = (window as any).html2canvas;
-      if (html2canvas) {
-        // Clone to a fixed-width landscape container off-screen for perfect high-res landscape export
-        const clone = el.cloneNode(true) as HTMLElement;
-        clone.style.width = "1050px";
-        clone.style.minWidth = "1050px";
-        clone.style.maxWidth = "1050px";
-        clone.style.minHeight = "720px";
-        clone.style.position = "fixed";
-        clone.style.left = "-9999px";
-        clone.style.top = "0";
-        clone.style.zIndex = "-100";
-        document.body.appendChild(clone);
-
-        const canvas = await html2canvas(clone, {
-          scale: 2.5,
-          useCORS: true,
-          backgroundColor: "#FFFFFF",
-          logging: false,
-          width: 1050,
-          windowWidth: 1050,
-        });
-
-        document.body.removeChild(clone);
-
-        // Trigger direct browser file download
-        const imgData = canvas.toDataURL("image/png");
-        const a = document.createElement("a");
-        const safeName = (donorName || "Donor").trim().replace(/[^a-zA-Z0-9_-]/g, "_");
-        a.download = `Certificate-of-Contribution-${safeName}.png`;
-        a.href = imgData;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      } else {
-        window.print();
-      }
+      const imgData = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      const safeFileName = cleanName.replace(/[^A-Z0-9_-]/g, "_");
+      a.download = `Certificate-of-Contribution-${safeFileName}.png`;
+      a.href = imgData;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } catch (err) {
       console.error("Direct download error:", err);
       window.print();
@@ -84,158 +110,119 @@ export function CertificateOfContribution({
     }
   };
 
+  const handlePrint = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      window.print();
+      return;
+    }
+    const dataUrl = canvas.toDataURL("image/png");
+    const printWin = window.open("", "_blank");
+    if (printWin) {
+      printWin.document.write(`
+        <html>
+          <head>
+            <title>Certificate of Contribution - ${cleanName}</title>
+            <style>
+              @page { size: landscape; margin: 0; }
+              body { margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; background: #FFF; }
+              img { max-width: 100%; max-height: 100%; object-fit: contain; }
+            </style>
+          </head>
+          <body>
+            <img src="${dataUrl}" onload="window.print();window.close();" />
+          </body>
+        </html>
+      `);
+      printWin.document.close();
+    } else {
+      window.print();
+    }
+  };
+
   return (
-    <div className="certificate-modal-wrapper">
-      <div className="certificate-actions-bar no-print">
+    <div className="certificate-modal-wrapper" style={{ width: "100%", maxWidth: "980px", margin: "0 auto" }}>
+      {/* Top Action Bar */}
+      <div className="certificate-actions-bar no-print" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
         {onClose && (
-          <button onClick={onClose} className="cert-btn-ghost">
+          <button onClick={onClose} className="cert-btn-ghost" style={{ padding: "8px 16px", borderRadius: "8px", border: "1.5px solid #CBD5E1", background: "#FFFFFF", cursor: "pointer", fontWeight: 700 }}>
             ← Back to Donation
           </button>
         )}
-        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", width: onClose ? "auto" : "100%", justifyContent: onClose ? "flex-end" : "center" }}>
           <button
             onClick={handleDirectDownload}
             disabled={downloading}
             className="cert-btn-primary"
-            style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              background: "#2F963A",
+              color: "#FFFFFF",
+              border: "none",
+              padding: "12px 24px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              fontWeight: 800,
+              cursor: "pointer",
+              boxShadow: "0 4px 14px rgba(47,150,58,0.3)",
+            }}
           >
-            {downloading ? "⏳ Preparing High-Res Certificate..." : "📥 Direct Download Certificate (.PNG)"}
+            {downloading ? "⏳ Preparing Certificate File..." : "📥 Direct Download Certificate (.PNG)"}
           </button>
           <button
-            onClick={() => window.print()}
+            onClick={handlePrint}
             className="cert-btn-ghost"
-            style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              background: "#FFFFFF",
+              color: "#1E293B",
+              border: "1.5px solid #CBD5E1",
+              padding: "12px 20px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              fontWeight: 800,
+              cursor: "pointer",
+            }}
           >
             🖨️ Print / Save as PDF
           </button>
         </div>
       </div>
 
-      {/* ── THE OFFICIAL LANDSCAPE CERTIFICATE CANVAS ── */}
-      <div className="cert-scroll-container">
-        <div className="official-certificate-canvas printable-cert" id="certificate-print-area">
-          {/* Golden Double Frame */}
-          <div className="cert-gold-frame">
-            
-            {/* Top Left & Right Abstract Gold Lines */}
-            <div className="cert-bg-waves" aria-hidden="true">
-              <svg viewBox="0 0 1000 700" fill="none" className="cert-waves-svg" preserveAspectRatio="none">
-                <path d="M-80,-20 C100,60 220,180 120,320 C20,460 240,540 320,720" stroke="#D4AF37" strokeWidth="1.8" opacity="0.45" fill="none" />
-                <path d="M-110,20 C70,100 190,220 90,360 C-10,500 210,580 290,750" stroke="#E5C158" strokeWidth="1.4" opacity="0.35" fill="none" />
-                <path d="M-50,-60 C130,20 250,140 150,280 C50,420 270,500 350,680" stroke="#B8860B" strokeWidth="1.2" opacity="0.3" fill="none" />
-                <path d="M-140,60 C40,140 160,260 60,400 C-40,540 180,620 260,780" stroke="#D4AF37" strokeWidth="1" opacity="0.25" fill="none" />
-                {/* Bottom Right Wave Lines */}
-                <path d="M680,720 C760,560 840,440 980,320" stroke="#D4AF37" strokeWidth="1.6" opacity="0.4" fill="none" />
-                <path d="M720,740 C800,580 880,460 1020,340" stroke="#E5C158" strokeWidth="1.2" opacity="0.3" fill="none" />
-                <path d="M640,700 C720,540 800,420 940,300" stroke="#B8860B" strokeWidth="1" opacity="0.25" fill="none" />
-              </svg>
-            </div>
-
-            {/* Golden Corner Leaf Sprig (Right side) */}
-            <div className="cert-gold-floral-right" aria-hidden="true">
-              <svg viewBox="0 0 110 320" fill="none" style={{ width: "95px", height: "300px" }}>
-                <path d="M75,20 Q35,90 85,170 Q35,230 65,300" stroke="#D4AF37" strokeWidth="3" strokeLinecap="round" fill="none" />
-                {/* Gold Leaves */}
-                <path d="M75,20 Q100,8 95,32 Q75,38 75,20 Z" fill="#E5C158" />
-                <path d="M55,65 Q25,52 42,75 Q60,75 55,65 Z" fill="#D4AF37" />
-                <path d="M80,105 Q105,88 105,112 Q85,122 80,105 Z" fill="#F3CA65" />
-                <path d="M55,145 Q30,132 42,158 Q60,158 55,145 Z" fill="#D4AF37" />
-                <path d="M85,190 Q112,175 106,202 Q88,208 85,190 Z" fill="#E5C158" />
-                <path d="M60,240 Q35,228 48,252 Q68,252 60,240 Z" fill="#F3CA65" />
-                <path d="M78,285 Q102,270 96,295 Q80,300 78,285 Z" fill="#D4AF37" />
-              </svg>
-            </div>
-
-            {/* Certificate Inner Content */}
-            <div className="cert-inner-content">
-              
-              {/* Header Title */}
-              <h1 className="cert-main-title">CERTIFICATE</h1>
-              <h2 className="cert-sub-title">OF CONTRIBUTION</h2>
-
-              <div className="cert-presented-text">
-                THIS CERTIFICATE IS PROUDLY PRESENTED TO
-              </div>
-
-              {/* Recipient Name */}
-              <div className="cert-recipient-name">
-                {(donorName?.trim() || "DHANASHRI WALE").toUpperCase()}
-              </div>
-
-              {/* Decorative Vintage Gold Divider */}
-              <div className="cert-divider-ornament">
-                <svg viewBox="0 0 240 16" fill="none" style={{ width: "220px", height: "16px" }}>
-                  <line x1="0" y1="8" x2="95" y2="8" stroke="#B8860B" strokeWidth="1.5" />
-                  <circle cx="120" cy="8" r="4.5" fill="#B8860B" />
-                  <circle cx="108" cy="8" r="2.8" fill="#D4AF37" />
-                  <circle cx="132" cy="8" r="2.8" fill="#D4AF37" />
-                  <line x1="145" y1="8" x2="240" y2="8" stroke="#B8860B" strokeWidth="1.5" />
-                </svg>
-              </div>
-
-              {/* Description Body */}
-              <p className="cert-body-p">
-                For their generous contribution towards <strong>&ldquo;Kautike Charitable Foundation&rdquo;</strong>, supporting our mission to spread kindness, promote education, and help the underprivileged live a better life.
-              </p>
-
-              {/* Quote */}
-              <p className="cert-quote-p">
-                &ldquo;Your kindness creates hope, and your support builds a brighter tomorrow.&rdquo;
-              </p>
-
-              {/* Bottom Row: Seal & Signature */}
-              <div className="cert-bottom-row">
-                
-                {/* Left Gold Medallion Seal */}
-                <div className="cert-seal-col">
-                  <div className="cert-gold-medal">
-                    <svg viewBox="0 0 100 110" fill="none" style={{ width: "95px", height: "105px" }}>
-                      <defs>
-                        <radialGradient id="goldGradCert" cx="50%" cy="45%" r="50%">
-                          <stop offset="0%" stopColor="#FFF4B8" />
-                          <stop offset="35%" stopColor="#E5C158" />
-                          <stop offset="80%" stopColor="#B8860B" />
-                          <stop offset="100%" stopColor="#8A6405" />
-                        </radialGradient>
-                      </defs>
-                      {/* Ribbon Tails */}
-                      <path d="M36,68 L24,104 L44,95 L48,72 Z" fill="#B8860B" />
-                      <path d="M64,68 L76,104 L56,95 L52,72 Z" fill="#8A6405" />
-                      {/* Medal Circle */}
-                      <circle cx="50" cy="45" r="38" fill="url(#goldGradCert)" stroke="#D4AF37" strokeWidth="1.5" />
-                      <circle cx="50" cy="45" r="32" stroke="#FFFFFF" strokeWidth="1.2" strokeDasharray="3 2" fill="none" opacity="0.65" />
-                      {/* Inner Emblem Star */}
-                      <polygon points="50,22 54,34 67,34 56,42 60,54 50,46 40,54 44,42 33,34 46,34" fill="#FFFFFF" opacity="0.9" />
-                    </svg>
-                  </div>
-                </div>
-
-                {/* Right Signature Col */}
-                <div className="cert-signature-col">
-                  <div className="cert-sig-img-wrap">
-                    {/* Exact Hand Cursive Signature of Vijay Jadhav */}
-                    <svg viewBox="0 0 160 55" fill="none" style={{ width: "150px", height: "50px" }}>
-                      <path
-                        d="M20,38 C28,14 36,8 44,22 C48,32 40,46 32,42 C26,38 35,26 50,20 C65,14 78,8 72,28 C68,40 60,42 74,32 C85,24 94,18 92,30 C90,40 102,26 114,20 C126,14 135,24 145,28"
-                        stroke="#0F172A"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        fill="none"
-                      />
-                    </svg>
-                  </div>
-                  <div className="cert-sig-line" />
-                  <strong className="cert-signer-name">VIJAY JADHAV</strong>
-                  <span className="cert-signer-role">Trustee</span>
-                </div>
-
-              </div>
-
-            </div>
-
+      {/* ── THE OFFICIAL CERTIFICATE CANVAS ── */}
+      <div
+        id="certificate-print-area"
+        style={{
+          background: "#FFFFFF",
+          padding: "10px",
+          borderRadius: "10px",
+          boxShadow: "0 10px 40px rgba(0,0,0,0.08)",
+          border: "1px solid #E2E8F0",
+          overflow: "hidden",
+          width: "100%",
+          boxSizing: "border-box",
+        }}
+      >
+        <canvas
+          ref={canvasRef}
+          style={{
+            width: "100%",
+            height: "auto",
+            display: "block",
+            borderRadius: "4px",
+            aspectRatio: "1024 / 723",
+            backgroundColor: "#FFFFFF",
+          }}
+        />
+        {!imageLoaded && (
+          <div style={{ padding: "40px", textAlign: "center", color: "#64748B" }}>
+            ⏳ Loading Official Certificate...
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

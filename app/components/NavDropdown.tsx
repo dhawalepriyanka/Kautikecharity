@@ -31,7 +31,6 @@ export const menus: DropdownMenu[] = [
     title: "Get Involved",
     links: [
       { label: "Donate Now", href: "/donate" },
-      { label: "Donor Certificate", href: "/certificate" },
       { label: "Volunteering & Internships", href: "/volunteer" },
       { label: "Corporate Partnerships", href: "/corporate-partnerships" },
       { label: "Spread the Word", href: "/get-involved" },
@@ -42,7 +41,6 @@ export const menus: DropdownMenu[] = [
     links: [
       { label: "Impact Reports", href: "/impact" },
       { label: "Stories & News", href: "/stories" },
-      { label: "Donor Certificate (80G)", href: "/certificate" },
       { label: "FAQs & Tax Exemption (80G)", href: "/faqs" },
       { label: "Contact Us", href: "/contact" },
     ],

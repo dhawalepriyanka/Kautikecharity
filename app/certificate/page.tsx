@@ -6,8 +6,9 @@ import { Footer } from "../components/Footer";
 import { CertificateOfContribution } from "../components/CertificateOfContribution";
 
 export default function CertificatePage() {
-  const [donorName, setDonorName] = useState("Akhil Kamble");
-  const [amount, setAmount] = useState<number>(5000);
+  const [donorName, setDonorName] = useState<string>("");
+  const [amount, setAmount] = useState<number | undefined>(undefined);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -16,6 +17,7 @@ export default function CertificatePage() {
       const amountParam = params.get("amount");
       if (nameParam) setDonorName(nameParam);
       if (amountParam && !isNaN(Number(amountParam))) setAmount(Number(amountParam));
+      setLoaded(true);
     }
   }, []);
 
@@ -32,49 +34,31 @@ export default function CertificatePage() {
         </p>
       </section>
 
-      {/* Interactive Controls Bar for Admin / Donor */}
-      <section className="section-pad no-print" style={{ padding: "0 6vw 24px" }}>
-        <div className="about-container" style={{ maxWidth: "860px" }}>
-          <div style={{ background: "#FFFFFF", padding: "18px 24px", borderRadius: "12px", border: "1.5px solid #E5E7EB", display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "center", justifyContent: "space-between", boxShadow: "0 4px 16px rgba(0,0,0,0.04)" }}>
-            <div style={{ display: "flex", gap: "12px", flex: 1, minWidth: "260px" }}>
-              <div style={{ flex: 2 }}>
-                <label style={{ fontSize: "11px", fontWeight: 800, color: "#64748B", display: "block", marginBottom: "4px" }}>DONOR FULL NAME</label>
-                <input
-                  type="text"
-                  value={donorName}
-                  onChange={(e) => setDonorName(e.target.value)}
-                  placeholder="Enter Donor Name"
-                  style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1.5px solid #CBD5E1", fontSize: "14px", fontWeight: 700 }}
-                />
-              </div>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: "11px", fontWeight: 800, color: "#64748B", display: "block", marginBottom: "4px" }}>AMOUNT (₹)</label>
-                <input
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(Number(e.target.value))}
-                  style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1.5px solid #CBD5E1", fontSize: "14px", fontWeight: 700 }}
-                />
-              </div>
-            </div>
-
-            <button
-              onClick={() => window.print()}
-              className="cry-yellow-btn"
-              style={{ padding: "10px 20px", fontSize: "13.5px" }}
-            >
-              🖨️ Download / Print Certificate (PDF)
-            </button>
-          </div>
-        </div>
-      </section>
-
       {/* The Certificate */}
-      <section style={{ padding: "0 6vw 80px" }}>
-        <CertificateOfContribution
-          donorName={donorName}
-          amount={amount}
-        />
+      <section style={{ padding: "0 clamp(12px, 5vw, 40px) 80px", maxWidth: "960px", margin: "0 auto" }}>
+        {loaded && (
+          donorName ? (
+            <CertificateOfContribution
+              donorName={donorName}
+              amount={amount}
+            />
+          ) : (
+            <div style={{ background: "#FFFFFF", padding: "40px 24px", borderRadius: "16px", border: "1.5px solid #E2E8F0", textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.04)" }}>
+              <div style={{ fontSize: "48px", marginBottom: "12px" }}>📜</div>
+              <h2 style={{ fontSize: "22px", color: "#1E293B", margin: "0 0 8px" }}>Verified Donor Certificate Portal</h2>
+              <p style={{ color: "#64748B", fontSize: "14px", maxWidth: "520px", margin: "0 auto 24px", lineHeight: "1.5" }}>
+                Official certificates of contribution and 80G tax exemption receipts are issued automatically upon making a donation.
+              </p>
+              <a
+                href="/donate"
+                className="cry-yellow-btn"
+                style={{ display: "inline-block", padding: "12px 28px", textDecoration: "none", fontSize: "14px", fontWeight: 800 }}
+              >
+                Make a Contribution to Receive Certificate ➔
+              </a>
+            </div>
+          )
+        )}
       </section>
 
       <Footer />

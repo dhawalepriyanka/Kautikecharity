@@ -133,6 +133,10 @@ export function NavDropdown() {
                         <a 
                           key={link.label} 
                           href={link.href}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            window.location.assign(link.href);
+                          }}
                         >
                           <span className="link-arrow">›</span>
                           {link.label}

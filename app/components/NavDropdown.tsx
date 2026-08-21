@@ -132,8 +132,7 @@ export function NavDropdown() {
                       {menu.links.map((link) => (
                         <a 
                           key={link.label} 
-                          href={link.href} 
-                          onClick={() => setMobileOpen(false)}
+                          href={link.href}
                         >
                           <span className="link-arrow">›</span>
                           {link.label}

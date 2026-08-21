@@ -8393,23 +8393,32 @@ footer {
   cursor: pointer;
 }
 
+.cert-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 6px;
+}
+
 .official-certificate-canvas {
   background: #FFFFFF;
-  padding: 20px;
+  padding: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   border-radius: 6px;
   position: relative;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 .cert-gold-frame {
   border: 4.5px solid #D4AF37;
   outline: 1.5px solid #C59B27;
-  outline-offset: -9px;
-  padding: 36px 42px 28px;
+  outline-offset: -8px;
+  padding: 38px 46px 28px;
   position: relative;
   background: #FFFFFF;
   overflow: hidden;
-  min-height: 480px;
+  min-height: 460px;
 }
 
 .cert-bg-waves {
@@ -8440,7 +8449,7 @@ footer {
 
 .cert-main-title {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(28px, 4.5vw, 44px);
+  font-size: clamp(26px, 4.2vw, 42px);
   font-weight: 800;
   letter-spacing: 0.12em;
   color: #A67C1E;
@@ -8450,21 +8459,21 @@ footer {
 
 .cert-sub-title {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(13px, 2vw, 17px);
+  font-size: clamp(12px, 1.8vw, 16px);
   font-weight: 700;
   letter-spacing: 0.28em;
   color: #B8860B;
-  margin: 0 0 20px;
+  margin: 0 0 18px;
   text-transform: uppercase;
 }
 
 .cert-presented-text {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.16em;
   color: #334155;
   text-transform: uppercase;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .cert-recipient-name {
@@ -8478,7 +8487,7 @@ footer {
 }
 
 .cert-divider-ornament {
-  margin: 0 auto 16px;
+  margin: 0 auto 14px;
   display: flex;
   justify-content: center;
 }
@@ -8487,16 +8496,16 @@ footer {
   font-size: 13.5px;
   line-height: 1.6;
   color: #334155;
-  max-width: 600px;
-  margin: 0 auto 12px;
+  max-width: 620px;
+  margin: 0 auto 10px;
   font-family: Georgia, serif;
 }
 
 .cert-quote-p {
-  font-size: 12.5px;
+  font-size: 12px;
   font-style: italic;
   color: #64748B;
-  margin: 0 auto 24px;
+  margin: 0 auto 20px;
   font-family: Georgia, serif;
 }
 
@@ -8504,18 +8513,13 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-top: 6px;
-  padding: 0 10px;
+  margin-top: 10px;
+  padding: 0 8px;
 }
 
 .cert-seal-col {
   flex: 1;
   text-align: left;
-}
-
-.cert-date-col {
-  flex: 1;
-  text-align: center;
 }
 
 .cert-signature-col {
@@ -8527,10 +8531,10 @@ footer {
 }
 
 .cert-sig-line {
-  width: 140px;
+  width: 150px;
   height: 1.5px;
   background: #0F172A;
-  margin: 3px 0 5px;
+  margin: 2px 0 5px;
 }
 
 .cert-signer-name {
@@ -8615,21 +8619,17 @@ footer {
     align-items: flex-end !important;
     justify-content: space-between !important;
     padding: 0 !important;
-    gap: 4px !important;
   }
   .cert-gold-medal svg {
-    width: 55px !important;
-    height: 55px !important;
-  }
-  .cert-date-col {
-    font-size: 9.5px !important;
+    width: 65px !important;
+    height: 70px !important;
   }
   .cert-signature-col svg {
-    width: 90px !important;
+    width: 100px !important;
     height: 38px !important;
   }
   .cert-sig-line {
-    width: 90px !important;
+    width: 100px !important;
   }
   .cert-signer-name {
     font-size: 11px !important;
@@ -8638,7 +8638,7 @@ footer {
     font-size: 9.5px !important;
   }
   .cert-gold-floral-right {
-    opacity: 0.15 !important;
+    opacity: 0.18 !important;
     transform: scale(0.65) translateY(-50%) !important;
     right: -14px !important;
   }

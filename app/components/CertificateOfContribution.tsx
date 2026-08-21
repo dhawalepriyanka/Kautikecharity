@@ -18,7 +18,6 @@ export function CertificateOfContribution({
   onClose,
 }: CertificateProps) {
   const [downloading, setDownloading] = useState(false);
-  const displayDate = date || new Intl.DateTimeFormat("en-IN", { dateStyle: "long" }).format(new Date());
 
   const handleDirectDownload = async () => {
     setDownloading(true);
@@ -42,12 +41,28 @@ export function CertificateOfContribution({
 
       const html2canvas = (window as any).html2canvas;
       if (html2canvas) {
-        const canvas = await html2canvas(el, {
-          scale: 3, // Ultra-sharp 300 DPI export
+        // Clone to a fixed-width landscape container off-screen for perfect high-res landscape export
+        const clone = el.cloneNode(true) as HTMLElement;
+        clone.style.width = "1050px";
+        clone.style.minWidth = "1050px";
+        clone.style.maxWidth = "1050px";
+        clone.style.minHeight = "720px";
+        clone.style.position = "fixed";
+        clone.style.left = "-9999px";
+        clone.style.top = "0";
+        clone.style.zIndex = "-100";
+        document.body.appendChild(clone);
+
+        const canvas = await html2canvas(clone, {
+          scale: 2.5,
           useCORS: true,
           backgroundColor: "#FFFFFF",
           logging: false,
+          width: 1050,
+          windowWidth: 1050,
         });
+
+        document.body.removeChild(clone);
 
         // Trigger direct browser file download
         const imgData = canvas.toDataURL("image/png");
@@ -84,7 +99,7 @@ export function CertificateOfContribution({
             className="cert-btn-primary"
             style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
           >
-            {downloading ? "⏳ Preparing Certificate File..." : "📥 Direct Download Certificate (.PNG)"}
+            {downloading ? "⏳ Preparing High-Res Certificate..." : "📥 Direct Download Certificate (.PNG)"}
           </button>
           <button
             onClick={() => window.print()}
@@ -96,136 +111,130 @@ export function CertificateOfContribution({
         </div>
       </div>
 
-      {/* ── THE OFFICIAL CERTIFICATE CANVAS ── */}
-      <div className="official-certificate-canvas printable-cert" id="certificate-print-area">
-        {/* Golden Double Frame */}
-        <div className="cert-gold-frame">
-          
-          {/* Top Left & Right Abstract Gold Lines */}
-          <div className="cert-bg-waves" aria-hidden="true">
-            <svg viewBox="0 0 900 650" fill="none" className="cert-waves-svg">
-              <path d="M-50,0 C120,80 200,200 100,320 C0,440 220,520 300,650" stroke="#D4AF37" strokeWidth="1.5" opacity="0.35" fill="none" />
-              <path d="M-80,40 C90,120 170,240 70,360 C-30,480 190,560 270,690" stroke="#E5C158" strokeWidth="1" opacity="0.25" fill="none" />
-              <path d="M-20,-40 C150,40 230,160 130,280 C30,400 250,480 330,610" stroke="#B8860B" strokeWidth="1" opacity="0.2" fill="none" />
-              <path d="M600,-50 C700,120 850,220 950,400" stroke="#D4AF37" strokeWidth="1.5" opacity="0.3" fill="none" />
-              <path d="M550,650 C680,500 780,380 950,280" stroke="#E5C158" strokeWidth="1.2" opacity="0.3" fill="none" />
-            </svg>
-          </div>
-
-          {/* Golden Corner Leaf Sprig (Right side) */}
-          <div className="cert-gold-floral-right" aria-hidden="true">
-            <svg viewBox="0 0 100 240" fill="none" style={{ width: "90px", height: "220px" }}>
-              <path d="M70,20 Q40,80 80,140 Q40,190 60,230" stroke="#D4AF37" strokeWidth="3" strokeLinecap="round" fill="none" />
-              {/* Gold Leaves */}
-              <path d="M70,20 Q90,10 85,30 Q70,35 70,20 Z" fill="#E5C158" />
-              <path d="M55,60 Q30,50 45,70 Q60,70 55,60 Z" fill="#D4AF37" />
-              <path d="M75,90 Q95,75 95,95 Q80,105 75,90 Z" fill="#F3CA65" />
-              <path d="M55,125 Q35,115 45,135 Q60,135 55,125 Z" fill="#D4AF37" />
-              <path d="M78,160 Q100,150 95,170 Q80,175 78,160 Z" fill="#E5C158" />
-              <path d="M58,195 Q38,185 50,205 Q65,205 58,195 Z" fill="#F3CA65" />
-            </svg>
-          </div>
-
-          {/* Certificate Inner Content */}
-          <div className="cert-inner-content">
+      {/* ── THE OFFICIAL LANDSCAPE CERTIFICATE CANVAS ── */}
+      <div className="cert-scroll-container">
+        <div className="official-certificate-canvas printable-cert" id="certificate-print-area">
+          {/* Golden Double Frame */}
+          <div className="cert-gold-frame">
             
-            {/* Header Title */}
-            <h1 className="cert-main-title">CERTIFICATE</h1>
-            <h2 className="cert-sub-title">OF CONTRIBUTION</h2>
-
-            <div className="cert-presented-text">
-              THIS CERTIFICATE IS PROUDLY PRESENTED TO
-            </div>
-
-            {/* Recipient Name */}
-            <div className="cert-recipient-name">
-              {(donorName?.trim() || "AKHIL KAMBLE").toUpperCase()}
-            </div>
-
-            {/* Decorative Vintage Gold Divider */}
-            <div className="cert-divider-ornament">
-              <svg viewBox="0 0 160 14" fill="none" style={{ width: "160px", height: "14px" }}>
-                <line x1="0" y1="7" x2="60" y2="7" stroke="#A67C1E" strokeWidth="1.5" />
-                <circle cx="80" cy="7" r="4" fill="#B8860B" />
-                <circle cx="70" cy="7" r="2" fill="#D4AF37" />
-                <circle cx="90" cy="7" r="2" fill="#D4AF37" />
-                <line x1="100" y1="7" x2="160" y2="7" stroke="#A67C1E" strokeWidth="1.5" />
+            {/* Top Left & Right Abstract Gold Lines */}
+            <div className="cert-bg-waves" aria-hidden="true">
+              <svg viewBox="0 0 1000 700" fill="none" className="cert-waves-svg" preserveAspectRatio="none">
+                <path d="M-80,-20 C100,60 220,180 120,320 C20,460 240,540 320,720" stroke="#D4AF37" strokeWidth="1.8" opacity="0.45" fill="none" />
+                <path d="M-110,20 C70,100 190,220 90,360 C-10,500 210,580 290,750" stroke="#E5C158" strokeWidth="1.4" opacity="0.35" fill="none" />
+                <path d="M-50,-60 C130,20 250,140 150,280 C50,420 270,500 350,680" stroke="#B8860B" strokeWidth="1.2" opacity="0.3" fill="none" />
+                <path d="M-140,60 C40,140 160,260 60,400 C-40,540 180,620 260,780" stroke="#D4AF37" strokeWidth="1" opacity="0.25" fill="none" />
+                {/* Bottom Right Wave Lines */}
+                <path d="M680,720 C760,560 840,440 980,320" stroke="#D4AF37" strokeWidth="1.6" opacity="0.4" fill="none" />
+                <path d="M720,740 C800,580 880,460 1020,340" stroke="#E5C158" strokeWidth="1.2" opacity="0.3" fill="none" />
+                <path d="M640,700 C720,540 800,420 940,300" stroke="#B8860B" strokeWidth="1" opacity="0.25" fill="none" />
               </svg>
             </div>
 
-            {/* Description Body */}
-            <p className="cert-body-p">
-              For their generous contribution towards <strong>&ldquo;Kautike Charitable Foundation&rdquo;</strong>, supporting our mission to spread kindness, promote education, and help the underprivileged live a better life.
-            </p>
+            {/* Golden Corner Leaf Sprig (Right side) */}
+            <div className="cert-gold-floral-right" aria-hidden="true">
+              <svg viewBox="0 0 110 320" fill="none" style={{ width: "95px", height: "300px" }}>
+                <path d="M75,20 Q35,90 85,170 Q35,230 65,300" stroke="#D4AF37" strokeWidth="3" strokeLinecap="round" fill="none" />
+                {/* Gold Leaves */}
+                <path d="M75,20 Q100,8 95,32 Q75,38 75,20 Z" fill="#E5C158" />
+                <path d="M55,65 Q25,52 42,75 Q60,75 55,65 Z" fill="#D4AF37" />
+                <path d="M80,105 Q105,88 105,112 Q85,122 80,105 Z" fill="#F3CA65" />
+                <path d="M55,145 Q30,132 42,158 Q60,158 55,145 Z" fill="#D4AF37" />
+                <path d="M85,190 Q112,175 106,202 Q88,208 85,190 Z" fill="#E5C158" />
+                <path d="M60,240 Q35,228 48,252 Q68,252 60,240 Z" fill="#F3CA65" />
+                <path d="M78,285 Q102,270 96,295 Q80,300 78,285 Z" fill="#D4AF37" />
+              </svg>
+            </div>
 
-            {/* Quote */}
-            <p className="cert-quote-p">
-              &ldquo;Your kindness creates hope, and your support builds a brighter tomorrow.&rdquo;
-            </p>
-
-            {/* Bottom Row: Seal & Signature */}
-            <div className="cert-bottom-row">
+            {/* Certificate Inner Content */}
+            <div className="cert-inner-content">
               
-              {/* Left Gold Medallion Seal */}
-              <div className="cert-seal-col">
-                <div className="cert-gold-medal">
-                  {/* Outer Scalloped Medal Circle */}
-                  <svg viewBox="0 0 100 100" fill="none" style={{ width: "90px", height: "90px" }}>
-                    <defs>
-                      <radialGradient id="goldGrad" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor="#FFF2A3" />
-                        <stop offset="40%" stopColor="#E5C158" />
-                        <stop offset="85%" stopColor="#B8860B" />
-                        <stop offset="100%" stopColor="#8A6405" />
-                      </radialGradient>
-                    </defs>
-                    {/* Ribbon Tails */}
-                    <path d="M35,70 L25,98 L45,90 L48,72 Z" fill="#B8860B" />
-                    <path d="M65,70 L75,98 L55,90 L52,72 Z" fill="#8A6405" />
-                    {/* Starburst/Circle Medal */}
-                    <circle cx="50" cy="46" r="38" fill="url(#goldGrad)" stroke="#D4AF37" strokeWidth="1.5" />
-                    <circle cx="50" cy="46" r="32" stroke="#FFF" strokeWidth="1" strokeDasharray="3 2" fill="none" opacity="0.6" />
-                    {/* Center Star / Emblem */}
-                    <polygon points="50,22 55,34 68,34 57,42 61,54 50,46 39,54 43,42 32,34 45,34" fill="#FFF8DC" opacity="0.9" />
-                  </svg>
-                </div>
+              {/* Header Title */}
+              <h1 className="cert-main-title">CERTIFICATE</h1>
+              <h2 className="cert-sub-title">OF CONTRIBUTION</h2>
+
+              <div className="cert-presented-text">
+                THIS CERTIFICATE IS PROUDLY PRESENTED TO
               </div>
 
-              {/* Center Date (Subtle) */}
-              <div className="cert-date-col">
-                <span style={{ fontSize: "11px", color: "#64748B", letterSpacing: "0.05em" }}>ISSUED ON: {displayDate}</span>
-                {amount && (
-                  <span style={{ display: "block", fontSize: "11px", fontWeight: 700, color: "#92400E", marginTop: "2px" }}>
-                    CONTRIBUTION: ₹{amount.toLocaleString("en-IN")}
-                  </span>
-                )}
+              {/* Recipient Name */}
+              <div className="cert-recipient-name">
+                {(donorName?.trim() || "DHANASHRI WALE").toUpperCase()}
               </div>
 
-              {/* Right Signature Col */}
-              <div className="cert-signature-col">
-                <div className="cert-sig-img-wrap">
-                  {/* Realistic Hand Signature */}
-                  <svg viewBox="0 0 160 60" fill="none" style={{ width: "150px", height: "55px" }}>
-                    <path
-                      d="M15,42 Q30,12 45,18 Q55,25 40,48 Q30,35 60,20 Q80,10 75,32 Q70,45 95,22 Q115,10 120,35 Q135,15 150,30"
-                      stroke="#0F172A"
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      fill="none"
-                    />
-                    <path d="M25,38 L145,38" stroke="#0F172A" strokeWidth="1" opacity="0.6" />
-                  </svg>
+              {/* Decorative Vintage Gold Divider */}
+              <div className="cert-divider-ornament">
+                <svg viewBox="0 0 240 16" fill="none" style={{ width: "220px", height: "16px" }}>
+                  <line x1="0" y1="8" x2="95" y2="8" stroke="#B8860B" strokeWidth="1.5" />
+                  <circle cx="120" cy="8" r="4.5" fill="#B8860B" />
+                  <circle cx="108" cy="8" r="2.8" fill="#D4AF37" />
+                  <circle cx="132" cy="8" r="2.8" fill="#D4AF37" />
+                  <line x1="145" y1="8" x2="240" y2="8" stroke="#B8860B" strokeWidth="1.5" />
+                </svg>
+              </div>
+
+              {/* Description Body */}
+              <p className="cert-body-p">
+                For their generous contribution towards <strong>&ldquo;Kautike Charitable Foundation&rdquo;</strong>, supporting our mission to spread kindness, promote education, and help the underprivileged live a better life.
+              </p>
+
+              {/* Quote */}
+              <p className="cert-quote-p">
+                &ldquo;Your kindness creates hope, and your support builds a brighter tomorrow.&rdquo;
+              </p>
+
+              {/* Bottom Row: Seal & Signature */}
+              <div className="cert-bottom-row">
+                
+                {/* Left Gold Medallion Seal */}
+                <div className="cert-seal-col">
+                  <div className="cert-gold-medal">
+                    <svg viewBox="0 0 100 110" fill="none" style={{ width: "95px", height: "105px" }}>
+                      <defs>
+                        <radialGradient id="goldGradCert" cx="50%" cy="45%" r="50%">
+                          <stop offset="0%" stopColor="#FFF4B8" />
+                          <stop offset="35%" stopColor="#E5C158" />
+                          <stop offset="80%" stopColor="#B8860B" />
+                          <stop offset="100%" stopColor="#8A6405" />
+                        </radialGradient>
+                      </defs>
+                      {/* Ribbon Tails */}
+                      <path d="M36,68 L24,104 L44,95 L48,72 Z" fill="#B8860B" />
+                      <path d="M64,68 L76,104 L56,95 L52,72 Z" fill="#8A6405" />
+                      {/* Medal Circle */}
+                      <circle cx="50" cy="45" r="38" fill="url(#goldGradCert)" stroke="#D4AF37" strokeWidth="1.5" />
+                      <circle cx="50" cy="45" r="32" stroke="#FFFFFF" strokeWidth="1.2" strokeDasharray="3 2" fill="none" opacity="0.65" />
+                      {/* Inner Emblem Star */}
+                      <polygon points="50,22 54,34 67,34 56,42 60,54 50,46 40,54 44,42 33,34 46,34" fill="#FFFFFF" opacity="0.9" />
+                    </svg>
+                  </div>
                 </div>
-                <div className="cert-sig-line" />
-                <strong className="cert-signer-name">VIJAY JADHAV</strong>
-                <span className="cert-signer-role">Trustee</span>
+
+                {/* Right Signature Col */}
+                <div className="cert-signature-col">
+                  <div className="cert-sig-img-wrap">
+                    {/* Exact Hand Cursive Signature of Vijay Jadhav */}
+                    <svg viewBox="0 0 160 55" fill="none" style={{ width: "150px", height: "50px" }}>
+                      <path
+                        d="M20,38 C28,14 36,8 44,22 C48,32 40,46 32,42 C26,38 35,26 50,20 C65,14 78,8 72,28 C68,40 60,42 74,32 C85,24 94,18 92,30 C90,40 102,26 114,20 C126,14 135,24 145,28"
+                        stroke="#0F172A"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        fill="none"
+                      />
+                    </svg>
+                  </div>
+                  <div className="cert-sig-line" />
+                  <strong className="cert-signer-name">VIJAY JADHAV</strong>
+                  <span className="cert-signer-role">Trustee</span>
+                </div>
+
               </div>
 
             </div>
 
           </div>
-
         </div>
       </div>
     </div>

@@ -69,6 +69,14 @@ export function Header() {
         <div className="site-header-container">
           <div className="site-header-left">
             <NavDropdown />
+            <a
+              href="/"
+              className="mobile-header-logo"
+              aria-label="Kautike Charitable Foundation home"
+              style={{ display: "none" }}
+            >
+              <img src="/kautike-logo.png" alt="Kautike Charitable Foundation" />
+            </a>
           </div>
 
           <div className="site-header-right">

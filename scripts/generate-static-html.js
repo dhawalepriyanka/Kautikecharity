@@ -15,6 +15,7 @@ const routes = [
   { path: "/stories", output: "../dist/client/stories/index.html" },
   { path: "/faqs", output: "../dist/client/faqs/index.html" },
   { path: "/donate", output: "../dist/client/donate/index.html" },
+  { path: "/certificate", output: "../dist/client/certificate/index.html" },
   { path: "/contact", output: "../dist/client/contact/index.html" },
   { path: "/privacy", output: "../dist/client/privacy/index.html" },
   { path: "/terms", output: "../dist/client/terms/index.html" },

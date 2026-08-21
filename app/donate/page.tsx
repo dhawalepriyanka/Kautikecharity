@@ -217,6 +217,9 @@ export default function DonatePage() {
           });
           setSuccessViewTab("certificate");
           setLoading(false);
+          try {
+            window.scrollTo({ top: 140, behavior: "smooth" });
+          } catch (_) {}
         },
         modal: {
           ondismiss: () => {

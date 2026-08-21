@@ -50,10 +50,10 @@ export const menus: DropdownMenu[] = [
 export function NavDropdown() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [expandedCategory, setExpandedCategory] = useState<number | null>(0);
+  const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
 
   const toggleCategory = (idx: number) => {
-    setExpandedCategory(expandedCategory === idx ? null : idx);
+    setExpandedCategory((current) => (current === idx ? null : idx));
   };
 
   return (
@@ -61,8 +61,11 @@ export function NavDropdown() {
       {/* Mobile Menu Toggle Hamburger */}
       <button 
         className="mobile-hamburger" 
-        onClick={() => setMobileOpen(!mobileOpen)}
+        type="button"
+        onClick={() => setMobileOpen((current) => !current)}
         aria-label="Toggle mobile menu"
+        aria-expanded={mobileOpen}
+        aria-controls="mobile-navigation"
       >
         {mobileOpen ? "✕" : "☰"}
       </button>
@@ -100,22 +103,25 @@ export function NavDropdown() {
 
       {/* Mobile Accordion Navbar Dropdown (Directly under Header Bar like CRY.org) */}
       {mobileOpen && (
-        <div className="cry-mobile-nav-panel">
+        <div id="mobile-navigation" className="cry-mobile-nav-panel" aria-label="Mobile navigation">
           <div className="cry-mobile-nav-inner">
             {menus.map((menu, idx) => {
               const isExpanded = expandedCategory === idx;
               return (
                 <div key={menu.title} className="cry-mobile-accordion-group">
                   <button 
+                    type="button"
                     className={`cry-mobile-category-header ${isExpanded ? "active" : ""}`}
                     onClick={() => toggleCategory(idx)}
+                    aria-expanded={isExpanded}
+                    aria-controls={`mobile-category-${idx}`}
                   >
                     <span>{menu.title}</span>
                     <span className="cry-mobile-caret">{isExpanded ? "−" : "+"}</span>
                   </button>
 
                   {isExpanded && (
-                    <div className="cry-mobile-category-links">
+                    <div id={`mobile-category-${idx}`} className="cry-mobile-category-links">
                       {menu.links.map((link) => (
                         <a 
                           key={link.label} 

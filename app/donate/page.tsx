@@ -108,7 +108,7 @@ export default function DonatePage() {
       });
       const order = await createOrder.json().catch(() => ({}));
       
-      if (!createOrder.ok) throw new Error(order.message ?? "Unable to start secure checkout. Please try again.");
+      if (!createOrder.ok) throw new Error(order.message ?? `Checkout API returned HTTP ${createOrder.status}. Check the Vercel Function logs and environment variables.`);
       if (!order.keyId || !order.orderId || typeof window === "undefined" || !window.Razorpay) {
         throw new Error("Secure checkout is still loading. Please wait a moment and try again.");
       }

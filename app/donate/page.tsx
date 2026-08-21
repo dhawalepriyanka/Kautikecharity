@@ -169,6 +169,7 @@ export default function DonatePage() {
           } catch (_) {}
 
           // 2. Save donation record to localStorage for immediate admin sync
+          const receiptNum = `KCF-80G-${String(Date.now()).slice(-6)}`;
           try {
             const newRecord = {
               id: donationId,
@@ -185,13 +186,34 @@ export default function DonatePage() {
             localStorage.setItem("kautike_admin_donations", JSON.stringify([newRecord, ...existingDonations]));
           } catch (_) {}
 
+          // 3. Dispatch Automated Email with Certificate & 80G Tax Receipt
+          try {
+            await fetch(`${apiUrl}/api/donations/send-email`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                donorName: donor.name,
+                email: donor.email,
+                phone: donor.phone,
+                amount: effectiveAmount,
+                pan: donor.pan,
+                cause: cause,
+                paymentId: payId,
+                receiptNumber: receiptNum,
+                certificateUrl: `${typeof window !== "undefined" ? window.location.origin : ""}/certificate?name=${encodeURIComponent(donor.name)}&amount=${effectiveAmount}`,
+              }),
+            });
+          } catch (mailErr) {
+            console.log("Email notification logged:", mailErr);
+          }
+
           setSuccessData({
             paymentId: payId,
             orderId: ordId,
             signature: sig,
             amount: effectiveAmount,
             date: new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "medium" }).format(new Date()),
-            receiptNumber: `KCF-80G-${String(Date.now()).slice(-6)}`,
+            receiptNumber: receiptNum,
           });
           setSuccessViewTab("certificate");
           setLoading(false);

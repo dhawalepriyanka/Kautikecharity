@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { CertificateOfContribution } from "../components/CertificateOfContribution";
@@ -8,6 +8,16 @@ import { CertificateOfContribution } from "../components/CertificateOfContributi
 export default function CertificatePage() {
   const [donorName, setDonorName] = useState("Akhil Kamble");
   const [amount, setAmount] = useState<number>(5000);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const nameParam = params.get("name");
+      const amountParam = params.get("amount");
+      if (nameParam) setDonorName(nameParam);
+      if (amountParam && !isNaN(Number(amountParam))) setAmount(Number(amountParam));
+    }
+  }, []);
 
   return (
     <main className="page-fade-in bg-cream" id="top" style={{ backgroundColor: "#FAF8F5", minHeight: "100vh" }}>

@@ -49,10 +49,11 @@ export function Footer() {
           <h4>Get Involved</h4>
           <ul>
             <li><a href="/donate">Donate Online (Tax Exempt 80G)</a></li>
-            <li><a href="/volunteer">Volunteering & Internships</a></li>
+            <li><a href="/certificate">📜 Donor Certificate &amp; 80G Receipt</a></li>
+            <li><a href="/volunteer">Volunteering &amp; Internships</a></li>
             <li><a href="/corporate-partnerships">CSR Corporate Partnerships</a></li>
             <li><a href="/stories">Stories of Hope</a></li>
-            <li><a href="/faqs">FAQs & Tax Exemption</a></li>
+            <li><a href="/faqs">FAQs &amp; Tax Exemption</a></li>
           </ul>
         </div>
 

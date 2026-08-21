@@ -272,17 +272,6 @@ export default function DonatePage() {
       {/* ── Main Donation Showcase Container ── */}
       <section style={{ maxWidth: "1220px", margin: "0 auto", padding: "10px 24px 80px" }}>
         
-        {/* Certificate Modal Preview */}
-        {showCertificatePreview && (
-          <div style={{ marginBottom: "35px" }}>
-            <CertificateOfContribution
-              donorName={donor.name || "Akhil Kamble"}
-              amount={effectiveAmount}
-              onClose={() => setShowCertificatePreview(false)}
-            />
-          </div>
-        )}
-
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "32px", alignItems: "start" }}>
           
           {/* ── LEFT PANEL: INSPIRING STORY & IMPACT ── */}
@@ -317,32 +306,6 @@ export default function DonatePage() {
                 <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                   <div style={{ background: "#FEF3C7", color: "#92400E", fontWeight: 800, padding: "5px 12px", borderRadius: "6px", fontSize: "13px", whiteSpace: "nowrap" }}>₹40,000</div>
                   <p style={{ margin: 0, fontSize: "13px", color: "#475569", lineHeight: "1.45" }}>Plants &amp; nurtures 100 native fruit and shade trees with drip irrigation across village schools.</p>
-                </div>
-              </div>
-
-              {/* Certificate Promo Card */}
-              <div style={{ background: "#FFFBEB", border: "1.5px solid #FCD34D", borderRadius: "10px", padding: "16px", marginBottom: "20px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                  <span style={{ fontSize: "20px" }}>📜</span>
-                  <strong style={{ fontSize: "13.5px", color: "#92400E" }}>Official Certificate of Contribution</strong>
-                </div>
-                <p style={{ margin: "0 0 10px", fontSize: "12px", color: "#78350F", lineHeight: "1.4" }}>
-                  Every donor receives a personalized certificate signed by our Trustee immediately after contributing.
-                </p>
-                <div style={{ display: "flex", gap: "10px" }}>
-                  <button
-                    type="button"
-                    onClick={() => setShowCertificatePreview(!showCertificatePreview)}
-                    style={{ background: "#F59E0B", color: "#fff", border: "none", padding: "6px 12px", borderRadius: "6px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}
-                  >
-                    {showCertificatePreview ? "Hide Sample Certificate" : "👁️ Preview Certificate"}
-                  </button>
-                  <a
-                    href="/certificate"
-                    style={{ background: "#FFFFFF", color: "#B45309", border: "1px solid #FCD34D", padding: "6px 12px", borderRadius: "6px", fontSize: "12px", fontWeight: 700, textDecoration: "none" }}
-                  >
-                    Open Generator →
-                  </a>
                 </div>
               </div>
 

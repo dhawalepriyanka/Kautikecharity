@@ -139,7 +139,7 @@ export function CertificateOfContribution({
 
             {/* Recipient Name */}
             <div className="cert-recipient-name">
-              {donorName?.trim() || "AKHIL KAMBLE"}
+              {(donorName?.trim() || "AKHIL KAMBLE").toUpperCase()}
             </div>
 
             {/* Decorative Vintage Gold Divider */}

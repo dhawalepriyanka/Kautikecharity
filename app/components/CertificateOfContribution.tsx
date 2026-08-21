@@ -38,48 +38,32 @@ export function CertificateOfContribution({
       // 1. Draw original template
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      // 2. Clear original sample name with matching white background
-      // The name box is centered at X: 512, Y: 320-375
-      const clearX = 180;
-      const clearY = 300;
-      const clearW = canvas.width - clearX * 2;
-      const clearH = 75;
+      // 2. Clear ONLY the sample name "AKHIL KAMBLE" (preserve the original divider and text below)
+      const clearX = 220;
+      const clearY = 310;
+      const clearW = canvas.width - clearX * 2; // 584px width
+      const clearH = 65; // 65px height
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(clearX, clearY, clearW, clearH);
 
       // 3. Draw dynamic donor name in the exact gold serif styling
       const centerX = canvas.width / 2;
-      const centerY = 350;
+      const centerY = 344;
 
       // Auto-fit font size based on name length
       let fontSize = 38;
-      if (cleanName.length > 28) fontSize = 26;
-      else if (cleanName.length > 22) fontSize = 30;
-      else if (cleanName.length > 16) fontSize = 34;
+      if (cleanName.length > 28) fontSize = 24;
+      else if (cleanName.length > 22) fontSize = 28;
+      else if (cleanName.length > 16) fontSize = 32;
 
       ctx.font = `800 ${fontSize}px Georgia, "Times New Roman", serif`;
       ctx.fillStyle = "#C59B27";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      // Subtle letter spacing effect
+      // Letter spacing
       const spacedName = cleanName.split("").join(cleanName.length > 20 ? " " : "  ");
       ctx.fillText(spacedName, centerX, centerY);
-
-      // 4. Subtle gold underline bar under name if needed
-      ctx.strokeStyle = "#B8860B";
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      const lineHalfW = Math.min(220, Math.max(140, cleanName.length * 9));
-      ctx.moveTo(centerX - lineHalfW, centerY + 22);
-      ctx.lineTo(centerX + lineHalfW, centerY + 22);
-      ctx.stroke();
-
-      // Center decorative dot
-      ctx.fillStyle = "#B8860B";
-      ctx.beginPath();
-      ctx.arc(centerX, centerY + 22, 3.5, 0, Math.PI * 2);
-      ctx.fill();
 
       setImageLoaded(true);
     };

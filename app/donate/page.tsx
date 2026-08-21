@@ -197,25 +197,6 @@ export default function DonatePage() {
             const existingDonations = JSON.parse(localStorage.getItem("kautike_admin_donations") || "[]");
             localStorage.setItem("kautike_admin_donations", JSON.stringify([newRecord, ...existingDonations]));
 
-            try {
-              await fetch(`${apiUrl}/api/donations/send-email`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  donorName: donor.name,
-                  email: donor.email,
-                  phone: donor.phone,
-                  amount: verifiedPayment.amount || effectiveAmount,
-                  pan: donor.pan,
-                  cause,
-                  paymentId: payId,
-                  receiptNumber: receiptNum,
-                  certificateUrl: `${window.location.origin}/certificate?name=${encodeURIComponent(donor.name)}&amount=${verifiedPayment.amount || effectiveAmount}`,
-                }),
-              });
-            } catch (mailErr) {
-              console.log("Email notification logged:", mailErr);
-            }
           } catch (verificationError) {
             console.error("Payment verification error", verificationError);
             setCheckoutError(verificationError instanceof Error ? verificationError.message : "We could not verify this payment.");

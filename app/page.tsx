@@ -293,6 +293,13 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            <div className="cry-approach-messages" aria-label="How Kautike creates change">
+              <p><strong>Family</strong>Building awareness among parents and guardians to support child education, health, and gender equality.</p>
+              <p><strong>Community</strong>Mobilizing local leaders, teachers, Anganwadi workers, and child protection committees.</p>
+              <p><strong>Government</strong>Partnering with government systems to strengthen policy and advocacy for children.</p>
+              <p><strong>Public</strong>Inspiring young people and volunteers to champion child rights and environmental care.</p>
+            </div>
           </div>
         </div>
       </section>

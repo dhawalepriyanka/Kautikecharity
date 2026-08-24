@@ -2240,6 +2240,11 @@ footer {
   .stat-num { font-size: 24px; }
 
   .cry-stories-full-section { padding: 36px 16px 48px; }
+  .cry-stories-photo-hero {
+    width: calc(100% + 32px);
+    max-width: none !important;
+    margin-left: -16px;
+  }
   .cry-stories-heading-wrap h2 { font-size: clamp(24px, 6.5vw, 32px); }
   .cry-story-track-viewport { padding: 0 16px; overflow-x: hidden; }
   .cry-single-hero-card {

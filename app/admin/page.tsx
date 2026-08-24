@@ -3,7 +3,6 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 type Overview = { total_paid: number; paid_count: number; pending_count: number; message_count: number };
-type Donation = { id: string; donor_name: string; email: string; amount_inr: number; campaign: string; status: string; created_at: string };
 type Message = { id: string; name: string; email: string; phone: string | null; message: string; created_at: string; status?: "Unread" | "Read" | "Replied" };
 
 type PageContent = {
@@ -292,7 +291,6 @@ export default function AdminPage() {
   const [credentials, setCredentials] = useState({ username: "admin", password: "" });
   const [authorized, setAuthorized] = useState(false);
   const [overview, setOverview] = useState<Overview | null>(null);
-  const [donations, setDonations] = useState<Donation[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [notice, setNotice] = useState("");
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
@@ -392,9 +390,8 @@ export default function AdminPage() {
 
   const load = async () => {
     try {
-      const [dashboard, donationRows, messageRows, serverSettings, serverStories, serverVols, serverPages, serverNews] = await Promise.all([
+      const [dashboard, messageRows, serverSettings, serverStories, serverVols, serverPages, serverNews] = await Promise.all([
         request("/api/admin/overview"),
-        request("/api/admin/donations"),
         request("/api/admin/messages"),
         request("/api/settings").catch(() => null),
         request("/api/stories").catch(() => null),
@@ -403,7 +400,6 @@ export default function AdminPage() {
         request("/api/news").catch(() => null),
       ]);
       setOverview(dashboard);
-      setDonations(donationRows);
       let allMessages: Message[] = Array.isArray(messageRows) ? messageRows : [];
       try {
         const savedMsgs = localStorage.getItem("kautike_admin_messages");
@@ -800,7 +796,6 @@ export default function AdminPage() {
             { id: "PersonalInfo", icon: "👤", label: "Personal & Org Info" },
             { id: "Messages", icon: "✉️", label: "Received Messages" },
             { id: "EditPages", icon: "✏️", label: "Edit Website Pages" },
-            { id: "Donations", icon: "💰", label: "Donation Records" },
           ].map((item) => (
             <button
               key={item.id}
@@ -847,7 +842,6 @@ export default function AdminPage() {
         {section === "Overview" && (
           <>
             <div className="admin-summary-grid">
-              <Metric label="Verified Donations" value={"₹" + Number(overview?.total_paid || 0).toLocaleString("en-IN")} note={(overview?.paid_count || 0) + " successful payments"} />
               <Metric label="Received Inquiries" value={String(messages.length || overview?.message_count || 0)} note="From contact & volunteer forms" />
               <Metric label="Active Volunteers" value={String(volunteers.length)} note="Registered team members" />
               <Metric label="Published Stories" value={String(stories.length)} note="Field quotes live on site" />
@@ -910,16 +904,6 @@ export default function AdminPage() {
               </button>
             </div>
 
-            <section className="admin-card">
-              <div className="admin-card-heading">
-                <div>
-                  <p>DONATIONS</p>
-                  <h2>Recent activity</h2>
-                </div>
-                <button onClick={() => { setSection("Donations"); void load(); }}>View All Records</button>
-              </div>
-              <DonationTable rows={donations.slice(0, 5)} />
-            </section>
           </>
         )}
 
@@ -2151,19 +2135,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* ── 7. DONATIONS ── */}
-        {section === "Donations" && (
-          <section className="admin-card">
-            <div className="admin-card-heading">
-              <div>
-                <p>PAYMENTS</p>
-                <h2>All donation records</h2>
-              </div>
-              <button onClick={() => void load()}>Refresh</button>
-            </div>
-            <DonationTable rows={donations} />
-          </section>
-        )}
       </section>
     </main>
   );
@@ -2176,50 +2147,5 @@ function Metric({ label, value, note }: { label: string; value: string; note: st
       <strong>{value}</strong>
       <span>{note}</span>
     </article>
-  );
-}
-
-function DonationTable({ rows }: { rows: Donation[] }) {
-  return (
-    <div className="admin-table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Donor</th>
-            <th>Cause</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.length ? (
-            rows.map((row) => (
-              <tr key={row.id}>
-                <td>
-                  <strong>{row.donor_name}</strong>
-                  <br />
-                  <small>{row.email}</small>
-                </td>
-                <td>{row.campaign}</td>
-                <td>₹{Number(row.amount_inr).toLocaleString("en-IN")}</td>
-                <td>
-                  <span className="admin-status">{row.status}</span>
-                </td>
-                <td>
-                  {new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(new Date(row.created_at))}
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={5} className="admin-empty-row">
-                No donation records yet.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
   );
 }

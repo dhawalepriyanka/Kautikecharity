@@ -7,19 +7,18 @@ const campaigns = [
     title: "SUPPORT CHILDREN'S EDUCATION",
     text: "Help them stay in school",
     photo: "/images/help-tomorrow.jpg",
-    badge: "SAVE TAX ON YOUR DONATION",
     href: "#donate",
   },
   {
     title: "HELP UNDERPRIVILEGED MOTHERS",
     text: "Provide them the nutritional care",
-    photo: "/images/mothers-campaign.jpg",
+    photo: "/childeren17.png",
     href: "#donate",
   },
   {
     title: "PLANTATION & GREEN INDIA",
     text: "Help plant trees & protect nature",
-    photo: "/images/plantation-campaign.jpg",
+    photo: "/images/about-vision-user-photo.jpg",
     href: "#donate",
   },
   {

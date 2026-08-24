@@ -256,7 +256,7 @@ export default function DonatePage() {
       {/* ── Main Donation Showcase Container ── */}
       <section style={{ maxWidth: "1220px", margin: "0 auto", padding: "10px 24px 80px" }}>
         
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "32px", alignItems: "start" }}>
+        <div className="donate-main-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "32px", alignItems: "start" }}>
           
           {/* ── LEFT PANEL: INSPIRING STORY & IMPACT ── */}
           <div style={{ background: "#FFFFFF", borderRadius: "14px", border: "1.5px solid #E5E7EB", borderTop: "4px solid #F5A623", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.05)" }}>

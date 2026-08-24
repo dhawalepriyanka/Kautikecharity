@@ -1,5 +1,4 @@
 import { CampaignSlider } from "./components/CampaignSlider";
-import { DonationWidget } from "./components/DonationWidget";
 import { HeroMedia } from "./components/HeroMedia";
 import { ImpactStats } from "./components/ImpactStats";
 import { Header } from "./components/Header";
@@ -407,42 +406,6 @@ export default function Home() {
           </svg>
         </div>
       </div>
-
-      {/* 9. DONATION PANEL */}
-      <section className="donate-section-wrap" id="donate">
-        <div className="donate-panel">
-          <div className="donate-copy">
-            <span className="mini-title">Take Part Today</span>
-            <h2>
-              Help create a future full of <em>possibility.</em>
-            </h2>
-            <p>
-              Your support funds school supplies, nutritious meals, child protection initiatives, and emergency relief for families in need.
-            </p>
-
-            <ul>
-              <li>
-                <span className="check-icon">✓</span>
-                100% transparent utilization & progress updates
-              </li>
-              <li>
-                <span className="check-icon">✓</span>
-                Eligible for 80G Tax Exemption receipts
-              </li>
-              <li>
-                <span className="check-icon">✓</span>
-                Secure online donation via card, UPI, or Net Banking
-              </li>
-              <li>
-                <span className="check-icon">✓</span>
-                Monthly updates on the children & causes you support
-              </li>
-            </ul>
-          </div>
-
-          <DonationWidget />
-        </div>
-      </section>
 
       {/* 10. CRY.ORG PREMIUM TRUST BADGES BAR */}
       <section className="cry-wc-trust-badges-section">

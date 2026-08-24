@@ -15,18 +15,30 @@ const supportAreas = [
 
 export default function CommunityReliefPage() {
   return (
-    <main className="page-fade-in">
+    <main className="page-fade-in community-relief-page">
       <Header />
       <section className="relief-hero">
         <div className="relief-hero-copy">
           <span>KAUTIKE COMMUNITY RELIEF</span>
-          <h1>Standing together when support matters <em>most.</em></h1>
+          <h1>Standing together <span>when support</span> <em>matters most.</em></h1>
           <p>We work with local communities to provide immediate, practical help while protecting every family’s dignity.</p>
           <a href="/donate" className="relief-primary-action">Support community relief <span aria-hidden="true">→</span></a>
+          <div className="relief-hero-highlights" aria-label="Community relief values">
+            <span><b>01</b> Immediate support</span>
+            <span><b>02</b> Community-led care</span>
+          </div>
         </div>
-        <div className="relief-hero-image">
-          <img src="/images/stories/august-2026/field-story-03.jpeg" alt="Kautike volunteers supporting a community initiative" />
-          <div className="relief-hero-caption">Care. Dignity. Community.</div>
+        <div className="relief-hero-visual" aria-label="Community support services">
+          <div className="relief-visual-orbit relief-visual-orbit-one" aria-hidden="true" />
+          <div className="relief-visual-orbit relief-visual-orbit-two" aria-hidden="true" />
+          <div className="relief-visual-core">
+            <span>KAUTIKE CARE CIRCLE</span>
+            <strong>Community<br />comes first.</strong>
+            <small>Care. Dignity. Community.</small>
+          </div>
+          <div className="relief-visual-card relief-visual-card-one"><b>01</b><span>School<br />supplies</span></div>
+          <div className="relief-visual-card relief-visual-card-two"><b>02</b><span>Family<br />relief kits</span></div>
+          <div className="relief-visual-card relief-visual-card-three"><b>03</b><span>Community<br />service</span></div>
         </div>
       </section>
 

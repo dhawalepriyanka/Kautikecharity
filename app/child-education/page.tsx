@@ -13,21 +13,26 @@ export default function ChildEducationPage() {
     <main className="page-fade-in" id="top">
       <Header />
 
-      <section className="prog-hero" style={{ background: "linear-gradient(135deg, #1E293B 0%, #0F172A 100%)" }}>
-        <div className="prog-hero-inner">
-          <span className="subpage-badge">WHAT WE DO</span>
-          <h1>Child Education &amp; <span className="yellow-hand">Foundational Literacy</span></h1>
-          <p>Ensuring every child from marginalized backgrounds accesses quality, joyful, and continuous schooling — because education is the most powerful tool to break the cycle of poverty.</p>
-          <div className="prog-hero-stats">
-            <div className="prog-hero-stat"><strong>15.5L+</strong><span>Children Supported</span></div>
-            <div className="prog-hero-stat"><strong>1,200+</strong><span>Classrooms Upgraded</span></div>
-            <div className="prog-hero-stat"><strong>480+</strong><span>Villages Reached</span></div>
+      <section className="edu-education-hero">
+        <div className="edu-education-shell">
+          <div className="edu-education-copy">
+            <span className="subpage-badge">WHAT WE DO · EDUCATION</span>
+            <h1>Every child<br />deserves a <em>brighter</em><br />beginning.</h1>
+            <p>We make classrooms joyful, safe, and full of opportunity—so children can learn with confidence and shape their own futures.</p>
+            <a className="cry-yellow-btn edu-education-cta" href="/donate">Support a child&apos;s education <span>→</span></a>
+            <div className="edu-education-stats" aria-label="Education impact">
+              <div><strong>15.5L+</strong><span>Children supported</span></div>
+              <div><strong>1,200+</strong><span>Classrooms upgraded</span></div>
+              <div><strong>480+</strong><span>Villages reached</span></div>
+            </div>
           </div>
-        </div>
-        <div className="prog-hero-wave">
-          <svg viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M0,20 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#FAF8F5" />
-          </svg>
+          <div className="edu-education-zigzag" aria-hidden="true" />
+          <div className="edu-education-portrait">
+            <img src="/images/smiling-girl-writing.jpg" alt="A student learning in a Kautike-supported classroom" />
+            <div className="edu-education-note">Learning today.<br /><strong>Possibility tomorrow.</strong></div>
+            <span className="edu-education-leaf edu-education-leaf-one" aria-hidden="true" />
+            <span className="edu-education-leaf edu-education-leaf-two" aria-hidden="true" />
+          </div>
         </div>
       </section>
 

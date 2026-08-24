@@ -24,7 +24,7 @@ export default function GetInvolvedPage() {
       </section>
 
       {/* Pathways Grid */}
-      <section className="section-pad bg-white">
+      <section className="section-pad bg-white get-involved-pathways">
         <div className="about-container">
           <div className="pathways-grid">
             <div className="pathway-card">
@@ -63,7 +63,7 @@ export default function GetInvolvedPage() {
       </section>
 
       {/* Campaign Highlights */}
-      <section className="section-pad bg-cream">
+      <section className="section-pad bg-cream get-involved-campaigns">
         <div className="about-container text-center">
           <span className="mini-title">ACTIVE CAMPAIGNS</span>
           <h2 className="section-heading">Join Our <span className="yellow-hand">Ongoing Missions</span></h2>

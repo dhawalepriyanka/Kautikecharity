@@ -112,6 +112,10 @@ export function NavDropdown() {
       {mobileOpen && (
         <div id="mobile-navigation" className="cry-mobile-nav-panel" aria-label="Mobile navigation">
           <div className="cry-mobile-nav-inner">
+            <a className="cry-mobile-home-link" href="/">
+              <span>Home</span>
+              <span className="link-arrow">›</span>
+            </a>
             {menus.map((menu, idx) => {
               const isExpanded = expandedCategory === idx;
               return (

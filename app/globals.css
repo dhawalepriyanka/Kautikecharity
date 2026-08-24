@@ -2239,15 +2239,15 @@ footer {
   .stat-item:nth-child(3) { border-right: 1px solid rgba(15,23,42,0.12); }
   .stat-num { font-size: 24px; }
 
-  /* Stories section: keep the photo inset and proportioned like the mobile design. */
+  /* Stories section: use a full-width photo with a mobile-friendly proportion. */
   .cry-stories-full-section {
-    padding: 0 14px 48px;
+    padding: 0 0 48px;
     background: #FAF8F5;
   }
   .cry-stories-top-paint-wave {
-    left: 14px;
-    right: 14px;
-    width: auto;
+    left: 0;
+    right: 0;
+    width: 100%;
   }
   .cry-stories-photo-hero {
     width: 100%;

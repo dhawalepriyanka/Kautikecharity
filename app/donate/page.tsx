@@ -44,8 +44,8 @@ export default function DonatePage() {
     phone: "",
     address: "",
     pincode: "",
-    city: "Mumbai",
-    state: "Maharashtra",
+    city: "",
+    state: "",
     pan: "",
   });
 
@@ -59,7 +59,10 @@ export default function DonatePage() {
   const handlePincodeChange = (pin: string) => {
     setDonor((prev) => {
       const updated = { ...prev, pincode: pin };
-      if (pin.length === 6) {
+      if (pin.length !== 6) {
+        updated.city = "";
+        updated.state = "";
+      } else {
         if (pin.startsWith("400") || pin.startsWith("410")) {
           updated.city = "Navi Mumbai / Panvel";
           updated.state = "Maharashtra";
@@ -69,6 +72,9 @@ export default function DonatePage() {
         } else if (pin.startsWith("422")) {
           updated.city = "Nashik";
           updated.state = "Maharashtra";
+        } else {
+          updated.city = "";
+          updated.state = "";
         }
       }
       return updated;
@@ -479,7 +485,6 @@ export default function DonatePage() {
                       <input
                         type="number"
                         min="1"
-                        placeholder="Other Amount"
                         value={customAmount}
                         onChange={(e) => setCustomAmount(e.target.value)}
                         className="cry-other-amount-input"
@@ -527,7 +532,6 @@ export default function DonatePage() {
                         <input
                           type="text"
                           required
-                          placeholder="e.g. Akhil Kamble"
                           value={donor.name}
                           onChange={(e) => setDonor({ ...donor, name: e.target.value })}
                           className="cry-underline-input"
@@ -553,7 +557,6 @@ export default function DonatePage() {
                         <input
                           type="email"
                           required
-                          placeholder="e.g. akhil@example.com"
                           value={donor.email}
                           onChange={(e) => setDonor({ ...donor, email: e.target.value })}
                           className="cry-underline-input"
@@ -568,7 +571,6 @@ export default function DonatePage() {
                         <input
                           type="tel"
                           required
-                          placeholder="e.g. 9820012345"
                           value={donor.phone}
                           onChange={(e) => setDonor({ ...donor, phone: e.target.value })}
                           className="cry-underline-input"
@@ -583,7 +585,6 @@ export default function DonatePage() {
                         <input
                           type="text"
                           required
-                          placeholder="Street / Flat / Colony"
                           value={donor.address}
                           onChange={(e) => setDonor({ ...donor, address: e.target.value })}
                           className="cry-underline-input"
@@ -599,7 +600,6 @@ export default function DonatePage() {
                           type="text"
                           maxLength={6}
                           required
-                          placeholder="e.g. 400072"
                           value={donor.pincode}
                           onChange={(e) => handlePincodeChange(e.target.value)}
                           className="cry-underline-input"
@@ -611,7 +611,7 @@ export default function DonatePage() {
                         <label>City &amp; State</label>
                         <input
                           type="text"
-                          value={`${donor.city}, ${donor.state}`}
+                          value={[donor.city, donor.state].filter(Boolean).join(", ")}
                           onChange={(e) => setDonor({ ...donor, city: e.target.value })}
                           className="cry-underline-input"
                         />
@@ -623,7 +623,6 @@ export default function DonatePage() {
                         <input
                           type="text"
                           maxLength={10}
-                          placeholder="e.g. ABCDE1234F"
                           value={donor.pan}
                           onChange={(e) => setDonor({ ...donor, pan: e.target.value.toUpperCase() })}
                           className="cry-underline-input"

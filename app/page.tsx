@@ -114,7 +114,6 @@ export default function Home() {
               <div className="wwd-card-back">
                 <h3 className="wwd-card-title">Education</h3>
                 <p className="wwd-card-text">Providing school kits, academic support centers, and learning materials for every child.</p>
-                <a href="#donate" className="wwd-btn btn-pink">Know More</a>
               </div>
               <div className="wwd-bar bar-pink" />
             </div>
@@ -137,7 +136,6 @@ export default function Home() {
               <div className="wwd-card-back">
                 <h3 className="wwd-card-title">Health & Nutrition</h3>
                 <p className="wwd-card-text">Increasing access to proper nutrition, growth monitoring, and quality healthcare.</p>
-                <a href="#donate" className="wwd-btn btn-cyan">Know More</a>
               </div>
               <div className="wwd-bar bar-cyan" />
             </div>
@@ -158,7 +156,6 @@ export default function Home() {
               <div className="wwd-card-back">
                 <h3 className="wwd-card-title">Safety & Protection</h3>
                 <p className="wwd-card-text">Preventing child labor, supporting child rights, and protecting vulnerable youth.</p>
-                <a href="#donate" className="wwd-btn btn-purple">Know More</a>
               </div>
               <div className="wwd-bar bar-purple" />
             </div>
@@ -180,7 +177,6 @@ export default function Home() {
               <div className="wwd-card-back">
                 <h3 className="wwd-card-title">Environment & Plants</h3>
                 <p className="wwd-card-text">Planting saplings, restoring urban green cover, and promoting environmental care.</p>
-                <a href="#donate" className="wwd-btn btn-orange">Know More</a>
               </div>
               <div className="wwd-bar bar-orange" />
             </div>

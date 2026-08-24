@@ -2294,6 +2294,7 @@ footer {
   }
   .node-tooltip {
     width: 220px;
+    max-width: 220px !important;
     padding: 11px 12px;
     font-size: 11px;
     line-height: 1.4;
@@ -2320,7 +2321,7 @@ footer {
     height: 280px;
     transform: none !important;
   }
-  .node-tooltip { width: 220px; }
+  .node-tooltip { width: 220px; max-width: 220px !important; }
   .node-family .node-tooltip { left: -30px; }
   .node-community .node-tooltip { right: -30px; }
   .node-government .node-tooltip { right: -30px; top: -115px; }

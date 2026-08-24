@@ -859,7 +859,6 @@ h2.section-heading em { font-style: normal; color: var(--green); }
   justify-content: center;
   align-items: center;
 }
-.cry-approach-messages { display: none; }
 .cry-orbital-circle {
   position: relative;
   width: 440px;
@@ -907,6 +906,11 @@ h2.section-heading em { font-style: normal; color: var(--green); }
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
   z-index: 12;
 }
 .node-icon-circle {
@@ -983,6 +987,7 @@ h2.section-heading em { font-style: normal; color: var(--green); }
 
 /* Hover or Active State Shows Tooltip */
 .cry-orbit-node:hover .node-tooltip,
+.cry-orbit-node:focus .node-tooltip,
 .node-tooltip.visible-card {
   opacity: 1;
   visibility: visible;
@@ -2287,32 +2292,16 @@ footer {
     flex-shrink: 0;
     margin: 0 auto;
   }
-  .node-tooltip { display: none !important; }
-  .cry-approach-messages {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    width: min(100%, 520px);
-    gap: 10px;
-    text-align: left;
+  .node-tooltip {
+    width: 190px;
+    padding: 11px 12px;
+    font-size: 11px;
+    line-height: 1.4;
   }
-  .cry-approach-messages p {
-    margin: 0;
-    padding: 12px;
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-left: 3px solid var(--gold);
-    border-radius: 10px;
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.45;
-    box-shadow: 0 6px 18px rgba(15,23,42,.06);
-  }
-  .cry-approach-messages strong {
-    display: block;
-    margin-bottom: 4px;
-    color: var(--navy-dark);
-    font-size: 12px;
-  }
+  .node-family .node-tooltip { left: -35px; top: 72px; }
+  .node-community .node-tooltip { right: -35px; top: 72px; }
+  .node-government .node-tooltip { right: -35px; top: -105px; }
+  .node-public .node-tooltip { left: -35px; top: -105px; }
 
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
   .footer-bottom { flex-direction: column; text-align: center; gap: 16px; }
@@ -2331,7 +2320,6 @@ footer {
     height: 280px;
     transform: none !important;
   }
-  .cry-approach-messages { grid-template-columns: 1fr; }
 }
 
 /* =========================================================

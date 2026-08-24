@@ -231,7 +231,7 @@ export default function Home() {
 
               {/* Orbital Nodes with CRY.org Tooltip Popups */}
               {/* 1. Family (Top Left) */}
-              <div className="cry-orbit-node node-family">
+              <button type="button" className="cry-orbit-node node-family" aria-label="Show Family information">
                 <div className="node-icon-circle">
                   <svg viewBox="0 0 40 40" fill="none">
                     <path d="M20 10 C22 10 24 12 24 14 C24 16 22 18 20 18 C18 18 16 16 16 14 C16 12 18 10 20 10 Z" fill="#E67E22" />
@@ -242,10 +242,10 @@ export default function Home() {
                 <div className="node-tooltip tooltip-right">
                   Building awareness among parents &amp; guardians to change attitudes towards child education, health, and gender equality.
                 </div>
-              </div>
+              </button>
 
               {/* 2. Community (Top Right) */}
-              <div className="cry-orbit-node node-community">
+              <button type="button" className="cry-orbit-node node-community" aria-label="Show Community information">
                 <div className="node-icon-circle">
                   <svg viewBox="0 0 40 40" fill="none">
                     <circle cx="20" cy="14" r="4" fill="#F5A623" />
@@ -258,10 +258,10 @@ export default function Home() {
                 <div className="node-tooltip tooltip-left">
                   Mobilizing grassroots leaders, teachers, Anganwadi workers, and village child protection committees.
                 </div>
-              </div>
+              </button>
 
               {/* 3. Government (Bottom Right) */}
-              <div className="cry-orbit-node node-government">
+              <button type="button" className="cry-orbit-node node-government" aria-label="Show Government information">
                 <div className="node-icon-circle">
                   <svg viewBox="0 0 40 40" fill="none">
                     <path d="M8 16 L20 8 L32 16 L32 18 L8 18 Z" fill="#F5A623" />
@@ -275,10 +275,10 @@ export default function Home() {
                 <div className="node-tooltip tooltip-left">
                   Partnering with district, state and national level governments to strengthen policy and advocacy systems for children.
                 </div>
-              </div>
+              </button>
 
               {/* 4. Public (Bottom Left) */}
-              <div className="cry-orbit-node node-public">
+              <button type="button" className="cry-orbit-node node-public" aria-label="Show Public information">
                 <div className="node-icon-circle">
                   <svg viewBox="0 0 40 40" fill="none">
                     <circle cx="16" cy="14" r="4" fill="#F5A623" />
@@ -291,14 +291,7 @@ export default function Home() {
                 <div className="node-tooltip tooltip-right">
                   Sensitizing public society, youth, and volunteers to champion child rights and environmental care.
                 </div>
-              </div>
-            </div>
-
-            <div className="cry-approach-messages" aria-label="How Kautike creates change">
-              <p><strong>Family</strong>Building awareness among parents and guardians to support child education, health, and gender equality.</p>
-              <p><strong>Community</strong>Mobilizing local leaders, teachers, Anganwadi workers, and child protection committees.</p>
-              <p><strong>Government</strong>Partnering with government systems to strengthen policy and advocacy for children.</p>
-              <p><strong>Public</strong>Inspiring young people and volunteers to champion child rights and environmental care.</p>
+              </button>
             </div>
           </div>
         </div>

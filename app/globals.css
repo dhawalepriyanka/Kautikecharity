@@ -2254,6 +2254,9 @@ footer {
     height: auto;
     aspect-ratio: 0.758;
   }
+  .cry-stories-img-element {
+    object-position: 78% center;
+  }
   .cry-stories-heading-wrap h2 { font-size: clamp(24px, 6.5vw, 32px); }
   .cry-story-track-viewport { padding: 0 16px; overflow-x: hidden; }
   .cry-single-hero-card {

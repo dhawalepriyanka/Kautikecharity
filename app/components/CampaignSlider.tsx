@@ -7,25 +7,25 @@ const campaigns = [
     title: "SUPPORT CHILDREN'S EDUCATION",
     text: "Help them stay in school",
     photo: "/images/help-tomorrow.jpg",
-    href: "#donate",
+    href: "/donate",
   },
   {
     title: "HELP UNDERPRIVILEGED MOTHERS",
     text: "Provide them the nutritional care",
     photo: "/childeren17.png",
-    href: "#donate",
+    href: "/donate",
   },
   {
     title: "PLANTATION & GREEN INDIA",
     text: "Help plant trees & protect nature",
     photo: "/images/about-vision-user-photo.jpg",
-    href: "#donate",
+    href: "/donate",
   },
   {
     title: "STOP CHILD LABOUR",
     text: "Help children go to school instead",
     photo: "/images/child-labour-campaign.jpg",
-    href: "#donate",
+    href: "/donate",
   },
 ];
 
@@ -116,7 +116,7 @@ export function CampaignSlider() {
             Your smallest contribution makes a big difference to children&apos;s lives and nature. We count on the generosity of people like you to educate children, plant trees, and create real change for India&apos;s future!
           </p>
 
-          <a href="#donate" className="cry-yellow-btn">
+          <a href="/donate" className="cry-yellow-btn">
             🌱 Support Children & Tree Plantation!
           </a>
         </div>

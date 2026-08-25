@@ -152,9 +152,33 @@ export function NavDropdown() {
               <a
                 href="/donate"
                 className="cry-mobile-donate-btn"
+                onClick={() => setMobileOpen(false)}
               >
                 ♥ DONATE NOW
               </a>
+              <div className="cry-mobile-social-wrap">
+                <span className="cry-mobile-social-title">Connect with us</span>
+                <div className="cry-mobile-social-pills">
+                  <a
+                    href="https://www.facebook.com/share/1Leu6EybCU/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cry-soc-pill-fb"
+                    aria-label="Facebook"
+                  >
+                    <span className="soc-badge">f</span> Facebook
+                  </a>
+                  <a
+                    href="https://www.instagram.com/kc_foundation__?igsi=eHd2eWV0amQ2d3hw"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cry-soc-pill-ig"
+                    aria-label="Instagram"
+                  >
+                    <span className="soc-badge">📸</span> Instagram
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

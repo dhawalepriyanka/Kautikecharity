@@ -56,10 +56,8 @@ export function Header() {
             </a>
           </div>
           <div className="socials">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">fb</a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">x</a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">ig</a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">in</a>
+            <a href="https://www.facebook.com/share/1Leu6EybCU/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">fb</a>
+            <a href="https://www.instagram.com/kc_foundation__?igsi=eHd2eWV0amQ2d3hw" target="_blank" rel="noopener noreferrer" aria-label="Instagram">ig</a>
           </div>
         </div>
       </div>

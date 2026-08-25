@@ -54,7 +54,7 @@ export default function Home() {
             protecting our future
           </h1>
 
-          <a href="#donate" className="cry-yellow-btn">
+          <a href="/donate" className="cry-yellow-btn">
             ♥ Yes! I Want To Help!
           </a>
 

@@ -20,6 +20,17 @@ export function Footer() {
             <span>📑 80G Tax Exemption</span>
             <span>🏛️ MCA & NITI Aayog Compliant</span>
           </div>
+          <div className="footer-social-row">
+            <span className="footer-social-label">Follow Us:</span>
+            <div className="footer-social-links">
+              <a href="https://www.facebook.com/share/1Leu6EybCU/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                Facebook
+              </a>
+              <a href="https://www.instagram.com/kc_foundation__?igsi=eHd2eWV0amQ2d3hw" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                Instagram
+              </a>
+            </div>
+          </div>
         </div>
 
         <div className="footer-col">

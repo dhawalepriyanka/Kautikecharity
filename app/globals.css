@@ -152,19 +152,20 @@ img, video { max-width: 100%; display: block; }
   margin-left: auto;
 }
 .socials a {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.12);
-  display: grid;
-  place-items: center;
-  font-size: 10px;
+  background: rgba(255,255,255,0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #FFFFFF;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.2s ease;
 }
 .socials a:hover {
   background: var(--gold);
   color: var(--navy-dark);
+  transform: scale(1.1);
 }
 
 .site-header {
@@ -2083,6 +2084,16 @@ footer {
   background: #166FE5;
 }
 
+.cry-soc-pill-yt {
+  background: #FF0000;
+  color: #FFFFFF;
+  border: 1px solid #FF0000;
+}
+
+.cry-soc-pill-yt:hover {
+  background: #CC0000;
+}
+
 .cry-soc-pill-ig {
   background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF);
   color: #FFFFFF;
@@ -2119,6 +2130,7 @@ footer {
 .footer-social-links a {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   padding: 5px 12px;
   background: rgba(255, 255, 255, 0.08);
   color: #FFFFFF;

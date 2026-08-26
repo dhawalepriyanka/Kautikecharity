@@ -30,7 +30,7 @@ export function CertificateOfContribution({
     img.crossOrigin = "anonymous";
     img.src = "/certificate-template.png";
 
-    img.onload = () => {
+    const renderCertificate = () => {
       // High-resolution internal canvas dimensions matching template
       canvas.width = img.naturalWidth || 1024;
       canvas.height = img.naturalHeight || 723;
@@ -39,33 +39,47 @@ export function CertificateOfContribution({
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       // 2. Clear ONLY the sample name "AKHIL KAMBLE" (preserve the original divider and text below)
-      const clearX = 220;
-      const clearY = 310;
-      const clearW = canvas.width - clearX * 2; // 584px width
-      const clearH = 65; // 65px height
+      const clearX = 180;
+      const clearY = 305;
+      const clearW = canvas.width - clearX * 2; // 664px width
+      const clearH = 70; // 70px height
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(clearX, clearY, clearW, clearH);
 
-      // 3. Draw dynamic donor name in the exact gold serif styling
+      // 3. Draw dynamic donor name in the exact Cinzel / luxury gold uppercase styling
       const centerX = canvas.width / 2;
-      const centerY = 344;
+      const centerY = 340;
 
       // Auto-fit font size based on name length
-      let fontSize = 38;
-      if (cleanName.length > 28) fontSize = 24;
-      else if (cleanName.length > 22) fontSize = 28;
-      else if (cleanName.length > 16) fontSize = 32;
+      let fontSize = 36;
+      if (cleanName.length > 30) fontSize = 22;
+      else if (cleanName.length > 24) fontSize = 26;
+      else if (cleanName.length > 18) fontSize = 30;
 
-      ctx.font = `800 ${fontSize}px Georgia, "Times New Roman", serif`;
-      ctx.fillStyle = "#C59B27";
+      ctx.font = `600 ${fontSize}px "Cinzel", "Cinzel Decorative", "Montserrat", "Trajan Pro", Georgia, serif`;
+      ctx.fillStyle = "#C59428";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      // Letter spacing
-      const spacedName = cleanName.split("").join(cleanName.length > 20 ? " " : "  ");
-      ctx.fillText(spacedName, centerX, centerY);
+      // Enhanced Letter Spacing for classical luxury look
+      try {
+        (ctx as any).letterSpacing = cleanName.length > 22 ? "3px" : "6px";
+      } catch (_) {}
 
+      const spacedName = (ctx as any).letterSpacing
+        ? cleanName
+        : cleanName.split("").join(cleanName.length > 20 ? " " : "  ");
+
+      ctx.fillText(spacedName, centerX, centerY);
       setImageLoaded(true);
+    };
+
+    img.onload = () => {
+      if (typeof document !== "undefined" && document.fonts) {
+        document.fonts.ready.then(renderCertificate).catch(renderCertificate);
+      } else {
+        renderCertificate();
+      }
     };
   }, [cleanName]);
 

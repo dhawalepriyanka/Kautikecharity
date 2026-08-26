@@ -15,17 +15,37 @@ const defaultPresidentData = {
 };
 
 const defaultVolunteers = [
-  { name: "Nilesh Kute", role: "Volunteer", image: "/images/team/nilesh-kute.png", location: "Maharashtra, India" },
-  { name: "Ashish Mishra", role: "Volunteer", image: "/images/team/ashish-mishra.png", location: "Panvel, Raigad" },
-  { name: "Abhinay Singh", role: "Volunteer", image: "/images/team/abhinay-singh-hd.png", location: "Mumbai & Raigad" },
-  { name: "Yogesh Shinde", role: "Volunteer", image: "/images/team/yogesh-shinde.png", location: "Maharashtra" },
-  { name: "Dnyaneshwar Jadhav", role: "Volunteer", image: "/images/team/dnyaneshwar-jadhav.png", location: "Panvel, Raigad" },
-  { name: "Jayshree Sutar", role: "Volunteer", image: "/images/team/jayshree-sutar.png", location: "Maharashtra" },
-  { name: "Santosh Jadhav", role: "Volunteer", image: "/images/team/santosh-jadhav.png", location: "Panvel, Raigad" },
-  { name: "Vijay Jadhav", role: "Volunteer", image: "/images/team/vijay-jadhav.png", location: "Mahodar, Panvel" },
-  { name: "Satish Jadhav", role: "Volunteer", image: "/images/team/satish-jadhav.png", location: "Panvel, Raigad" },
-  { name: "Deepak Thorat", role: "Volunteer", image: "/images/team/deepak-thorat.png", location: "Kondap, Panvel" },
+  { id: "v0", name: "Nilesh Kute", role: "Volunteer", image: "/images/team/nilesh-kute.png", location: "Maharashtra, India" },
+  { id: "v1", name: "Ashish Mishra", role: "Volunteer", image: "/images/team/ashish-mishra.png", location: "Panvel, Raigad" },
+  { id: "v2", name: "Abhinay Singh", role: "Volunteer", image: "/images/team/abhinay-singh-hd.png", location: "Mumbai & Raigad" },
+  { id: "v3", name: "Yogesh Shinde", role: "Volunteer", image: "/images/team/yogesh-shinde.png", location: "Maharashtra" },
+  { id: "v4", name: "Dnyaneshwar Jadhav", role: "Volunteer", image: "/images/team/dnyaneshwar-jadhav.png", location: "Panvel, Raigad" },
+  { id: "v5", name: "Jayshree Sutar", role: "Volunteer", image: "/images/team/jayshree-sutar.png", location: "Maharashtra" },
+  { id: "v6", name: "Santosh Jadhav", role: "Volunteer", image: "/images/team/santosh-jadhav.png", location: "Panvel, Raigad" },
+  { id: "v7", name: "Vijay Jadhav", role: "Volunteer", image: "/images/team/vijay-jadhav.png", location: "Mahodar, Panvel" },
+  { id: "v8", name: "Satish Jadhav", role: "Volunteer", image: "/images/team/satish-jadhav.png", location: "Panvel, Raigad" },
+  { id: "v9", name: "Deepak Thorat", role: "Volunteer", image: "/images/team/deepak-thorat.png", location: "Kondap, Panvel" },
+  { id: "v10", name: "Suman Yadav", role: "Volunteer", image: "/images/team/suman-yadav.png", location: "Maharashtra, India" },
+  { id: "v11", name: "Ankit Dubey", role: "Volunteer", image: "/images/team/ankit-dubey.png", location: "Mumbai, Maharashtra" },
+  { id: "v12", name: "Brijesh Pandey", role: "Volunteer", image: "/images/team/brijesh-pandey.png", location: "Maharashtra, India" },
+  { id: "v13", name: "Akash Mishra", role: "Volunteer", image: "/images/team/akash-mishra.png", location: "Maharashtra, India" },
+  { id: "v14", name: "Vinayak Jadhav", role: "Volunteer", image: "/images/team/vinayak-jadhav.png", location: "Maharashtra, India" },
+  { id: "v15", name: "Vicky Jadhav", role: "Volunteer", image: "/images/team/vicky-jadhav.png", location: "Maharashtra, India" },
 ];
+
+function mergeVolunteersList(savedList: any[]) {
+  if (!Array.isArray(savedList) || savedList.length === 0) return defaultVolunteers;
+  const map = new Map();
+  defaultVolunteers.forEach((v) => map.set(v.name.toLowerCase().trim(), v));
+  savedList.forEach((v) => {
+    if (v && v.name) {
+      const key = v.name.toLowerCase().trim();
+      const existing = map.get(key);
+      map.set(key, { ...(existing || {}), ...v });
+    }
+  });
+  return Array.from(map.values());
+}
 
 export default function AboutPage() {
   const [volunteers, setVolunteers] = useState(defaultVolunteers);
@@ -36,17 +56,25 @@ export default function AboutPage() {
     address: "Office No. A-1, D'Souza Sadan, Lokmanya Tilak Nagar, 90 Feet Road, Sakinaka, Mumbai - 400 072",
   });
 
-  useEffect(() => {
+  const loadVolunteersData = () => {
     try {
-      // 1. Load from localStorage for instantaneous updates in same browser
       const savedVols = localStorage.getItem("kautike_admin_volunteers");
       if (savedVols) {
         const parsed = JSON.parse(savedVols);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setVolunteers(parsed);
+          setVolunteers(mergeVolunteersList(parsed));
         }
       }
+    } catch (_) {}
+  };
 
+  useEffect(() => {
+    loadVolunteersData();
+
+    // Listen for storage events in case admin updates volunteers in another tab
+    window.addEventListener("storage", loadVolunteersData);
+
+    try {
       const savedPersonal = localStorage.getItem("kautike_admin_personal");
       if (savedPersonal) {
         const p = JSON.parse(savedPersonal);
@@ -74,7 +102,9 @@ export default function AboutPage() {
         .then((res) => res.json())
         .then((data) => {
           if (Array.isArray(data) && data.length > 0) {
-            setVolunteers(data);
+            const merged = mergeVolunteersList(data);
+            setVolunteers(merged);
+            localStorage.setItem("kautike_admin_volunteers", JSON.stringify(merged));
           }
         })
         .catch(() => {});
@@ -102,6 +132,10 @@ export default function AboutPage() {
         })
         .catch(() => {});
     } catch (_) {}
+
+    return () => {
+      window.removeEventListener("storage", loadVolunteersData);
+    };
   }, []);
 
   return (

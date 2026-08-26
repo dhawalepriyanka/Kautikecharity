@@ -17,8 +17,38 @@ export default function VolunteerPage() {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newMsg = {
+      id: "vol-reg-" + Date.now(),
+      name: form.fullName,
+      email: form.email,
+      phone: form.phone,
+      message: `Volunteer Application:\nCity: ${form.city}\nArea of Interest: ${form.interest}\nAvailability: ${form.availability}\nBio/Motivation: ${form.message}`,
+      created_at: new Date().toISOString(),
+      status: "Unread",
+    };
+
+    try {
+      const savedMsgs = localStorage.getItem("kautike_admin_messages");
+      const current = savedMsgs ? JSON.parse(savedMsgs) : [];
+      localStorage.setItem("kautike_admin_messages", JSON.stringify([newMsg, ...current]));
+    } catch (_) {}
+
+    try {
+      await fetch("http://localhost:4000/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.fullName,
+          email: form.email,
+          phone: form.phone,
+          subject: `Volunteer Registration - ${form.interest}`,
+          message: newMsg.message,
+        }),
+      });
+    } catch (_) {}
+
     setSubmitted(true);
   };
 

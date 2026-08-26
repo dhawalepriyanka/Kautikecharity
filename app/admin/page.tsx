@@ -273,6 +273,7 @@ const initialNews: NewsArticle[] = [
 ];
 
 const initialVolunteers: Volunteer[] = [
+  { id: "v0", name: "Nilesh Kute", role: "President & Volunteer", location: "Maharashtra, India", image: "/images/team/nilesh-kute.png", phone: "+91 810 836 2688" },
   { id: "v1", name: "Ashish Mishra", role: "Field Volunteer", location: "Panvel, Raigad", image: "/images/team/ashish-mishra.png", phone: "+91 98201 12345" },
   { id: "v2", name: "Abhinay Singh", role: "Youth Coordinator", location: "Mumbai & Raigad", image: "/images/team/abhinay-singh-hd.png", phone: "+91 98202 23456" },
   { id: "v3", name: "Yogesh Shinde", role: "Outreach Lead", location: "Maharashtra", image: "/images/team/yogesh-shinde.png", phone: "+91 98203 34567" },
@@ -282,7 +283,27 @@ const initialVolunteers: Volunteer[] = [
   { id: "v7", name: "Vijay Jadhav", role: "Logistics Volunteer", location: "Mahodar, Panvel", image: "/images/team/vijay-jadhav.png", phone: "+91 98207 78901" },
   { id: "v8", name: "Satish Jadhav", role: "School Drive Volunteer", location: "Panvel, Raigad", image: "/images/team/satish-jadhav.png", phone: "+91 98208 89012" },
   { id: "v9", name: "Deepak Thorat", role: "Tree Plantation Coordinator", location: "Kondap, Panvel", image: "/images/team/deepak-thorat.png", phone: "+91 98209 90123" },
+  { id: "v10", name: "Suman Yadav", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/suman-yadav.png", phone: "+91 98210 01234" },
+  { id: "v11", name: "Ankit Dubey", role: "Youth Volunteer", location: "Mumbai, Maharashtra", image: "/images/team/ankit-dubey.png", phone: "+91 98211 12345" },
+  { id: "v12", name: "Brijesh Pandey", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/brijesh-pandey.png", phone: "+91 98212 23456" },
+  { id: "v13", name: "Akash Mishra", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/akash-mishra.png", phone: "+91 98213 34567" },
+  { id: "v14", name: "Vinayak Jadhav", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/vinayak-jadhav.png", phone: "+91 98214 45678" },
+  { id: "v15", name: "Vicky Jadhav", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/vicky-jadhav.png", phone: "+91 98215 56789" },
 ];
+
+function mergeAdminVolunteers(savedList: any[]): Volunteer[] {
+  if (!Array.isArray(savedList) || savedList.length === 0) return initialVolunteers;
+  const map = new Map<string, Volunteer>();
+  initialVolunteers.forEach((v) => map.set(v.name.toLowerCase().trim(), v));
+  savedList.forEach((v) => {
+    if (v && v.name) {
+      const key = v.name.toLowerCase().trim();
+      const existing = map.get(key);
+      map.set(key, { ...(existing || {}), ...v, id: v.id || existing?.id || "v_" + Math.random().toString(36).slice(2, 7) });
+    }
+  });
+  return Array.from(map.values());
+}
 
 const apiUrl = "http://localhost:4000";
 
@@ -423,8 +444,9 @@ export default function AdminPage() {
         localStorage.setItem("kautike_admin_stories", JSON.stringify(serverStories));
       }
       if (serverVols && Array.isArray(serverVols) && serverVols.length > 0) {
-        setVolunteers(serverVols);
-        localStorage.setItem("kautike_admin_volunteers", JSON.stringify(serverVols));
+        const merged = mergeAdminVolunteers(serverVols);
+        setVolunteers(merged);
+        localStorage.setItem("kautike_admin_volunteers", JSON.stringify(merged));
       }
       if (serverPages && Array.isArray(serverPages) && serverPages.length > 0) {
         setPages(serverPages);
@@ -450,7 +472,7 @@ export default function AdminPage() {
       const savedStories = localStorage.getItem("kautike_admin_stories");
       if (savedStories) setStories(JSON.parse(savedStories));
       const savedVols = localStorage.getItem("kautike_admin_volunteers");
-      if (savedVols) setVolunteers(JSON.parse(savedVols));
+      if (savedVols) setVolunteers(mergeAdminVolunteers(JSON.parse(savedVols)));
       const savedPersonal = localStorage.getItem("kautike_admin_personal");
       if (savedPersonal) setPersonalInfo(JSON.parse(savedPersonal));
       const savedNews = localStorage.getItem("kautike_admin_news");

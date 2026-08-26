@@ -341,72 +341,25 @@ export default function DonatePage() {
           {/* ── RIGHT PANEL: THE EXACT DONATION FORM ── */}
           <div style={{ width: "100%" }}>
             
-            {/* Payment Success View */}
+            {/* Payment Success View: Official Certificate of Contribution */}
             {successData ? (
-              <div style={{ background: "#FFFFFF", padding: "28px", borderRadius: "16px", border: "1.5px solid #E5E7EB", boxShadow: "0 10px 30px rgba(0,0,0,0.04)" }}>
-                <div style={{ display: "flex", gap: "10px", marginBottom: "20px", borderBottom: "2px solid #F1F5F9", paddingBottom: "12px" }}>
-                  <button
-                    onClick={() => setSuccessViewTab("certificate")}
-                    style={{
-                      flex: 1,
-                      padding: "10px 14px",
-                      borderRadius: "8px",
-                      border: "none",
-                      background: successViewTab === "certificate" ? "#FBBF24" : "#F1F5F9",
-                      color: successViewTab === "certificate" ? "#111827" : "#475569",
-                      fontWeight: 800,
-                      fontSize: "13.5px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    📜 Certificate of Contribution
-                  </button>
-                  <button
-                    onClick={() => setSuccessViewTab("receipt")}
-                    style={{
-                      flex: 1,
-                      padding: "10px 14px",
-                      borderRadius: "8px",
-                      border: "none",
-                      background: successViewTab === "receipt" ? "#FBBF24" : "#F1F5F9",
-                      color: successViewTab === "receipt" ? "#111827" : "#475569",
-                      fontWeight: 800,
-                      fontSize: "13.5px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    📄 80G Tax Receipt
-                  </button>
+              <div style={{ background: "#FFFFFF", padding: "24px 18px", borderRadius: "16px", border: "1.5px solid #E5E7EB", boxShadow: "0 10px 30px rgba(0,0,0,0.04)" }}>
+                <div style={{ textAlign: "center", marginBottom: "16px" }}>
+                  <div style={{ fontSize: "36px", marginBottom: "4px" }}>🎉</div>
+                  <h2 style={{ margin: "0 0 4px", fontSize: "22px", color: "#0F172A", fontWeight: 800 }}>
+                    Thank You, {donor.name || "Generous Donor"}!
+                  </h2>
+                  <p style={{ color: "#64748B", fontSize: "13.5px", margin: "0" }}>
+                    Your donation of <strong>₹{successData.amount.toLocaleString("en-IN")}</strong> has been received with gratitude. Here is your official Certificate of Contribution:
+                  </p>
                 </div>
 
-                {successViewTab === "certificate" ? (
-                  <CertificateOfContribution
-                    donorName={donor.name || "Akhil Kamble"}
-                    amount={successData.amount}
-                    date={successData.date}
-                    onClose={() => { setSuccessData(null); setStep(1); }}
-                  />
-                ) : (
-                  <div style={{ textAlign: "center" }}>
-                    <div style={{ fontSize: "42px", marginBottom: "8px" }}>✅</div>
-                    <h2 style={{ margin: "0 0 6px", fontSize: "22px", color: "#0F172A" }}>Thank You, {donor.name || "Akhil Kamble"}!</h2>
-                    <p style={{ color: "#64748B", fontSize: "13.5px", margin: "0 0 20px" }}>
-                      Your donation of <strong>₹{successData.amount.toLocaleString("en-IN")}</strong> has been processed successfully.
-                    </p>
-                    <div style={{ background: "#FAF8F5", border: "1px solid #E2E8F0", borderRadius: "10px", padding: "18px", textAlign: "left", marginBottom: "20px" }}>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", fontSize: "12.5px" }}>
-                        <div><span style={{ color: "#64748B" }}>Receipt No:</span> <strong>{successData.receiptNumber}</strong></div>
-                        <div><span style={{ color: "#64748B" }}>Payment ID:</span> <strong>{successData.paymentId}</strong></div>
-                        <div><span style={{ color: "#64748B" }}>Amount:</span> <strong style={{ color: "#15803D" }}>₹{successData.amount.toLocaleString("en-IN")}</strong></div>
-                        <div><span style={{ color: "#64748B" }}>PAN:</span> <strong>{donor.pan ? donor.pan.toUpperCase() : "N/A"}</strong></div>
-                      </div>
-                    </div>
-                    <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
-                      <button onClick={() => window.print()} className="cry-yellow-btn">🖨️ Print Tax Receipt (PDF)</button>
-                      <button onClick={() => { setSuccessData(null); setStep(1); }} className="cry-outline-btn">Make Another Donation</button>
-                    </div>
-                  </div>
-                )}
+                <CertificateOfContribution
+                  donorName={donor.name || "Rutik Bhalke"}
+                  amount={successData.amount}
+                  date={successData.date}
+                  onClose={() => { setSuccessData(null); setStep(1); }}
+                />
               </div>
             ) : (
               /* ── 2-STEP INTERACTIVE DONATION FORM ── */

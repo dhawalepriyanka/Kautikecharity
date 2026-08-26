@@ -108,7 +108,13 @@ export default function HealthNutritionPage() {
       <section className="section-pad bg-white">
         <div className="about-container">
           <div className="prog-story-split">
-            <div className="prog-story-img" style={{ backgroundImage: "url(/images/mothers-campaign.jpg)" }}></div>
+            <div
+              className="prog-story-img"
+              style={{
+                backgroundImage: "url(/images/health-nutrition-story.jpg)",
+                backgroundPosition: "center 25%",
+              }}
+            ></div>
             <div className="prog-story-copy">
               <span className="mini-title">FIELD STORY</span>
               <h2 className="section-heading">Back to a <span className="yellow-hand">Healthy Weight</span></h2>

@@ -56,6 +56,12 @@ type Volunteer = {
   email?: string;
 };
 
+type Subscriber = {
+  id: string;
+  email: string;
+  created_at: string;
+};
+
 const initialPages: PageContent[] = [
   {
     id: "home",
@@ -313,6 +319,8 @@ export default function AdminPage() {
   const [authorized, setAuthorized] = useState(false);
   const [overview, setOverview] = useState<Overview | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  const [subscriberQuery, setSubscriberQuery] = useState("");
   const [notice, setNotice] = useState("");
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
 
@@ -479,6 +487,8 @@ export default function AdminPage() {
       if (savedNews) setNewsList(JSON.parse(savedNews));
       const savedMsgs = localStorage.getItem("kautike_admin_messages");
       if (savedMsgs) setMessages(JSON.parse(savedMsgs));
+      const savedSubs = localStorage.getItem("kautike_subscribers");
+      if (savedSubs) setSubscribers(JSON.parse(savedSubs));
     } catch (_) {}
   }, []);
 
@@ -682,6 +692,20 @@ export default function AdminPage() {
 
   const volIdToName = (id: string) => volunteers.find((v) => v.id === id)?.name || id;
 
+  const deleteSubscriber = (id: string) => {
+    const updated = subscribers.filter((s) => s.id !== id);
+    setSubscribers(updated);
+    localStorage.setItem("kautike_subscribers", JSON.stringify(updated));
+    showToast("Subscriber removed.");
+  };
+
+  const copyAllSubscribers = () => {
+    if (!subscribers.length) return;
+    const text = subscribers.map((s) => s.email).join(", ");
+    navigator.clipboard.writeText(text);
+    showToast("✓ Copied " + subscribers.length + " subscriber emails to clipboard!");
+  };
+
   // File upload reader helper
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
     const file = e.target.files?.[0];
@@ -816,7 +840,8 @@ export default function AdminPage() {
             { id: "News", icon: "📰", label: "News & Press" },
             { id: "Volunteers", icon: "🤝", label: "Volunteers & Team" },
             { id: "PersonalInfo", icon: "👤", label: "Personal & Org Info" },
-            { id: "Messages", icon: "✉️", label: "Received Messages" },
+            { id: "Messages", icon: "✉️", label: `Received Messages (${messages.length})` },
+            { id: "Subscribers", icon: "📬", label: `Newsletter Subscribers (${subscribers.length})` },
             { id: "EditPages", icon: "✏️", label: "Edit Website Pages" },
           ].map((item) => (
             <button
@@ -1937,6 +1962,156 @@ export default function AdminPage() {
           </div>
         )}
 
+
+        {/* ── 5.5. NEWSLETTER SUBSCRIBERS ── */}
+        {section === "Subscribers" && (
+          <section className="admin-card" style={{ background: "#fff", borderRadius: 14, border: "1px solid #dbe8dd", padding: 24 }}>
+            <div className="admin-card-heading" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
+              <div>
+                <p style={{ margin: 0, fontSize: 12, fontWeight: 800, color: "#2f8f46", textTransform: "uppercase" }}>COMMUNITY</p>
+                <h2 style={{ margin: "4px 0 0", fontSize: 20, color: "#153f31" }}>
+                  📬 Newsletter Subscribers ({subscribers.length})
+                </h2>
+              </div>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  onClick={copyAllSubscribers}
+                  disabled={!subscribers.length}
+                  style={{
+                    background: "#2f8f46",
+                    color: "#fff",
+                    border: 0,
+                    padding: "8px 16px",
+                    borderRadius: 8,
+                    fontWeight: 700,
+                    fontSize: 13,
+                    cursor: subscribers.length ? "pointer" : "not-allowed",
+                    opacity: subscribers.length ? 1 : 0.6,
+                  }}
+                >
+                  📋 Copy All Emails ({subscribers.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const saved = localStorage.getItem("kautike_subscribers");
+                    if (saved) setSubscribers(JSON.parse(saved));
+                    showToast("Subscribers list refreshed.");
+                  }}
+                  style={{
+                    background: "#f1f5f9",
+                    color: "#334155",
+                    border: "1px solid #cbd5e1",
+                    padding: "8px 14px",
+                    borderRadius: 8,
+                    fontWeight: 700,
+                    fontSize: 13,
+                    cursor: "pointer",
+                  }}
+                >
+                  🔄 Refresh
+                </button>
+              </div>
+            </div>
+
+            {/* Filter / Search input */}
+            <div style={{ marginBottom: 16 }}>
+              <input
+                type="text"
+                placeholder="🔍 Search subscribers by email..."
+                value={subscriberQuery}
+                onChange={(e) => setSubscriberQuery(e.target.value)}
+                style={{
+                  width: "100%",
+                  maxWidth: 400,
+                  padding: "9px 14px",
+                  borderRadius: 8,
+                  border: "1px solid #cbd5e1",
+                  fontSize: 13,
+                  font: "inherit",
+                }}
+              />
+            </div>
+
+            {/* Subscribers Table */}
+            {subscribers.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "48px 16px", color: "#64748B", background: "#f8fafc", borderRadius: 10 }}>
+                <div style={{ fontSize: 36, marginBottom: 8 }}>📬</div>
+                <h3 style={{ margin: "0 0 6px", color: "#1E293B" }}>No subscribers yet</h3>
+                <p style={{ margin: 0, fontSize: 13 }}>New newsletter email submissions from the website footer will appear here.</p>
+              </div>
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ background: "#f8fafc", borderBottom: "2px solid #e2e8f0", textAlign: "left" }}>
+                      <th style={{ padding: "12px 14px", color: "#475569", fontWeight: 700 }}>#</th>
+                      <th style={{ padding: "12px 14px", color: "#475569", fontWeight: 700 }}>Subscriber Email</th>
+                      <th style={{ padding: "12px 14px", color: "#475569", fontWeight: 700 }}>Subscribed On</th>
+                      <th style={{ padding: "12px 14px", color: "#475569", fontWeight: 700, textAlign: "right" }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {subscribers
+                      .filter((s) => !subscriberQuery || s.email.toLowerCase().includes(subscriberQuery.toLowerCase()))
+                      .map((sub, index) => (
+                        <tr key={sub.id || sub.email} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                          <td style={{ padding: "12px 14px", color: "#94a3b8", fontWeight: 700 }}>{index + 1}</td>
+                          <td style={{ padding: "12px 14px", color: "#0F172A", fontWeight: 600 }}>
+                            <a href={`mailto:${sub.email}`} style={{ color: "#166534", textDecoration: "none" }}>
+                              ✉️ {sub.email}
+                            </a>
+                          </td>
+                          <td style={{ padding: "12px 14px", color: "#64748B" }}>
+                            {sub.created_at ? new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(sub.created_at)) : "Recently"}
+                          </td>
+                          <td style={{ padding: "12px 14px", textAlign: "right" }}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(sub.email);
+                                showToast("Copied " + sub.email);
+                              }}
+                              style={{
+                                background: "#f0fdf4",
+                                color: "#166534",
+                                border: "1px solid #bbf7d0",
+                                padding: "4px 8px",
+                                borderRadius: 6,
+                                fontSize: 12,
+                                fontWeight: 700,
+                                cursor: "pointer",
+                                marginRight: 6,
+                              }}
+                            >
+                              📋 Copy
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => deleteSubscriber(sub.id)}
+                              style={{
+                                background: "#FEE2E2",
+                                color: "#DC2626",
+                                border: "1px solid #FECACA",
+                                padding: "4px 8px",
+                                borderRadius: 6,
+                                fontSize: 12,
+                                fontWeight: 700,
+                                cursor: "pointer",
+                              }}
+                            >
+                              🗑️ Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+        )}
 
         {/* ── 6. EDIT WEBSITE PAGES ── */}
         {section === "EditPages" && (

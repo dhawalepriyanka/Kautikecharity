@@ -300,9 +300,39 @@ export default function DonatePage() {
               {/* Verified Trust Strip */}
               <div style={{ background: "#FAF8F5", padding: "14px", borderRadius: "8px", border: "1px solid #E2E8F0" }}>
                 <div style={{ fontSize: "12px", fontWeight: 800, color: "#153F31", marginBottom: "4px" }}>🛡️ 100% Tax Deductible (Section 80G)</div>
-                <div style={{ fontSize: "11.5px", color: "#64748B", lineHeight: "1.4" }}>
+                <div style={{ fontSize: "11.5px", color: "#64748B", lineHeight: "1.4", marginBottom: "10px" }}>
                   Kautike Charitable Foundation is registered under Section 12A &amp; 80G of the Income Tax Act.
                 </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSuccessData({
+                      paymentId: `sample_pay_${Date.now()}`,
+                      amount: effectiveAmount || 5000,
+                      date: new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "medium" }).format(new Date()),
+                      receiptNumber: `KCF-80G-${String(Date.now()).slice(-6)}`,
+                    });
+                    setSuccessViewTab("certificate");
+                    window.scrollTo({ top: 280, behavior: "smooth" });
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    background: "#FFFFFF",
+                    border: "1px solid #CBD5E1",
+                    borderRadius: "6px",
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    color: "#1E293B",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                  }}
+                >
+                  📜 Preview Official Certificate &amp; Tax Receipt
+                </button>
               </div>
 
             </div>

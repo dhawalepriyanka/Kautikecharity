@@ -285,7 +285,7 @@ export default function AboutPage() {
           <div className="cry-vol-section-head text-center mb-10">
             <span className="mini-title">GRASSROOTS CHANGEMAKERS</span>
             <h3 className="cry-vol-main-title">
-              Our Active <span className="cry-hand-gold">Volunteers</span> ({volunteers.length + 1})
+              Our Active <span className="cry-hand-gold">Volunteers</span> ({volunteers.length})
             </h3>
             <p className="cry-vol-lead">
               The on-ground force leading school kit distributions, remedial classes, and nutrition outreach.
@@ -294,24 +294,6 @@ export default function AboutPage() {
 
           {/* Dynamic Responsive CRY-Style Volunteer Cards */}
           <div className="cry-team-cards-grid">
-            {/* Nilesh Kute - First Volunteer Card */}
-            <div className="cry-team-card-item">
-              <div className="cry-team-card-top-bar" />
-              <div className="cry-team-avatar-wrapper">
-                <div className="cry-team-avatar-ring">
-                  <img
-                    src={president.image}
-                    alt={president.name}
-                    className="cry-team-avatar-img"
-                  />
-                </div>
-                <span className="cry-team-vol-pill">VOLUNTEER</span>
-              </div>
-              <div className="cry-team-card-body">
-                <h4 className="cry-team-member-name">{president.name}</h4>
-              </div>
-            </div>
-
             {volunteers.map((vol, idx) => (
               <div key={(vol as any).id || vol.name + idx} className="cry-team-card-item">
                 <div className="cry-team-card-top-bar" />

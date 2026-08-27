@@ -6,7 +6,7 @@ const campaigns = [
   {
     title: "SUPPORT CHILDREN'S EDUCATION",
     text: "Help them stay in school",
-    photo: "/images/help-tomorrow.jpg",
+    photo: "/images/education-campaign.jpg",
     href: "/donate",
   },
   {
@@ -18,7 +18,7 @@ const campaigns = [
   {
     title: "PLANTATION & GREEN INDIA",
     text: "Help plant trees & protect nature",
-    photo: "/images/about-vision-user-photo.jpg",
+    photo: "/images/plantation-campaign.jpg",
     href: "/donate",
   },
   {

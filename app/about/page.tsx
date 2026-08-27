@@ -36,15 +36,19 @@ const defaultVolunteers = [
 function mergeVolunteersList(savedList: any[]) {
   if (!Array.isArray(savedList) || savedList.length === 0) return defaultVolunteers;
   const map = new Map();
-  defaultVolunteers.forEach((v) => map.set(v.name.toLowerCase().trim(), v));
+  defaultVolunteers.forEach((v) => {
+    if (v.name.toLowerCase().includes("yogesh")) return;
+    map.set(v.name.toLowerCase().trim(), v);
+  });
   savedList.forEach((v) => {
     if (v && v.name) {
       const key = v.name.toLowerCase().trim();
+      if (key.includes("yogesh")) return;
       const existing = map.get(key);
       map.set(key, { ...(existing || {}), ...v });
     }
   });
-  return Array.from(map.values());
+  return Array.from(map.values()).filter((v: any) => !v?.name?.toLowerCase().includes("yogesh"));
 }
 
 export default function AboutPage() {

@@ -7,37 +7,6 @@ import { FloatingActions } from "./components/FloatingActions";
 import { PageMotion } from "./components/PageMotion";
 import { StoryCarousel } from "./components/StoryCarousel";
 
-const causes = [
-  {
-    tag: "Environment & Plants",
-    title: "Tree Plantation & Plant Conservation Drives",
-    text: "Planting saplings, restoring urban green cover, nurturing local flora, and involving school children in environmental care.",
-    photo: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1000&q=80",
-    href: "/what-we-do#plantation",
-  },
-  {
-    tag: "Child Education",
-    title: "Ensure Every Child Goes to School",
-    text: "Providing school kits, academic support centers, and teacher training to keep children in classrooms.",
-    photo: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1000&q=80",
-    href: "/what-we-do#education",
-  },
-  {
-    tag: "Health & Nutrition",
-    title: "Combat Malnutrition & Support Healthcare",
-    text: "Increasing access to essential medical care, growth monitoring, and nutritious meals for infants and mothers.",
-    photo: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1000&q=80",
-    href: "/what-we-do#health",
-  },
-  {
-    tag: "Safety & Protection",
-    title: "Protect Children from Labour & Abuse",
-    text: "Mobilizing local protection committees, preventing child marriages, and safeguarding vulnerable youth.",
-    photo: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1000&q=80",
-    href: "/what-we-do#protection",
-  },
-];
-
 export default function Home() {
   return (
     <main className="page-fade-in" id="top">
@@ -55,7 +24,7 @@ export default function Home() {
           </h1>
 
           <a href="/donate" className="cry-yellow-btn">
-            ♥ Yes! I Want To Help!
+            ? Yes! I Want To Help!
           </a>
 
           <div className="cry-scroll-hint">
@@ -70,12 +39,10 @@ export default function Home() {
         <HeroMedia />
       </section>
 
-
-
-      {/* 4. HOW DO YOU WANT TO HELP CHILDREN TODAY (EXACT CRY.ORG HORIZONTAL PHOTO CAMPAIGN CAROUSEL) */}
+      {/* 4. HOW DO YOU WANT TO HELP CHILDREN TODAY */}
       <CampaignSlider />
 
-      {/* 4b. WHAT WE DO FULL-BLEED YELLOW PAINT BRUSH WAVE SECTION (PLACED AFTER CARDS) */}
+      {/* 4b. WHAT WE DO FULL-BLEED YELLOW PAINT BRUSH WAVE SECTION (REAL PHOTOS) */}
       <section className="cry-wwd-full-section" id="about">
         {/* Top Organic Yellow Brush Wave */}
         <div className="cry-wwd-paint-wave">
@@ -98,87 +65,69 @@ export default function Home() {
             {/* Card 1: Education */}
             <div className="wwd-card card-pink">
               <div className="wwd-card-front">
-                <div className="wwd-svg-illus">
-                  <svg viewBox="0 0 140 100" fill="none">
-                    <rect x="25" y="40" width="42" height="50" rx="4" fill="#9C27B0" opacity="0.15" />
-                    <rect x="73" y="40" width="42" height="50" rx="4" fill="#9C27B0" opacity="0.15" />
-                    <path d="M 15 50 Q 70 70 125 50 L 120 85 Q 70 98 20 85 Z" fill="#6A1B9A" />
-                    <path d="M 20 48 Q 70 65 120 48" stroke="#FFD54F" strokeWidth="4" strokeLinecap="round" />
-                    <circle cx="45" cy="25" r="14" fill="#FFB74D" />
-                    <circle cx="95" cy="25" r="14" fill="#FF8A65" />
-                  </svg>
+                <div className="wwd-real-photo-wrap">
+                  <img src="/images/education-campaign.jpg" alt="Education Drive" className="wwd-real-photo" />
                 </div>
                 <h3 className="wwd-card-title">Education</h3>
-                <div className="wwd-indicator bar-pink" />
               </div>
               <div className="wwd-card-back">
                 <h3 className="wwd-card-title">Education</h3>
                 <p className="wwd-card-text">Providing school kits, academic support centers, and learning materials for every child.</p>
+                <a href="/events" className="wwd-btn" style={{ borderColor: "#E91E63", color: "#E91E63" }}>
+                  View Drives ➔
+                </a>
               </div>
-              <div className="wwd-bar bar-pink" />
             </div>
 
             {/* Card 2: Health & Nutrition */}
             <div className="wwd-card card-cyan">
               <div className="wwd-card-front">
-                <div className="wwd-svg-illus">
-                  <svg viewBox="0 0 140 100" fill="none">
-                    <circle cx="70" cy="30" r="15" fill="#4DB6AC" />
-                    <path d="M 58 26 Q 70 14 82 26" fill="#004D40" />
-                    <path d="M 30 75 Q 70 95 110 75 L 105 60 Q 70 70 35 60 Z" fill="#00BCD4" />
-                    <circle cx="50" cy="55" r="8" fill="#81C784" />
-                    <circle cx="70" cy="50" r="10" fill="#E57373" />
-                  </svg>
+                <div className="wwd-real-photo-wrap">
+                  <img src="/images/children-nutrition.jpg" alt="Health & Nutrition" className="wwd-real-photo" />
                 </div>
-                <h3 className="wwd-card-title">Health & Nutrition</h3>
-                <div className="wwd-indicator bar-cyan" />
+                <h3 className="wwd-card-title">Health &amp; Nutrition</h3>
               </div>
               <div className="wwd-card-back">
-                <h3 className="wwd-card-title">Health & Nutrition</h3>
+                <h3 className="wwd-card-title">Health &amp; Nutrition</h3>
                 <p className="wwd-card-text">Increasing access to proper nutrition, growth monitoring, and quality healthcare.</p>
+                <a href="/causes" className="wwd-btn" style={{ borderColor: "#00BCD4", color: "#00BCD4" }}>
+                  Learn More ➔
+                </a>
               </div>
-              <div className="wwd-bar bar-cyan" />
             </div>
 
             {/* Card 3: Safety & Protection */}
             <div className="wwd-card card-purple">
               <div className="wwd-card-front">
-                <div className="wwd-svg-illus">
-                  <svg viewBox="0 0 140 100" fill="none">
-                    <path d="M 30 45 C 30 15 110 15 110 45 Z" fill="#E91E63" />
-                    <path d="M 70 45 L 70 85 C 70 90 60 90 60 85" stroke="#37474F" strokeWidth="4" strokeLinecap="round" />
-                    <circle cx="70" cy="60" r="12" fill="#FFB74D" />
-                  </svg>
+                <div className="wwd-real-photo-wrap">
+                  <img src="/images/child-labour-campaign.jpg" alt="Safety & Protection" className="wwd-real-photo" />
                 </div>
-                <h3 className="wwd-card-title">Safety & Protection</h3>
-                <div className="wwd-indicator bar-purple" />
+                <h3 className="wwd-card-title">Safety &amp; Protection</h3>
               </div>
               <div className="wwd-card-back">
-                <h3 className="wwd-card-title">Safety & Protection</h3>
+                <h3 className="wwd-card-title">Safety &amp; Protection</h3>
                 <p className="wwd-card-text">Preventing child labor, supporting child rights, and protecting vulnerable youth.</p>
+                <a href="/about" className="wwd-btn" style={{ borderColor: "#9C27B0", color: "#9C27B0" }}>
+                  Our Mission ➔
+                </a>
               </div>
-              <div className="wwd-bar bar-purple" />
             </div>
 
             {/* Card 4: Environment & Plants */}
             <div className="wwd-card card-orange">
               <div className="wwd-card-front">
-                <div className="wwd-svg-illus">
-                  <svg viewBox="0 0 140 100" fill="none">
-                    <circle cx="70" cy="78" r="18" fill="#8D6E63" opacity="0.3" />
-                    <path d="M 70 75 L 70 45" stroke="#4CAF50" strokeWidth="5" strokeLinecap="round" />
-                    <path d="M 70 55 C 50 35 40 50 70 55 Z" fill="#66BB6A" />
-                    <path d="M 70 48 C 90 28 100 43 70 48 Z" fill="#43A047" />
-                  </svg>
+                <div className="wwd-real-photo-wrap">
+                  <img src="/images/plantation-campaign.jpg" alt="Environment & Plants" className="wwd-real-photo" />
                 </div>
-                <h3 className="wwd-card-title">Environment & Plants</h3>
-                <div className="wwd-indicator bar-orange" />
+                <h3 className="wwd-card-title">Environment &amp; Plants</h3>
               </div>
               <div className="wwd-card-back">
-                <h3 className="wwd-card-title">Environment & Plants</h3>
+                <h3 className="wwd-card-title">Environment &amp; Plants</h3>
                 <p className="wwd-card-text">Planting saplings, restoring urban green cover, and promoting environmental care.</p>
+                <a href="/donate" className="wwd-btn" style={{ borderColor: "#4CAF50", color: "#4CAF50" }}>
+                  Support Green ➔
+                </a>
               </div>
-              <div className="wwd-bar bar-orange" />
             </div>
           </div>
 
@@ -208,7 +157,7 @@ export default function Home() {
             </p>
 
             <p className="cry-approach-p">
-              We focus on changing behaviours and practices at the grassroots level and influencing public policy at a systemic level – thereby creating an ecosystem where children are made the nation&apos;s priority.
+              We focus on changing behaviours and practices at the grassroots level and influencing public policy at a systemic level ? thereby creating an ecosystem where children are made the nation&apos;s priority.
             </p>
           </div>
 
@@ -223,7 +172,7 @@ export default function Home() {
                 <div
                   className="cry-center-img"
                   style={{
-                    backgroundImage: `url(/images/children-orbital.jpg)`
+                    backgroundImage: "url('/images/children-orbital.jpg')"
                   }}
                 />
                 <span className="cry-center-label">Children</span>
@@ -365,7 +314,7 @@ export default function Home() {
 
       {/* 8. EXACT CRY.ORG FOUNDER'S QUOTE SECTION */}
       <section className="cry-quote-section">
-        <div className="cry-quote-mark">“</div>
+        <div className="cry-quote-mark">?</div>
         <blockquote className="cry-quote-text">
           If we all do something, then together there is no problem that we cannot solve!
         </blockquote>
@@ -407,97 +356,75 @@ export default function Home() {
       <section className="cry-wc-trust-badges-section">
         <div className="cry-trust-bar">
           <div className="cry-trust-item">
-            <div className="cry-trust-badge-icon yellow-heart">💛</div>
+            <div className="cry-trust-badge-icon yellow-heart">??</div>
             <div className="cry-trust-text">
               <h4 className="cry-trust-card-title">100% Impact Driven</h4>
               <p className="cry-trust-card-desc">All our efforts are made possible only because of your support</p>
             </div>
           </div>
+
           <div className="cry-trust-item">
-            <div className="cry-trust-badge-icon yellow-doc">📋</div>
+            <div className="cry-trust-badge-icon lock-badge">??</div>
             <div className="cry-trust-text">
-              <h4 className="cry-trust-card-title">80G Tax Exemption</h4>
-              <p className="cry-trust-card-desc">Your donations are tax exempted under 80G of the Indian Income Tax Act</p>
+              <h4 className="cry-trust-card-title">Safe &amp; Secure Payments</h4>
+              <p className="cry-trust-card-desc">256-bit encrypted Razorpay payment gateway</p>
             </div>
           </div>
+
           <div className="cry-trust-item">
-            <div className="cry-trust-badge-icon yellow-lock">🔒</div>
+            <div className="cry-trust-badge-icon shield-badge">???</div>
             <div className="cry-trust-text">
-              <h4 className="cry-trust-card-title">100% Safe &amp; Secure</h4>
-              <p className="cry-trust-card-desc">Your donation transactions are completely safe, encrypted and secure</p>
+              <h4 className="cry-trust-card-title">Tax Exemption 80G</h4>
+              <p className="cry-trust-card-desc">Receive instant 80G tax receipt for every contribution</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 11. CRY.ORG SEO & FAQ INFORMATION SECTION */}
-      <section className="cry-seo-faq-section">
-        <div className="cry-seo-container">
-          <h2>Ensure Happy Childhoods For India's Children With Kautike Charitable Foundation NGO</h2>
-          <p>
-            Started with a vision for children in India, Kautike Charitable Foundation is a top NGO for children in India. We work for every child's right to a happy, healthy childhood. Our mission is to ensure happier childhoods for every child in India by protecting and upholding their rights. As a leading child rights NGO in India, we are focused on creating lasting change. Together, we can build a future where every child thrives. Help us make a difference today.
+      {/* 11. FAQ ACCORDION */}
+      <section className="cry-wc-faq-section" id="faqs">
+        <div className="cry-wc-faq-container">
+          <h2 className="cry-wc-faq-title">Frequently Asked Questions</h2>
+          <p className="cry-wc-faq-subtitle">
+            Find answers to common questions regarding donations, 80G tax exemption, and our grassroots impact.
           </p>
 
-          <h3>Our Focus Areas</h3>
-          <p>
-            As one of the best NGOs for children in India, Kautike Charitable Foundation works relentlessly to ensure that every child enjoys their right to education, health, safety, protection, and participation. Our key areas of focus include improving access to quality education and healthcare, preventing child labour, stopping child marriages, empowering girls, and creating a safer and brighter future for all children.
-          </p>
+          <div className="cry-wc-faq-list">
+            <details className="cry-wc-faq-item">
+              <summary className="cry-wc-faq-question">
+                <span>Is my donation tax-exempt?</span>
+                <span className="cry-wc-faq-toggle">+</span>
+              </summary>
+              <div className="cry-wc-faq-answer">
+                <p>
+                  Yes! All donations made to Kautike Charitable Foundation are eligible for tax deduction under Section 80G of the Income Tax Act, 1961. You will receive an instant 80G tax exemption certificate and donation receipt immediately upon successful payment.
+                </p>
+              </div>
+            </details>
 
-          <h3>Child Education</h3>
-          <p>
-            As a leading NGO for child education, we're committed to ensuring education for underprivileged children. Our programs ensure every child has access to quality education to help them break the cycle of poverty. As an NGO working for child education, we focus on creating safe learning environments so children can attend school and complete their education without facing discrimination based on gender, caste, or socio-economic status. Join us in empowering India's future through education.
-          </p>
+            <details className="cry-wc-faq-item">
+              <summary className="cry-wc-faq-question">
+                <span>How will my donation be utilized?</span>
+                <span className="cry-wc-faq-toggle">+</span>
+              </summary>
+              <div className="cry-wc-faq-answer">
+                <p>
+                  Your contribution directly funds child education kits, nutritional support drives, tree plantation initiatives, and community development across Maharashtra. We publish transparent impact reports regularly.
+                </p>
+              </div>
+            </details>
 
-          <h3>Support Girl Child Education</h3>
-          <p>
-            As a leading NGO advocating for the rights of girl children, we encourage equal educational opportunities regardless of gender. Our programmes focus on breaking barriers preventing girls from attending school, such as cultural biases and economic constraints. We connect girls and their families to social benefits, and government schemes and conduct community awareness campaigns to ensure girls learn, grow, and succeed in life.
-          </p>
-
-          <h3>Stop Child Marriage</h3>
-          <p>
-            We work tirelessly to protect children from child marriage. Our initiatives aim to end the practice of child marriage through community education, legal advocacy, and support for at-risk girls. We empower young women to continue their education and make informed decisions about their future. We aim to create a world where every girl gets opportunities to reach her full potential.
-          </p>
-
-          <h3>Prevent Child Trafficking</h3>
-          <p>
-            We are dedicated to combating child trafficking in India. Our efforts focus on connecting rescue victims to the government mechanism, restoration and rehabilitation of the trafficked victims through counseling support for children. As a leading child rights NGO, we are committed to creating a safer environment where children are protected from exploitation. Join us in our fight against this heinous crime.
-          </p>
-
-          <h3>Environment & Tree Plantation Drives</h3>
-          <p>
-            At Kautike Charitable Foundation, we believe every child deserves a clean, green, and healthy environment to thrive in. Our tree plantation initiatives engage local communities, school children, and volunteers to plant native saplings, restore urban green cover, and instill environmental stewardship from an early age for a sustainable future.
-          </p>
-
-          <div className="cry-faq-wrap">
-            <h2>FAQs</h2>
-            
-            <div className="cry-faq-item">
-              <h4>What is the Mission of Kautike Charitable Foundation?</h4>
-              <p>
-                Kautike Charitable Foundation was born of a dream to ensure happier childhoods for all children. Our mission is to empower people to take responsibility for underprivileged Indian children. We aim to motivate individuals to act, both independently and collectively, to help children reach their full potential. Kautike Charitable Foundation focuses on mobilizing people's potential for change and inspiring diverse groups to work together in protecting and honouring children's rights across India.
-              </p>
-            </div>
-
-            <div className="cry-faq-item">
-              <h4>What are the main areas of focus for Kautike Charitable Foundation?</h4>
-              <p>
-                Kautike Charitable Foundation focuses on key areas: <strong>Education</strong> - ensuring children attend and complete school; <strong>Health & Nutrition</strong> - improving access to adequate nutrition and healthcare; <strong>Safety & Protection</strong> - addressing child labour and trafficking; <strong>Environment & Plants</strong> - tree plantation and green restoration; and <strong>Child Participation</strong> - ensuring children's voices are heard.
-              </p>
-            </div>
-
-            <div className="cry-faq-item">
-              <h4>How does Kautike Charitable Foundation contribute to environmental conservation & tree plantation?</h4>
-              <p>
-                We organize community and school tree plantation drives across underserved urban and rural regions. By involving children and families in planting native saplings and caring for young trees, we foster environmental responsibility and create healthier, greener spaces for future generations.
-              </p>
-            </div>
-
-            <div className="cry-faq-item">
-              <h4>How can I donate to Kautike Charitable Foundation?</h4>
-              <p>
-                You can donate online securely through UPI, Credit/Debit Cards, Net Banking, or direct bank transfer on our official website. All eligible donations receive 80G tax exemption certificates under the Indian Income Tax Act.
-              </p>
-            </div>
+            <details className="cry-wc-faq-item">
+              <summary className="cry-wc-faq-question">
+                <span>Can I make a donation offline via bank transfer?</span>
+                <span className="cry-wc-faq-toggle">+</span>
+              </summary>
+              <div className="cry-wc-faq-answer">
+                <p>
+                  Yes. You can directly transfer funds to our official Foundation bank account. Contact our team at info@kautikefoundation.org or call +91 810 836 2688 for bank details.
+                </p>
+              </div>
+            </details>
           </div>
         </div>
       </section>

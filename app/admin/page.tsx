@@ -94,15 +94,15 @@ const initialEvents: EventItem[] = [
     location: "Raigad Zilla Parishad School, Mahodar, Panvel, Raigad",
     coverImage: "/images/events/mission-2/mission-2-01.jpeg",
     gallery: Array.from({ length: 10 }, (_, index) => `/images/events/mission-2/mission-2-${String(index + 1).padStart(2, "0")}.jpeg`),
-    summary: "हर मदद, एक नई उम्मीद. School supplies distribution for 48 deserving students at 10:30 AM. Venue: Raigad Zilla Parishad School, Mahodar. Address: At Mahodar, Post Wavanje, Taluka Panvel, District Raigad. Members are requested to wear the Trust T-shirt or a white T-shirt. Contact: 8108362688 / 8356008675.",
+    summary: "Distributed comprehensive school kits, stationery, and drawing materials to 48 deserving students.",
   },
   {
     id: "mission-3-saundari-school-supplies-2025",
     title: "Mission 3: School Supplies Distribution at Saundari",
-    titleMr: "कौतिके चॅरिटेबल ट्रस्ट आयोजित शालेय साहित्य वाटप - जि.प. प्राथ. शाळा सौंदरी",
+    titleMr: "शालेय साहित्य वाटप - जि.प. प्राथ. शाळा सौंदरी",
     category: "Education",
     date: "2025-10-04",
-    location: "Zilla Parishad Primary School Saundari, Taluka Mahabaleshwar, District Satara",
+    location: "Zilla Parishad Primary School Saundari, Mahabaleshwar, Satara",
     coverImage: "/images/events/mission-3/mission-3-01.jpg",
     gallery: [
       "/images/events/mission-3/mission-3-01.jpg",
@@ -112,7 +112,7 @@ const initialEvents: EventItem[] = [
       "/images/events/mission-3/mission-3-05.jpg",
       "/images/events/mission-3/mission-3-06.jpg"
     ],
-    summary: "हर मदद, एक नई उम्मीद. Distribution of school supplies to needy students at 10:00 AM. Venue: Zilla Parishad Primary School Saundari, Taluka: Mahabaleshwar, District: Satara. Dress Code: Trust T-shirt or white T-shirt. Let's brighten their future with a little help! Contact: 8356008675 / 8108362688.",
+    summary: "Provided educational supplies, notebooks, and learning kits to students in rural Saundari.",
   },
   {
     id: "mission-10-educational-supplies-2026",
@@ -123,15 +123,15 @@ const initialEvents: EventItem[] = [
     location: "Raigad Zilla Parishad School, Farshipada, Panvel, Raigad",
     coverImage: "/images/events/mission-10/mission-10-01.jpeg",
     gallery: Array.from({ length: 14 }, (_, index) => `/images/events/mission-10/mission-10-${String(index + 1).padStart(2, "0")}.jpeg`),
-    summary: "Educational supplies distribution for 40 students at 10:00 AM. Venue: Raigad Zilla Parishad School, Farshipada, Kendra Taloje Pachanand, Taluka Panvel, District Raigad. Dress code: Trust T-shirt or white T-shirt. Contact: 8356008675 / 8108362688.",
+    summary: "Distributed educational kits, notebooks, and study essentials to 40 primary students.",
   },
   {
     id: "mission-6-wavloli-ashram-school-2025",
-    title: "Mission 6: Educational Kits & Water Coolers at Wavloli Ashram School",
-    titleMr: "मिशन - ६ : शालेय साहित्य व पिण्याच्या पाण्याचे जार वाटप - वावलोली आश्रम शाळा",
+    title: "Educational Kits & Water Coolers at Wavloli Ashram School",
+    titleMr: "शालेय साहित्य व पिण्याच्या पाण्याचे जार वाटप - वावलोली आश्रम शाळा",
     category: "Education",
     date: "2025-12-13",
-    location: "Ashram School (E. A. M. Prashala), Wavloli, Taluka Sudhagad, District Raigad",
+    location: "Ashram School (E. A. M. Prashala), Wavloli, Sudhagad, Raigad",
     coverImage: "/images/events/varasgaon-drive/varasgaon-09.jpg",
     gallery: [
       "/images/events/varasgaon-drive/varasgaon-09.jpg",
@@ -150,7 +150,7 @@ const initialEvents: EventItem[] = [
       "/images/events/varasgaon-drive/varasgaon-14.jpg",
       "/images/events/varasgaon-drive/varasgaon-15.jpg",
     ],
-    summary: "🌟 Mission 6 — 'Every Help — A New Hope' 🌟\nSupporting the education and health of underprivileged tribal children at Ashram School (E. A. M. Prashala), Wavloli, Taluka Sudhagad, District Raigad on 13 December 2025. Distributed 15 units of 20-litre insulated drinking water coolers for every classroom, 500 drawing books, 500 colour boxes / sketch pens, 50 sets of 10th Std expected question sets, and comprehensive learning supplies.",
+    summary: "Distributed 15 classroom water coolers, 500 drawing books, 500 colour boxes, and 50 sets of 10th Std question sets.",
   },
   {
     id: "mission-12-devecamp-school-supplies-2026",
@@ -158,7 +158,7 @@ const initialEvents: EventItem[] = [
     titleMr: "शैक्षणिक साहित्य वाटप - रायगड जिल्हा परिषद शाळा देवकॅम्प",
     category: "Education",
     date: "2026-08-27",
-    location: "Raigad Zilla Parishad School (One Kind Act Bhavan), Devecamp, Panvel, Raigad",
+    location: "Raigad Zilla Parishad School, Devecamp, Panvel, Raigad",
     coverImage: "/images/events/devecamp-school-drive/devecamp-01.jpg",
     gallery: [
       "/images/events/devecamp-school-drive/devecamp-01.jpg",
@@ -168,7 +168,7 @@ const initialEvents: EventItem[] = [
       "/images/events/devecamp-school-drive/devecamp-05.jpg",
       "/images/events/devecamp-school-drive/devecamp-06.jpg",
     ],
-    summary: "Heartfelt thanks to all our dedicated volunteers! Kautike Charitable Foundation organized a joyful educational supplies distribution drive at Raigad Zilla Parishad School (One Kind Act Bhavan), Devecamp. Distributed essential notebooks, drawing books, color kits, and study stationery sets to underprivileged students, creating beautiful and memorable moments of learning, encouragement, and hope.",
+    summary: "Distributed notebooks, drawing books, colour sets, and essential study materials to students.",
   },
 ];
 
@@ -423,15 +423,19 @@ const initialVolunteers: Volunteer[] = [
 function mergeAdminVolunteers(savedList: any[]): Volunteer[] {
   if (!Array.isArray(savedList) || savedList.length === 0) return initialVolunteers;
   const map = new Map<string, Volunteer>();
-  initialVolunteers.forEach((v) => map.set(v.name.toLowerCase().trim(), v));
+  initialVolunteers.forEach((v) => {
+    if (v.name.toLowerCase().includes("yogesh")) return;
+    map.set(v.name.toLowerCase().trim(), v);
+  });
   savedList.forEach((v) => {
     if (v && v.name) {
       const key = v.name.toLowerCase().trim();
+      if (key.includes("yogesh")) return;
       const existing = map.get(key);
       map.set(key, { ...(existing || {}), ...v, id: v.id || existing?.id || "v_" + Math.random().toString(36).slice(2, 7) });
     }
   });
-  return Array.from(map.values());
+  return Array.from(map.values()).filter((v) => !v.name.toLowerCase().includes("yogesh"));
 }
 
 const apiUrl = "http://localhost:4000";

@@ -108,6 +108,12 @@ export default function DonatePage() {
       return;
     }
 
+    const panClean = donor.pan.trim().toUpperCase();
+    if (!panClean || !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panClean)) {
+      alert("Please enter a valid 10-digit PAN Card Number (e.g. ABCDE1234F) for the 80G Tax Exemption Receipt.");
+      return;
+    }
+
     setLoading(true);
     try {
       const createOrder = await fetch(`${apiUrl}/api/donations/create-order`, {
@@ -188,7 +194,7 @@ export default function DonatePage() {
               orderId: ordId,
               signature: sig,
               amount: Number(verificationPayload.amount) || effectiveAmount,
-              date: new Intl.DateTimeFormat("en-IN", { dateStyle: "long", timeStyle: "short" }).format(new Date()),
+              date: new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(new Date()),
               receiptNumber: receiptNum,
               verified: true,
             });
@@ -317,7 +323,7 @@ export default function DonatePage() {
                     setSuccessData({
                       paymentId: `sample_pay_${Date.now()}`,
                       amount: effectiveAmount || 5000,
-                      date: new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "medium" }).format(new Date()),
+                      date: new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(new Date()),
                       receiptNumber: `KCF-80G-${String(Date.now()).slice(-6)}`,
                       verified: false,
                       preview: true,
@@ -650,10 +656,17 @@ export default function DonatePage() {
 
                       {/* PAN Number for 80G */}
                       <div className="cry-underline-field cry-underline-full">
-                        <label>PAN Card Number (For 80G Tax Exemption Certificate)</label>
+                        <label>
+                          PAN Card Number (For 80G Tax Exemption Certificate)<span className="red-star">*</span>
+                        </label>
                         <input
                           type="text"
+                          required
                           maxLength={10}
+                          minLength={10}
+                          placeholder="e.g. ABCDE1234F"
+                          pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}"
+                          title="Please enter a valid 10-digit PAN (e.g. ABCDE1234F)"
                           value={donor.pan}
                           onChange={(e) => setDonor({ ...donor, pan: e.target.value.toUpperCase() })}
                           className="cry-underline-input"

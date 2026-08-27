@@ -22,6 +22,7 @@ const routes = [
   { path: "/donate", output: "../dist/client/donate/index.html" },
   { path: "/certificate", output: "../dist/client/certificate/index.html" },
   { path: "/contact", output: "../dist/client/contact/index.html" },
+  { path: "/events", output: "../dist/client/events/index.html" },
   { path: "/privacy", output: "../dist/client/privacy/index.html" },
   { path: "/terms", output: "../dist/client/terms/index.html" },
   { path: "/refund-policy", output: "../dist/client/refund-policy/index.html" },

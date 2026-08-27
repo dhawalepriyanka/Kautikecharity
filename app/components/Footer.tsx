@@ -1,5 +1,3 @@
-import { NewsletterForm } from "./NewsletterForm";
-
 export function Footer() {
   return (
     <footer className="site-footer">
@@ -71,20 +69,13 @@ export function Footer() {
         <div className="footer-col">
           <h4>Get Involved</h4>
           <ul>
+            <li><a href="/events">Field Events &amp; Photo Gallery</a></li>
             <li><a href="/donate">Donate Online (Tax Exempt 80G)</a></li>
             <li><a href="/volunteer">Volunteering &amp; Internships</a></li>
             <li><a href="/corporate-partnerships">CSR Corporate Partnerships</a></li>
             <li><a href="/stories">Stories of Hope</a></li>
             <li><a href="/faqs">FAQs &amp; Tax Exemption</a></li>
           </ul>
-        </div>
-
-        <div className="footer-col">
-          <h4>Stay Updated</h4>
-          <p style={{ fontSize: "13px", marginBottom: "12px" }}>
-            Subscribe to receive regular story updates, field dispatches, and annual impact reports.
-          </p>
-          <NewsletterForm />
         </div>
       </div>
 

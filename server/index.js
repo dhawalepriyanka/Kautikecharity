@@ -272,10 +272,14 @@ app.get("/api/news", (_req, res) => {
   res.json(readJsonFile("news.json", []));
 });
 
-app.post("/api/admin/news", adminOnly, (req, res) => {
-  const ok = writeJsonFile("news.json", req.body);
-  if (ok) res.json({ ok: true, message: "News articles saved successfully." });
-  else res.status(500).json({ message: "Failed to save news articles to server." });
+app.get("/api/events", (_req, res) => {
+  res.json(readJsonFile("events.json", []));
+});
+
+app.post("/api/admin/events", adminOnly, (req, res) => {
+  const ok = writeJsonFile("events.json", req.body);
+  if (ok) res.json({ ok: true, message: "Events saved successfully." });
+  else res.status(500).json({ message: "Failed to save events to server." });
 });
 
 app.listen(port, () => console.log(`Kautike API listening on http://localhost:${port}`));

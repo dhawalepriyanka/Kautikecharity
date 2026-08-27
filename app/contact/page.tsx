@@ -141,7 +141,7 @@ export default function ContactPage() {
                       <div className="c-dot-icon">📍</div>
                       <div>
                         <strong>Registered Office Address</strong>
-                        <p>Kautike Charitable Foundation<br />Panvel, Navi Mumbai &amp; Raigad District, Maharashtra, India</p>
+                        <p>Kautike Charitable Foundation<br />Office No A-1,D'Sauza Sadan,Lokmanya Tilak Nagar,90 Feet Road,Sakinama,Mumbai-400 072 Maharashtra, India</p>
                       </div>
                     </div>
 

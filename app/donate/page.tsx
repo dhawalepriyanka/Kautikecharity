@@ -6,6 +6,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { FloatingActions } from "../components/FloatingActions";
 import { CertificateOfContribution } from "../components/CertificateOfContribution";
+import { DonationReceipt } from "../components/DonationReceipt";
 
 declare global {
   interface Window {
@@ -20,6 +21,7 @@ interface PaymentSuccessData {
   amount: number;
   date: string;
   receiptNumber: string;
+  verified?: boolean;
 }
 
 const apiUrl = typeof window !== "undefined" && window.location.hostname !== "localhost"
@@ -161,49 +163,54 @@ export default function DonatePage() {
         handler: async function (response: any) {
           paymentCompleted = true;
           setLoading(true);
-          const payId = response?.razorpay_payment_id || `pay_${Date.now()}`;
+          const payId = response?.razorpay_payment_id || "";
           const ordId = response?.razorpay_order_id || activeOrderId || "";
           const sig = response?.razorpay_signature || "";
 
-          const receiptNum = `KCF-80G-${String(Date.now()).slice(-6)}`;
-          
-          // Instantly display official Certificate of Contribution & 80G Tax Receipt
-          setSuccessData({
-            paymentId: payId,
-            orderId: ordId,
-            signature: sig,
-            amount: effectiveAmount,
-            date: new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "medium" }).format(new Date()),
-            receiptNumber: receiptNum,
-          });
-          setSuccessViewTab("certificate");
-
-          // Save local record
-          const newRecord = {
-            id: donationId,
-            donor_name: donor.name,
-            email: donor.email,
-            phone: donor.phone,
-            amount_inr: effectiveAmount,
-            campaign: cause,
-            status: "paid",
-            razorpay_payment_id: payId,
-            created_at: new Date().toISOString(),
-          };
           try {
-            const existingDonations = JSON.parse(localStorage.getItem("kautike_admin_donations") || "[]");
-            localStorage.setItem("kautike_admin_donations", JSON.stringify([newRecord, ...existingDonations]));
-          } catch (_) {}
-
-          // Verify with backend
-          try {
-            await fetch(`${apiUrl}/api/donations/verify-payment`, {
+            if (!payId || !ordId || !sig) {
+              throw new Error("Payment details were incomplete, so a receipt cannot be issued. Please contact us with your Razorpay payment details.");
+            }
+            const verification = await fetch(`${apiUrl}/api/donations/verify-payment`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ donationId, razorpay_payment_id: payId, razorpay_order_id: ordId, razorpay_signature: sig, amount: effectiveAmount, donorName: donor.name, email: donor.email }),
             });
+            const verificationPayload = await verification.json().catch(() => null);
+            if (!verification.ok || verificationPayload?.status !== "SUCCESS") {
+              throw new Error(verificationPayload?.message || "Your payment could not be verified. Please contact us with your payment ID.");
+            }
+
+            const receiptNum = `KCF/${new Date().getFullYear()}/${donationId.replaceAll("-", "").slice(-5).toUpperCase()}`;
+            setSuccessData({
+              paymentId: payId,
+              orderId: ordId,
+              signature: sig,
+              amount: Number(verificationPayload.amount) || effectiveAmount,
+              date: new Intl.DateTimeFormat("en-IN", { dateStyle: "long", timeStyle: "short" }).format(new Date()),
+              receiptNumber: receiptNum,
+              verified: true,
+            });
+            setSuccessViewTab("receipt");
+
+            const newRecord = {
+              id: donationId,
+              donor_name: donor.name,
+              email: donor.email,
+              phone: donor.phone,
+              amount_inr: effectiveAmount,
+              campaign: cause,
+              status: "paid",
+              razorpay_payment_id: payId,
+              created_at: new Date().toISOString(),
+            };
+            try {
+              const existingDonations = JSON.parse(localStorage.getItem("kautike_admin_donations") || "[]");
+              localStorage.setItem("kautike_admin_donations", JSON.stringify([newRecord, ...existingDonations]));
+            } catch (_) {}
           } catch (verificationError) {
-            console.warn("Server payment verification logged locally", verificationError);
+            console.error("Payment verification failed", verificationError);
+            setCheckoutError(verificationError instanceof Error ? verificationError.message : "Your payment could not be verified. Please contact us with your payment ID.");
           } finally {
             setLoading(false);
           }
@@ -311,6 +318,7 @@ export default function DonatePage() {
                       amount: effectiveAmount || 5000,
                       date: new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "medium" }).format(new Date()),
                       receiptNumber: `KCF-80G-${String(Date.now()).slice(-6)}`,
+                      verified: false,
                     });
                     setSuccessViewTab("certificate");
                     window.scrollTo({ top: 280, behavior: "smooth" });
@@ -331,7 +339,7 @@ export default function DonatePage() {
                     gap: "6px",
                   }}
                 >
-                  📜 Preview Official Certificate &amp; Tax Receipt
+                  📜 Preview Certificate of Contribution
                 </button>
               </div>
 
@@ -350,16 +358,55 @@ export default function DonatePage() {
                     Thank You, {donor.name || "Generous Donor"}!
                   </h2>
                   <p style={{ color: "#64748B", fontSize: "13.5px", margin: "0" }}>
-                    Your donation of <strong>₹{successData.amount.toLocaleString("en-IN")}</strong> has been received with gratitude. Here is your official Certificate of Contribution:
+                    {successData.verified
+                      ? <>Your donation of <strong>₹{successData.amount.toLocaleString("en-IN")}</strong> has been verified. Your receipt is ready below.</>
+                      : "This is a certificate preview. A donation receipt is issued only after successful payment verification."}
                   </p>
                 </div>
 
-                <CertificateOfContribution
-                  donorName={donor.name || "Rutik Bhalke"}
-                  amount={successData.amount}
-                  date={successData.date}
-                  onClose={() => { setSuccessData(null); setStep(1); }}
-                />
+                <div className="donation-success-tabs no-print" role="tablist" aria-label="Donation documents">
+                  {successData.verified && <button
+                      type="button"
+                      role="tab"
+                      aria-selected={successViewTab === "receipt"}
+                      className={successViewTab === "receipt" ? "active" : ""}
+                      onClick={() => setSuccessViewTab("receipt")}
+                    >
+                      Donation Receipt
+                    </button>}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={successViewTab === "certificate"}
+                    className={successViewTab === "certificate" ? "active" : ""}
+                    onClick={() => setSuccessViewTab("certificate")}
+                  >
+                    Certificate of Contribution
+                  </button>
+                </div>
+
+                {successData.verified && successViewTab === "receipt" ? (
+                  <DonationReceipt
+                    donorName={donor.name || "Generous Donor"}
+                    email={donor.email}
+                    phone={donor.phone}
+                    address={[donor.address, donor.city, donor.state, donor.pincode].filter(Boolean).join(", ")}
+                    pan={donor.pan}
+                    amount={successData.amount}
+                    date={successData.date}
+                    receiptNumber={successData.receiptNumber}
+                    paymentId={successData.paymentId}
+                    purpose={cause}
+                    onClose={() => { setSuccessData(null); setStep(1); }}
+                  />
+                ) : (
+                  <CertificateOfContribution
+                    donorName={donor.name || "Generous Donor"}
+                    amount={successData.amount}
+                    date={successData.date}
+                    onClose={() => { setSuccessData(null); setStep(1); }}
+                  />
+                )}
               </div>
             ) : (
               /* ── 2-STEP INTERACTIVE DONATION FORM ── */

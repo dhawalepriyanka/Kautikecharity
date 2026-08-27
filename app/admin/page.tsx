@@ -62,6 +62,84 @@ type Subscriber = {
   created_at: string;
 };
 
+type EventItem = {
+  id: string;
+  title: string;
+  titleMr?: string;
+  category: string;
+  date: string;
+  location: string;
+  coverImage: string;
+  gallery?: string[];
+  summary: string;
+  attendees?: string[];
+};
+
+const initialEvents: EventItem[] = [
+  {
+    id: "mission-1-notebook-distribution-2025",
+    title: "Mission 1: Notebook Distribution to Needy Students",
+    category: "Education",
+    date: "2025-08-02",
+    location: "RZP School Kondap, Kondap, Panvel, Raigad",
+    coverImage: "/images/events/mission-1/mission-1-01.jpeg",
+    gallery: Array.from({ length: 28 }, (_, index) => `/images/events/mission-1/mission-1-${String(index + 1).padStart(2, "0")}.jpeg`),
+    summary: "Notebook distribution to needy students, held at 10:30 AM at RZP School Kondap. Address: Kondap, near Mohoder village, Post Vavanje, Taluka Panvel, District Raigad.",
+  },
+  {
+    id: "mission-2-school-supplies-2025",
+    title: "Mission 2: School Supplies Distribution to 48 Students",
+    category: "Education",
+    date: "2025-09-13",
+    location: "Raigad Zilla Parishad School, Mahodar, Panvel, Raigad",
+    coverImage: "/images/events/mission-2/mission-2-01.jpeg",
+    gallery: Array.from({ length: 10 }, (_, index) => `/images/events/mission-2/mission-2-${String(index + 1).padStart(2, "0")}.jpeg`),
+    summary: "हर मदद, एक नई उम्मीद. School supplies distribution for 48 deserving students at 10:30 AM. Venue: Raigad Zilla Parishad School, Mahodar. Address: At Mahodar, Post Wavanje, Taluka Panvel, District Raigad. Members are requested to wear the Trust T-shirt or a white T-shirt. Contact: 8108362688 / 8356008675.",
+  },
+  {
+    id: "mission-3-saundari-school-supplies-2025",
+    title: "Mission 3: School Supplies Distribution at Saundari",
+    titleMr: "कौतिके चॅरिटेबल ट्रस्ट आयोजित शालेय साहित्य वाटप - जि.प. प्राथ. शाळा सौंदरी",
+    category: "Education",
+    date: "2025-10-04",
+    location: "Zilla Parishad Primary School Saundari, Taluka Mahabaleshwar, District Satara",
+    coverImage: "/images/events/mission-3/mission-3-01.jpg",
+    gallery: [
+      "/images/events/mission-3/mission-3-01.jpg",
+      "/images/events/mission-3/mission-3-02.jpg",
+      "/images/events/mission-3/mission-3-03.jpg",
+      "/images/events/mission-3/mission-3-04.jpg",
+      "/images/events/mission-3/mission-3-05.jpg",
+      "/images/events/mission-3/mission-3-06.jpg"
+    ],
+    summary: "हर मदद, एक नई उम्मीद. Distribution of school supplies to needy students at 10:00 AM. Venue: Zilla Parishad Primary School Saundari, Taluka: Mahabaleshwar, District: Satara. Dress Code: Trust T-shirt or white T-shirt. Let's brighten their future with a little help! Contact: 8356008675 / 8108362688.",
+  },
+  {
+    id: "mission-10-educational-supplies-2026",
+    title: "Mission 10: Educational Supplies for 40 Students",
+    titleMr: "Every act of kindness — a new ray of hope",
+    category: "Education",
+    date: "2026-08-08",
+    location: "Raigad Zilla Parishad School, Farshipada, Panvel, Raigad",
+    coverImage: "/images/events/mission-10/mission-10-01.jpeg",
+    gallery: Array.from({ length: 14 }, (_, index) => `/images/events/mission-10/mission-10-${String(index + 1).padStart(2, "0")}.jpeg`),
+    summary: "Educational supplies distribution for 40 students at 10:00 AM. Venue: Raigad Zilla Parishad School, Farshipada, Kendra Taloje Pachanand, Taluka Panvel, District Raigad. Dress code: Trust T-shirt or white T-shirt. Contact: 8356008675 / 8108362688.",
+  },
+];
+
+function mergeAdminEvents(saved: EventItem[]) {
+  const map = new Map<string, EventItem>();
+  initialEvents.forEach((e) => map.set(e.id, e));
+  if (Array.isArray(saved)) {
+    saved.forEach((e) => {
+      if (e && e.id && !["evt-1", "evt-2", "evt-3"].includes(e.id)) {
+        map.set(e.id, { ...(map.get(e.id) || {}), ...e });
+      }
+    });
+  }
+  return Array.from(map.values());
+}
+
 const initialPages: PageContent[] = [
   {
     id: "home",
@@ -331,6 +409,33 @@ export default function AdminPage() {
   const [pages, setPages] = useState<PageContent[]>(initialPages);
   const [selectedPageId, setSelectedPageId] = useState<string>("home");
 
+  // Events & Gallery State
+  const [events, setEvents] = useState<EventItem[]>(initialEvents);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [eventForm, setEventForm] = useState<{
+    id: string;
+    title: string;
+    titleMr: string;
+    category: string;
+    date: string;
+    location: string;
+    coverImage: string;
+    gallery: string[];
+    summary: string;
+    attendeesText: string;
+  }>({
+    id: "",
+    title: "",
+    titleMr: "",
+    category: "Education",
+    date: new Date().toISOString().split("T")[0],
+    location: "",
+    coverImage: "",
+    gallery: [],
+    summary: "",
+    attendeesText: "",
+  });
+
   // Stories State & Editing
   const [stories, setStories] = useState<Story[]>([
     {
@@ -464,6 +569,12 @@ export default function AdminPage() {
         setNewsList(serverNews);
         localStorage.setItem("kautike_admin_news", JSON.stringify(serverNews));
       }
+      const serverEvents = await request<EventItem[]>("/api/events").catch(() => null);
+      if (serverEvents && Array.isArray(serverEvents) && serverEvents.length > 0) {
+        const mergedEvents = mergeAdminEvents(serverEvents);
+        setEvents(mergedEvents);
+        localStorage.setItem("kautike_admin_events", JSON.stringify(mergedEvents));
+      }
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Connected in offline mode.");
       try {
@@ -479,6 +590,11 @@ export default function AdminPage() {
       if (savedPages) setPages(JSON.parse(savedPages));
       const savedStories = localStorage.getItem("kautike_admin_stories");
       if (savedStories) setStories(JSON.parse(savedStories));
+      const savedEvents = localStorage.getItem("kautike_admin_events");
+      if (savedEvents) {
+        const parsedEvents = JSON.parse(savedEvents);
+        if (Array.isArray(parsedEvents)) setEvents(mergeAdminEvents(parsedEvents));
+      }
       const savedVols = localStorage.getItem("kautike_admin_volunteers");
       if (savedVols) setVolunteers(mergeAdminVolunteers(JSON.parse(savedVols)));
       const savedPersonal = localStorage.getItem("kautike_admin_personal");
@@ -645,6 +761,124 @@ export default function AdminPage() {
     try {
       await request("/api/admin/news", "POST", filtered);
     } catch (_) {}
+  };
+
+  // Event & Photo Gallery Handlers
+  const handleEventSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!eventForm.title || !eventForm.location) {
+      alert("Please enter at least the Event Title and Location.");
+      return;
+    }
+
+    const attendeesArray = eventForm.attendeesText
+      ? eventForm.attendeesText.split(",").map((s) => s.trim()).filter(Boolean)
+      : [];
+
+    const newOrUpdatedEvent: EventItem = {
+      id: editingEventId || ("evt-" + Date.now()),
+      title: eventForm.title.trim(),
+      titleMr: eventForm.titleMr.trim(),
+      category: eventForm.category || "Education",
+      date: eventForm.date || new Date().toISOString().split("T")[0],
+      location: eventForm.location.trim(),
+      coverImage: eventForm.coverImage || (eventForm.gallery.length > 0 ? eventForm.gallery[0] : "/images/students-banner.jpg"),
+      gallery: eventForm.gallery.length > 0 ? eventForm.gallery : (eventForm.coverImage ? [eventForm.coverImage] : []),
+      summary: eventForm.summary.trim(),
+      attendees: attendeesArray,
+    };
+
+    let updatedEvents: EventItem[];
+    if (editingEventId) {
+      updatedEvents = events.map((evt) => (evt.id === editingEventId ? newOrUpdatedEvent : evt));
+      showToast("Event updated successfully!");
+    } else {
+      updatedEvents = [newOrUpdatedEvent, ...events];
+      showToast("New Event & Gallery added successfully!");
+    }
+
+    setEvents(updatedEvents);
+    localStorage.setItem("kautike_admin_events", JSON.stringify(updatedEvents));
+
+    setEditingEventId(null);
+    setEventForm({
+      id: "",
+      title: "",
+      titleMr: "",
+      category: "Education",
+      date: new Date().toISOString().split("T")[0],
+      location: "",
+      coverImage: "",
+      gallery: [],
+      summary: "",
+      attendeesText: "",
+    });
+
+    try {
+      await request("/api/admin/events", "POST", updatedEvents);
+    } catch (_) {}
+  };
+
+  const handleEditEvent = (evt: EventItem) => {
+    setEditingEventId(evt.id);
+    setEventForm({
+      id: evt.id,
+      title: evt.title || "",
+      titleMr: evt.titleMr || "",
+      category: evt.category || "Education",
+      date: evt.date || new Date().toISOString().split("T")[0],
+      location: evt.location || "",
+      coverImage: evt.coverImage || "",
+      gallery: evt.gallery || [],
+      summary: evt.summary || "",
+      attendeesText: (evt.attendees || []).join(", "),
+    });
+    window.scrollTo({ top: 180, behavior: "smooth" });
+  };
+
+  const handleDeleteEvent = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this event & gallery?")) return;
+    const filtered = events.filter((e) => e.id !== id);
+    setEvents(filtered);
+    localStorage.setItem("kautike_admin_events", JSON.stringify(filtered));
+    showToast("Event removed.");
+    try {
+      await request("/api/admin/events", "POST", filtered);
+    } catch (_) {}
+  };
+
+  const handleMultipleGalleryUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    Array.from(files).forEach((file) => {
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`File ${file.name} exceeds 5MB limit.`);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (uploadEvent) => {
+        const result = uploadEvent.target?.result as string;
+        if (result) {
+          setEventForm((prev) => ({
+            ...prev,
+            gallery: [...prev.gallery, result],
+            coverImage: prev.coverImage || result,
+          }));
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeGalleryPhoto = (index: number) => {
+    setEventForm((prev) => {
+      const updatedGallery = prev.gallery.filter((_, i) => i !== index);
+      return {
+        ...prev,
+        gallery: updatedGallery,
+        coverImage: prev.coverImage === prev.gallery[index] ? (updatedGallery[0] || "") : prev.coverImage,
+      };
+    });
   };
 
   // Volunteer Handlers
@@ -836,12 +1070,13 @@ export default function AdminPage() {
         <nav aria-label="Admin navigation">
           {[
             { id: "Overview", icon: "📊", label: "Dashboard" },
+            { id: "Events", icon: "📸", label: `Events & Gallery (${events.length})` },
             { id: "Stories", icon: "📖", label: "Field Stories" },
             { id: "News", icon: "📰", label: "News & Press" },
             { id: "Volunteers", icon: "🤝", label: "Volunteers & Team" },
             { id: "PersonalInfo", icon: "👤", label: "Personal & Org Info" },
             { id: "Messages", icon: "✉️", label: `Received Messages (${messages.length})` },
-            { id: "Subscribers", icon: "📬", label: `Newsletter Subscribers (${subscribers.length})` },
+            { id: "Subscribers", icon: "📬", label: `Subscribers (${subscribers.length})` },
             { id: "EditPages", icon: "✏️", label: "Edit Website Pages" },
           ].map((item) => (
             <button
@@ -852,6 +1087,7 @@ export default function AdminPage() {
                 setEditingStoryId(null);
                 setEditingVolunteerId(null);
                 setEditingNewsId(null);
+                setEditingEventId(null);
                 setMobileMenuOpen(false);
               }}
             >
@@ -940,6 +1176,17 @@ export default function AdminPage() {
               </button>
 
               <button
+                onClick={() => setSection("Events")}
+                style={{ padding: "18px", background: "#fff", border: "1.5px solid #dbe8dd", borderRadius: 12, cursor: "pointer", textAlign: "left", display: "flex", gap: 12, alignItems: "center" }}
+              >
+                <span style={{ fontSize: 26 }}>📸</span>
+                <div>
+                  <strong style={{ display: "block", color: "#153f31", fontSize: 14 }}>Events &amp; Gallery</strong>
+                  <small style={{ color: "#638070" }}>Add event photos &amp; drives</small>
+                </div>
+              </button>
+
+              <button
                 onClick={() => setSection("PersonalInfo")}
                 style={{ padding: "18px", background: "#fff", border: "1.5px solid #dbe8dd", borderRadius: 12, cursor: "pointer", textAlign: "left", display: "flex", gap: 12, alignItems: "center" }}
               >
@@ -952,6 +1199,316 @@ export default function AdminPage() {
             </div>
 
           </>
+        )}
+
+        {/* ── 1.5. EVENTS & PHOTO GALLERY MANAGER ── */}
+        {section === "Events" && (
+          <div className="admin-two-col-grid" style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: 24, alignItems: "start" }}>
+            {/* Event List */}
+            <div style={{ background: "#fff", border: "1px solid #dbe8dd", borderRadius: 14, padding: 24 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: 19, color: "#153f31" }}>Field Events &amp; Drives ({events.length})</h2>
+                  <small style={{ color: "#64748B" }}>Manage foundation drives, dates, and photo galleries</small>
+                </div>
+                {editingEventId && (
+                  <button
+                    onClick={() => {
+                      setEditingEventId(null);
+                      setEventForm({
+                        id: "",
+                        title: "",
+                        titleMr: "",
+                        category: "Education",
+                        date: new Date().toISOString().split("T")[0],
+                        location: "",
+                        coverImage: "",
+                        gallery: [],
+                        summary: "",
+                        attendeesText: "",
+                      });
+                    }}
+                    style={{ background: "#e2e8f0", color: "#334155", border: 0, padding: "6px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer", fontWeight: 700 }}
+                  >
+                    Cancel Edit
+                  </button>
+                )}
+              </div>
+
+              {events.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "40px 16px", color: "#64748B", background: "#f8fafc", borderRadius: 10 }}>
+                  <div style={{ fontSize: 32, marginBottom: 6 }}>📸</div>
+                  <p style={{ margin: 0 }}>No events added yet. Use the form on the right to add your first event!</p>
+                </div>
+              ) : (
+                <div style={{ display: "grid", gap: 16 }}>
+                  {events.map((evt) => (
+                    <article
+                      key={evt.id}
+                      style={{
+                        border: editingEventId === evt.id ? "2px solid #2f8f46" : "1px solid #e2e8f0",
+                        borderRadius: 10,
+                        padding: 16,
+                        background: editingEventId === evt.id ? "#f0fdf4" : "#fff",
+                        display: "flex",
+                        gap: 16,
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <img
+                        src={evt.coverImage || "/images/students-banner.jpg"}
+                        alt={evt.title}
+                        style={{ width: 88, height: 88, borderRadius: 8, objectFit: "cover", flexShrink: 0, border: "1px solid #e2e8f0" }}
+                      />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 4 }}>
+                          <span style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", background: "#dbeafe", color: "#1e40af", padding: "2px 8px", borderRadius: 4 }}>
+                            {evt.category}
+                          </span>
+                          <div style={{ display: "flex", gap: 6 }}>
+                            <button
+                              onClick={() => handleEditEvent(evt)}
+                              style={{ background: "#2f8f46", color: "#fff", border: 0, borderRadius: 5, padding: "3px 8px", fontSize: 11, cursor: "pointer", fontWeight: 700 }}
+                            >
+                              ✏️ Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteEvent(evt.id)}
+                              style={{ background: "#FEE2E2", color: "#B91C1C", border: 0, borderRadius: 5, padding: "3px 8px", fontSize: 11, cursor: "pointer" }}
+                            >
+                              🗑️ Delete
+                            </button>
+                          </div>
+                        </div>
+
+                        <strong style={{ display: "block", color: "#153f31", fontSize: 14, lineHeight: 1.3, marginBottom: 4 }}>
+                          {evt.title}
+                        </strong>
+
+                        {evt.titleMr && (
+                          <small style={{ display: "block", color: "#d97706", fontSize: 12, marginBottom: 4, fontWeight: 600 }}>
+                            {evt.titleMr}
+                          </small>
+                        )}
+
+                        <div style={{ fontSize: 11, color: "#64748B", marginBottom: 6 }}>
+                          📅 {evt.date} · 📍 {evt.location}
+                        </div>
+
+                        <div style={{ display: "flex", gap: 8, fontSize: 11, color: "#475569" }}>
+                          <span>🖼️ {evt.gallery ? evt.gallery.length : 1} photos</span>
+                          {evt.attendees && evt.attendees.length > 0 && (
+                            <span>👥 {evt.attendees.length} volunteers</span>
+                          )}
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Event Form (Upload & Details) */}
+            <form
+              onSubmit={handleEventSubmit}
+              style={{ background: "#fff", border: "1px solid #dbe8dd", borderRadius: 14, padding: 24, display: "flex", flexDirection: "column", gap: 14 }}
+            >
+              <div>
+                <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", color: "#2f8f46" }}>
+                  {editingEventId ? "✏️ EDIT EVENT" : "➕ ADD NEW EVENT & PHOTOS"}
+                </span>
+                <h2 style={{ margin: "2px 0 0", fontSize: 18, color: "#153f31" }}>
+                  {editingEventId ? "Update Event Details" : "Upload Event & Photo Gallery"}
+                </h2>
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>
+                  Event Title (English) *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Educational Kit Distribution Drive at RZP School"
+                  value={eventForm.title}
+                  onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
+                  style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #cbd5e1", font: "inherit" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>
+                  Event Title (Marathi - Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. रायगड जिल्हा परिषद शाळा, कोंडप येथे शैक्षणिक साहित्य वाटप"
+                  value={eventForm.titleMr}
+                  onChange={(e) => setEventForm({ ...eventForm, titleMr: e.target.value })}
+                  style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #cbd5e1", font: "inherit" }}
+                />
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>
+                    Category *
+                  </label>
+                  <select
+                    value={eventForm.category}
+                    onChange={(e) => setEventForm({ ...eventForm, category: e.target.value })}
+                    style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #cbd5e1", font: "inherit", background: "#fff" }}
+                  >
+                    <option value="Education">Education &amp; School Kits</option>
+                    <option value="Health">Health &amp; Nutrition Camps</option>
+                    <option value="Environment">Tree Plantation</option>
+                    <option value="Relief">Community Relief</option>
+                    <option value="Social Welfare">Social Welfare</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>
+                    Date of Event *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={eventForm.date}
+                    onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })}
+                    style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #cbd5e1", font: "inherit" }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>
+                  Location / Venue *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. RZP School Kondap, Panvel, Raigad"
+                  value={eventForm.location}
+                  onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })}
+                  style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #cbd5e1", font: "inherit" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>
+                  Event Description / Summary
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="Describe the drive, number of beneficiaries supported, kit contents, and impact..."
+                  value={eventForm.summary}
+                  onChange={(e) => setEventForm({ ...eventForm, summary: e.target.value })}
+                  style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #cbd5e1", font: "inherit", resize: "vertical" }}
+                />
+              </div>
+
+              {/* Cover Photo Upload */}
+              <div style={{ background: "#f8fafc", padding: 14, borderRadius: 10, border: "1px dashed #cbd5e1" }}>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>
+                  📷 Cover Photo (Upload from Device)
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload(e, (base64) => setEventForm({ ...eventForm, coverImage: base64 }))}
+                  style={{ fontSize: 12, color: "#475569" }}
+                />
+                {eventForm.coverImage && (
+                  <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
+                    <img src={eventForm.coverImage} alt="Cover preview" style={{ width: 70, height: 50, borderRadius: 6, objectFit: "cover" }} />
+                    <small style={{ color: "#166534", fontWeight: 700 }}>✓ Cover photo selected</small>
+                  </div>
+                )}
+              </div>
+
+              {/* Multiple Gallery Photos Upload */}
+              <div style={{ background: "#f8fafc", padding: 14, borderRadius: 10, border: "1px dashed #cbd5e1" }}>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>
+                  🖼️ Event Photo Gallery (Upload Multiple Photos)
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleMultipleGalleryUpload}
+                  style={{ fontSize: 12, color: "#475569" }}
+                />
+                {eventForm.gallery.length > 0 && (
+                  <div style={{ marginTop: 10 }}>
+                    <small style={{ display: "block", color: "#334155", fontWeight: 700, marginBottom: 6 }}>
+                      Selected Gallery Photos ({eventForm.gallery.length}):
+                    </small>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      {eventForm.gallery.map((imgBase64, idx) => (
+                        <div key={idx} style={{ position: "relative" }}>
+                          <img src={imgBase64} alt={`Thumb ${idx}`} style={{ width: 50, height: 50, borderRadius: 6, objectFit: "cover", border: "1px solid #cbd5e1" }} />
+                          <button
+                            type="button"
+                            onClick={() => removeGalleryPhoto(idx)}
+                            style={{
+                              position: "absolute",
+                              top: -4,
+                              right: -4,
+                              background: "#ef4444",
+                              color: "#fff",
+                              border: 0,
+                              borderRadius: "50%",
+                              width: 16,
+                              height: 16,
+                              fontSize: 10,
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>
+                  👥 Key Volunteers / Attendees (Comma Separated)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Nilesh Kute, Vijay Jadhav, Deepak Thorat, Jayshree Sutar"
+                  value={eventForm.attendeesText}
+                  onChange={(e) => setEventForm({ ...eventForm, attendeesText: e.target.value })}
+                  style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px solid #cbd5e1", font: "inherit" }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                style={{
+                  background: "#2f8f46",
+                  color: "#fff",
+                  border: 0,
+                  borderRadius: 8,
+                  padding: "12px",
+                  fontWeight: 700,
+                  fontSize: 14,
+                  cursor: "pointer",
+                  marginTop: 6,
+                  transition: "background 0.2s",
+                }}
+              >
+                {editingEventId ? "✓ Update Event & Photos" : "💾 Save & Publish Event"}
+              </button>
+            </form>
+          </div>
         )}
 
         {/* ── 2. FIELD STORIES MANAGER ── */}

@@ -39,6 +39,7 @@ export const menus: DropdownMenu[] = [
   {
     title: "Resources",
     links: [
+      { label: "Events & Photo Gallery", href: "/events" },
       { label: "Impact Reports", href: "/impact" },
       { label: "Stories & News", href: "/stories" },
       { label: "FAQs & Tax Exemption (80G)", href: "/faqs" },

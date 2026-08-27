@@ -125,6 +125,51 @@ const initialEvents: EventItem[] = [
     gallery: Array.from({ length: 14 }, (_, index) => `/images/events/mission-10/mission-10-${String(index + 1).padStart(2, "0")}.jpeg`),
     summary: "Educational supplies distribution for 40 students at 10:00 AM. Venue: Raigad Zilla Parishad School, Farshipada, Kendra Taloje Pachanand, Taluka Panvel, District Raigad. Dress code: Trust T-shirt or white T-shirt. Contact: 8356008675 / 8108362688.",
   },
+  {
+    id: "mission-6-wavloli-ashram-school-2025",
+    title: "Mission 6: Educational Kits & Water Coolers at Wavloli Ashram School",
+    titleMr: "मिशन - ६ : शालेय साहित्य व पिण्याच्या पाण्याचे जार वाटप - वावलोली आश्रम शाळा",
+    category: "Education",
+    date: "2025-12-13",
+    location: "Ashram School (E. A. M. Prashala), Wavloli, Taluka Sudhagad, District Raigad",
+    coverImage: "/images/events/varasgaon-drive/varasgaon-09.jpg",
+    gallery: [
+      "/images/events/varasgaon-drive/varasgaon-09.jpg",
+      "/images/events/varasgaon-drive/varasgaon-01.jpg",
+      "/images/events/varasgaon-drive/varasgaon-02.jpg",
+      "/images/events/varasgaon-drive/varasgaon-03.jpg",
+      "/images/events/varasgaon-drive/varasgaon-04.jpg",
+      "/images/events/varasgaon-drive/varasgaon-05.jpg",
+      "/images/events/varasgaon-drive/varasgaon-06.jpg",
+      "/images/events/varasgaon-drive/varasgaon-07.jpg",
+      "/images/events/varasgaon-drive/varasgaon-08.jpg",
+      "/images/events/varasgaon-drive/varasgaon-10.jpg",
+      "/images/events/varasgaon-drive/varasgaon-11.jpg",
+      "/images/events/varasgaon-drive/varasgaon-12.jpg",
+      "/images/events/varasgaon-drive/varasgaon-13.jpg",
+      "/images/events/varasgaon-drive/varasgaon-14.jpg",
+      "/images/events/varasgaon-drive/varasgaon-15.jpg",
+    ],
+    summary: "🌟 Mission 6 — 'Every Help — A New Hope' 🌟\nSupporting the education and health of underprivileged tribal children at Ashram School (E. A. M. Prashala), Wavloli, Taluka Sudhagad, District Raigad on 13 December 2025. Distributed 15 units of 20-litre insulated drinking water coolers for every classroom, 500 drawing books, 500 colour boxes / sketch pens, 50 sets of 10th Std expected question sets, and comprehensive learning supplies.",
+  },
+  {
+    id: "mission-12-devecamp-school-supplies-2026",
+    title: "Mission 12: Educational Kit & Study Supplies Distribution at Devecamp",
+    titleMr: "शैक्षणिक साहित्य वाटप - रायगड जिल्हा परिषद शाळा देवकॅम्प",
+    category: "Education",
+    date: "2026-08-27",
+    location: "Raigad Zilla Parishad School (One Kind Act Bhavan), Devecamp, Panvel, Raigad",
+    coverImage: "/images/events/devecamp-school-drive/devecamp-01.jpg",
+    gallery: [
+      "/images/events/devecamp-school-drive/devecamp-01.jpg",
+      "/images/events/devecamp-school-drive/devecamp-02.jpg",
+      "/images/events/devecamp-school-drive/devecamp-03.jpg",
+      "/images/events/devecamp-school-drive/devecamp-04.jpg",
+      "/images/events/devecamp-school-drive/devecamp-05.jpg",
+      "/images/events/devecamp-school-drive/devecamp-06.jpg",
+    ],
+    summary: "Heartfelt thanks to all our dedicated volunteers! Kautike Charitable Foundation organized a joyful educational supplies distribution drive at Raigad Zilla Parishad School (One Kind Act Bhavan), Devecamp. Distributed essential notebooks, drawing books, color kits, and study stationery sets to underprivileged students, creating beautiful and memorable moments of learning, encouragement, and hope.",
+  },
 ];
 
 function mergeAdminEvents(saved: EventItem[]) {
@@ -360,7 +405,6 @@ const initialVolunteers: Volunteer[] = [
   { id: "v0", name: "Nilesh Kute", role: "President & Volunteer", location: "Maharashtra, India", image: "/images/team/nilesh-kute.png", phone: "+91 810 836 2688" },
   { id: "v1", name: "Ashish Mishra", role: "Field Volunteer", location: "Panvel, Raigad", image: "/images/team/ashish-mishra.png", phone: "+91 98201 12345" },
   { id: "v2", name: "Abhinay Singh", role: "Youth Coordinator", location: "Mumbai & Raigad", image: "/images/team/abhinay-singh-hd.png", phone: "+91 98202 23456" },
-  { id: "v3", name: "Yogesh Shinde", role: "Outreach Lead", location: "Maharashtra", image: "/images/team/yogesh-shinde.png", phone: "+91 98203 34567" },
   { id: "v4", name: "Dnyaneshwar Jadhav", role: "Education Volunteer", location: "Panvel, Raigad", image: "/images/team/dnyaneshwar-jadhav.png", phone: "+91 98204 45678" },
   { id: "v5", name: "Jayshree Sutar", role: "Community Organizer", location: "Maharashtra", image: "/images/team/jayshree-sutar.png", phone: "+91 98205 56789" },
   { id: "v6", name: "Santosh Jadhav", role: "Nutrition Camp Volunteer", location: "Panvel, Raigad", image: "/images/team/santosh-jadhav.png", phone: "+91 98206 67890" },
@@ -373,6 +417,7 @@ const initialVolunteers: Volunteer[] = [
   { id: "v13", name: "Akash Mishra", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/akash-mishra.png", phone: "+91 98213 34567" },
   { id: "v14", name: "Vinayak Jadhav", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/vinayak-jadhav.png", phone: "+91 98214 45678" },
   { id: "v15", name: "Vicky Jadhav", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/vicky-jadhav.png", phone: "+91 98215 56789" },
+  { id: "v16", name: "Abhishek Singh", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/abhishek-singh.png", phone: "+91 98216 67890" },
 ];
 
 function mergeAdminVolunteers(savedList: any[]): Volunteer[] {

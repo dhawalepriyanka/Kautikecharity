@@ -24,14 +24,6 @@
     "phone": "+91 98202 23456"
   },
   {
-    "id": "v3",
-    "name": "Yogesh Shinde",
-    "role": "Volunteer",
-    "location": "Maharashtra",
-    "image": "/images/team/yogesh-shinde.png",
-    "phone": "+91 98203 34567"
-  },
-  {
     "id": "v4",
     "name": "Dnyaneshwar Jadhav",
     "role": "Volunteer",
@@ -126,5 +118,13 @@
     "location": "Maharashtra, India",
     "image": "/images/team/vicky-jadhav.png",
     "phone": "+91 98215 56789"
+  },
+  {
+    "id": "v16",
+    "name": "Abhishek Singh",
+    "role": "Volunteer",
+    "location": "Maharashtra, India",
+    "image": "/images/team/abhishek-singh.png",
+    "phone": "+91 98216 67890"
   }
 ]

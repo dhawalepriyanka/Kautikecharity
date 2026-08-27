@@ -18,7 +18,6 @@ const defaultVolunteers = [
   { id: "v0", name: "Nilesh Kute", role: "Volunteer", image: "/images/team/nilesh-kute.png", location: "Maharashtra, India" },
   { id: "v1", name: "Ashish Mishra", role: "Volunteer", image: "/images/team/ashish-mishra.png", location: "Panvel, Raigad" },
   { id: "v2", name: "Abhinay Singh", role: "Volunteer", image: "/images/team/abhinay-singh-hd.png", location: "Mumbai & Raigad" },
-  { id: "v3", name: "Yogesh Shinde", role: "Volunteer", image: "/images/team/yogesh-shinde.png", location: "Maharashtra" },
   { id: "v4", name: "Dnyaneshwar Jadhav", role: "Volunteer", image: "/images/team/dnyaneshwar-jadhav.png", location: "Panvel, Raigad" },
   { id: "v5", name: "Jayshree Sutar", role: "Volunteer", image: "/images/team/jayshree-sutar.png", location: "Maharashtra" },
   { id: "v6", name: "Santosh Jadhav", role: "Volunteer", image: "/images/team/santosh-jadhav.png", location: "Panvel, Raigad" },
@@ -31,6 +30,7 @@ const defaultVolunteers = [
   { id: "v13", name: "Akash Mishra", role: "Volunteer", image: "/images/team/akash-mishra.png", location: "Maharashtra, India" },
   { id: "v14", name: "Vinayak Jadhav", role: "Volunteer", image: "/images/team/vinayak-jadhav.png", location: "Maharashtra, India" },
   { id: "v15", name: "Vicky Jadhav", role: "Volunteer", image: "/images/team/vicky-jadhav.png", location: "Maharashtra, India" },
+  { id: "v16", name: "Abhishek Singh", role: "Volunteer", image: "/images/team/abhishek-singh.png", location: "Maharashtra, India" },
 ];
 
 function mergeVolunteersList(savedList: any[]) {

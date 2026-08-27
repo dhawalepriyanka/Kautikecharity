@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { FloatingActions } from "../components/FloatingActions";
@@ -68,6 +69,51 @@ const initialEvents: EventItem[] = [
     gallery: Array.from({ length: 14 }, (_, index) => `/images/events/mission-10/mission-10-${String(index + 1).padStart(2, "0")}.jpeg`),
     summary: "Educational supplies distribution for 40 students at 10:00 AM. Venue: Raigad Zilla Parishad School, Farshipada, Kendra Taloje Pachanand, Taluka Panvel, District Raigad. Dress code: Trust T-shirt or white T-shirt. Contact: 8356008675 / 8108362688.",
   },
+  {
+    id: "mission-6-wavloli-ashram-school-2025",
+    title: "Mission 6: Educational Kits & Water Coolers at Wavloli Ashram School",
+    titleMr: "मिशन - ६ : शालेय साहित्य व पिण्याच्या पाण्याचे जार वाटप - वावलोली आश्रम शाळा",
+    category: "Education",
+    date: "2025-12-13",
+    location: "Ashram School (E. A. M. Prashala), Wavloli, Taluka Sudhagad, District Raigad",
+    coverImage: "/images/events/varasgaon-drive/varasgaon-09.jpg",
+    gallery: [
+      "/images/events/varasgaon-drive/varasgaon-09.jpg",
+      "/images/events/varasgaon-drive/varasgaon-01.jpg",
+      "/images/events/varasgaon-drive/varasgaon-02.jpg",
+      "/images/events/varasgaon-drive/varasgaon-03.jpg",
+      "/images/events/varasgaon-drive/varasgaon-04.jpg",
+      "/images/events/varasgaon-drive/varasgaon-05.jpg",
+      "/images/events/varasgaon-drive/varasgaon-06.jpg",
+      "/images/events/varasgaon-drive/varasgaon-07.jpg",
+      "/images/events/varasgaon-drive/varasgaon-08.jpg",
+      "/images/events/varasgaon-drive/varasgaon-10.jpg",
+      "/images/events/varasgaon-drive/varasgaon-11.jpg",
+      "/images/events/varasgaon-drive/varasgaon-12.jpg",
+      "/images/events/varasgaon-drive/varasgaon-13.jpg",
+      "/images/events/varasgaon-drive/varasgaon-14.jpg",
+      "/images/events/varasgaon-drive/varasgaon-15.jpg",
+    ],
+    summary: "🌟 Mission 6 — 'Every Help — A New Hope' 🌟\nSupporting the education and health of underprivileged tribal children at Ashram School (E. A. M. Prashala), Wavloli, Taluka Sudhagad, District Raigad on 13 December 2025. Distributed 15 units of 20-litre insulated drinking water coolers for every classroom, 500 drawing books, 500 colour boxes / sketch pens, 50 sets of 10th Std expected question sets, and comprehensive learning supplies.",
+  },
+  {
+    id: "devecamp-school-supplies-distribution-2026",
+    title: "Educational Kit & Study Supplies Distribution at Devecamp",
+    titleMr: "शैक्षणिक साहित्य वाटप - रायगड जिल्हा परिषद शाळा देवकॅम्प",
+    category: "Education",
+    date: "2026-08-27",
+    location: "Raigad Zilla Parishad School (One Kind Act Bhavan), Devecamp, Panvel, Raigad",
+    coverImage: "/images/events/devecamp-school-drive/devecamp-01.jpg",
+    gallery: [
+      "/images/events/devecamp-school-drive/devecamp-01.jpg",
+      "/images/events/devecamp-school-drive/devecamp-02.jpg",
+      "/images/events/devecamp-school-drive/devecamp-03.jpg",
+      "/images/events/devecamp-school-drive/devecamp-04.jpg",
+      "/images/events/devecamp-school-drive/devecamp-05.jpg",
+      "/images/events/devecamp-school-drive/devecamp-06.jpg",
+    ],
+    summary: "Heartfelt thanks to all our dedicated volunteers! Kautike Charitable Foundation organized a joyful educational supplies distribution drive at Raigad Zilla Parishad School (One Kind Act Bhavan), Devecamp. Distributed essential notebooks, drawing books, color kits, and study stationery sets to underprivileged students, creating beautiful and memorable moments of learning, encouragement, and hope.",
+  },
 ];
 
 function mergeEventsList(savedEvents: EventItem[]) {
@@ -88,6 +134,11 @@ export default function EventsPage() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const openGallery = (images: string[], index = 0) => {
     const gallery = images.length > 0 ? images : [];
@@ -115,6 +166,28 @@ export default function EventsPage() {
       }
     } catch (_) {}
   };
+
+  useEffect(() => {
+    if (lightbox) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [lightbox]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!lightbox) return;
+      if (e.key === "Escape") setLightbox(null);
+      if (e.key === "ArrowLeft") changeLightboxPhoto(-1);
+      if (e.key === "ArrowRight") changeLightboxPhoto(1);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [lightbox]);
 
   useEffect(() => {
     loadEvents();
@@ -402,79 +475,172 @@ export default function EventsPage() {
         )}
       </section>
 
-      {/* 4. LIGHTBOX MODAL */}
-      {lightbox && (
-        <div
-          onClick={() => setLightbox(null)}
-          style={{
-            position: "fixed",
-            inset: 0,
-            width: "100vw",
-            height: "100dvh",
-            boxSizing: "border-box",
-            background: "rgba(0, 0, 0, 0.85)",
-            zIndex: 99999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 20,
-            backdropFilter: "blur(4px)",
-          }}
-        >
-          <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", maxWidth: "calc(100vw - 112px)", maxHeight: "calc(100dvh - 100px)" }} onClick={(e) => e.stopPropagation()}>
-            <button
+      {/* 4. LIGHTBOX MODAL (PORTAL TO BODY TO ENSURE 100% SCREEN COVERAGE) */}
+      {mounted && typeof document !== "undefined" && lightbox
+        ? createPortal(
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Image gallery preview"
               onClick={() => setLightbox(null)}
               style={{
-                position: "absolute",
-                top: -14,
-                right: -14,
-                background: "#EF4444",
-                color: "#fff",
-                border: "2px solid #fff",
-                borderRadius: "50%",
-                width: 32,
-                height: 32,
-                fontSize: 14,
-                fontWeight: 900,
-                cursor: "pointer",
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "rgba(0, 0, 0, 0.96)",
+                zIndex: 99999999,
                 display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
+                padding: "20px",
+                boxSizing: "border-box",
+                backdropFilter: "blur(8px)",
               }}
             >
-              ✕
-            </button>
-            {lightbox.images.length > 1 && (
-              <>
+              <div
+                style={{
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  maxWidth: "92vw",
+                  maxHeight: "88vh",
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
                 <button
-                  type="button"
-                  aria-label="Previous photo"
-                  onClick={() => changeLightboxPhoto(-1)}
-                  style={{ position: "fixed", left: 10, top: "50%", transform: "translateY(-50%)", width: 48, height: 48, borderRadius: 10, border: 0, background: "rgba(255,255,255,.12)", color: "#fff", fontSize: 34, lineHeight: 1, cursor: "pointer", zIndex: 2 }}
+                  onClick={() => setLightbox(null)}
+                  aria-label="Close photo preview"
+                  style={{
+                    position: "absolute",
+                    top: "-16px",
+                    right: "-16px",
+                    background: "#EF4444",
+                    color: "#FFFFFF",
+                    border: "2px solid #FFFFFF",
+                    borderRadius: "50%",
+                    width: "36px",
+                    height: "36px",
+                    fontSize: "16px",
+                    fontWeight: 900,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 10,
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
+                  }}
                 >
-                  ‹
+                  ✕
                 </button>
-                <button
-                  type="button"
-                  aria-label="Next photo"
-                  onClick={() => changeLightboxPhoto(1)}
-                  style={{ position: "fixed", right: 10, top: "50%", transform: "translateY(-50%)", width: 48, height: 48, borderRadius: 10, border: 0, background: "rgba(255,255,255,.12)", color: "#fff", fontSize: 34, lineHeight: 1, cursor: "pointer", zIndex: 2 }}
-                >
-                  ›
-                </button>
-                <span style={{ position: "absolute", bottom: -32, left: "50%", transform: "translateX(-50%)", color: "#fff", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" }}>
-                  {lightbox.index + 1} / {lightbox.images.length}
-                </span>
-              </>
-            )}
-            <img
-              src={lightbox.images[lightbox.index]}
-              alt="Event full preview"
-              style={{ display: "block", width: "auto", height: "auto", maxWidth: "min(900px, calc(100vw - 112px))", maxHeight: "calc(100dvh - 100px)", borderRadius: 12, objectFit: "contain", background: "#000" }}
-            />
-          </div>
-        </div>
-      )}
+
+                <img
+                  src={lightbox.images[lightbox.index]}
+                  alt="Event full preview"
+                  style={{
+                    display: "block",
+                    width: "auto",
+                    height: "auto",
+                    maxWidth: "min(92vw, 1000px)",
+                    maxHeight: "82vh",
+                    borderRadius: "10px",
+                    objectFit: "contain",
+                    boxShadow: "0 10px 40px rgba(0,0,0,0.8)",
+                  }}
+                />
+
+                {lightbox.images.length > 1 && (
+                  <div
+                    style={{
+                      marginTop: "12px",
+                      color: "#FFFFFF",
+                      fontSize: "14px",
+                      fontWeight: 700,
+                      backgroundColor: "rgba(0,0,0,0.6)",
+                      padding: "4px 14px",
+                      borderRadius: "20px",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {lightbox.index + 1} / {lightbox.images.length}
+                  </div>
+                )}
+              </div>
+
+              {lightbox.images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Previous photo"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      changeLightboxPhoto(-1);
+                    }}
+                    style={{
+                      position: "fixed",
+                      left: "20px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      width: "52px",
+                      height: "52px",
+                      borderRadius: "50%",
+                      border: "1.5px solid rgba(255,255,255,0.3)",
+                      background: "rgba(0,0,0,0.6)",
+                      color: "#FFFFFF",
+                      fontSize: "28px",
+                      lineHeight: "1",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      zIndex: 99999999,
+                      transition: "background 0.2s",
+                    }}
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Next photo"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      changeLightboxPhoto(1);
+                    }}
+                    style={{
+                      position: "fixed",
+                      right: "20px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      width: "52px",
+                      height: "52px",
+                      borderRadius: "50%",
+                      border: "1.5px solid rgba(255,255,255,0.3)",
+                      background: "rgba(0,0,0,0.6)",
+                      color: "#FFFFFF",
+                      fontSize: "28px",
+                      lineHeight: "1",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      zIndex: 99999999,
+                      transition: "background 0.2s",
+                    }}
+                  >
+                    ›
+                  </button>
+                </>
+              )}
+            </div>,
+            document.body
+          )
+        : null}
 
       {/* 5. CALL TO ACTION BANNER */}
       <section className="cry-cta-banner">

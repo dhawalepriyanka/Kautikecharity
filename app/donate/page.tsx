@@ -108,12 +108,6 @@ export default function DonatePage() {
       return;
     }
 
-    const panClean = donor.pan.trim().toUpperCase();
-    if (!panClean || !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panClean)) {
-      alert("Please enter a valid 10-digit PAN Card Number (e.g. ABCDE1234F) for the 80G Tax Exemption Receipt.");
-      return;
-    }
-
     setLoading(true);
     try {
       const createOrder = await fetch(`${apiUrl}/api/donations/create-order`, {
@@ -314,41 +308,14 @@ export default function DonatePage() {
               {/* Verified Trust Strip */}
               <div style={{ background: "#FAF8F5", padding: "14px", borderRadius: "8px", border: "1px solid #E2E8F0" }}>
                 <div style={{ fontSize: "12px", fontWeight: 800, color: "#153F31", marginBottom: "4px" }}>🛡️ 100% Tax Deductible (Section 80G)</div>
-                <div style={{ fontSize: "11.5px", color: "#64748B", lineHeight: "1.4", marginBottom: "10px" }}>
-                  Kautike Charitable Foundation is registered under Section 12A &amp; 80G of the Income Tax Act.
+                <div style={{ fontSize: "11.5px", color: "#64748B", lineHeight: "1.4" }}>
+                  Kautike Charitable Foundation is registered under Section 12A &amp; 80G of the Income Tax Act. Official 80G tax receipt and Certificate of Contribution are issued immediately upon successful donation.
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSuccessData({
-                      paymentId: `sample_pay_${Date.now()}`,
-                      amount: effectiveAmount || 5000,
-                      date: new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(new Date()),
-                      receiptNumber: `KCF-80G-${String(Date.now()).slice(-6)}`,
-                      verified: false,
-                      preview: true,
-                    });
-                    setSuccessViewTab("receipt");
-                    window.scrollTo({ top: 280, behavior: "smooth" });
-                  }}
-                  style={{
-                    width: "100%",
-                    padding: "8px 12px",
-                    background: "#FFFFFF",
-                    border: "1px solid #CBD5E1",
-                    borderRadius: "6px",
-                    fontSize: "12px",
-                    fontWeight: 700,
-                    color: "#1E293B",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "6px",
-                  }}
-                >
-                  📜 Preview Certificate of Contribution
-                </button>
+                <div style={{ marginTop: "8px" }}>
+                  <a href="/receipt-preview" target="_blank" rel="noopener noreferrer" style={{ fontSize: "11.5px", fontWeight: 800, color: "#134B36", textDecoration: "underline", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    👁️ View Sample 80G Tax Receipt ➔
+                  </a>
+                </div>
               </div>
 
             </div>
@@ -366,22 +333,20 @@ export default function DonatePage() {
                     Thank You, {donor.name || "Generous Donor"}!
                   </h2>
                   <p style={{ color: "#64748B", fontSize: "13.5px", margin: "0" }}>
-                    {successData.verified
-                      ? <>Your donation of <strong>₹{successData.amount.toLocaleString("en-IN")}</strong> has been verified. Your receipt is ready below.</>
-                      : "This is a certificate preview. A donation receipt is issued only after successful payment verification."}
+                    Your donation of <strong>₹{successData.amount.toLocaleString("en-IN")}</strong> has been successfully received and verified. Your 80G tax receipt and official certificate are ready below.
                   </p>
                 </div>
 
                 <div className="donation-success-tabs no-print" role="tablist" aria-label="Donation documents">
-                  {(successData.verified || successData.preview) && <button
-                      type="button"
-                      role="tab"
-                      aria-selected={successViewTab === "receipt"}
-                      className={successViewTab === "receipt" ? "active" : ""}
-                      onClick={() => setSuccessViewTab("receipt")}
-                    >
-                      Donation Receipt
-                    </button>}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={successViewTab === "receipt"}
+                    className={successViewTab === "receipt" ? "active" : ""}
+                    onClick={() => setSuccessViewTab("receipt")}
+                  >
+                    Donation Receipt (80G)
+                  </button>
                   <button
                     type="button"
                     role="tab"
@@ -393,7 +358,7 @@ export default function DonatePage() {
                   </button>
                 </div>
 
-                {(successData.verified || successData.preview) && successViewTab === "receipt" ? (
+                {successViewTab === "receipt" ? (
                   <DonationReceipt
                     donorName={donor.name || "Generous Donor"}
                     email={donor.email}
@@ -405,7 +370,6 @@ export default function DonatePage() {
                     receiptNumber={successData.receiptNumber}
                     paymentId={successData.paymentId}
                     purpose={cause}
-                    isPreview={successData.preview}
                     onClose={() => { setSuccessData(null); setStep(1); }}
                   />
                 ) : (
@@ -656,17 +620,10 @@ export default function DonatePage() {
 
                       {/* PAN Number for 80G */}
                       <div className="cry-underline-field cry-underline-full">
-                        <label>
-                          PAN Card Number (For 80G Tax Exemption Certificate)<span className="red-star">*</span>
-                        </label>
+                        <label>PAN Card Number (For 80G Tax Exemption Certificate)</label>
                         <input
                           type="text"
-                          required
                           maxLength={10}
-                          minLength={10}
-                          placeholder="e.g. ABCDE1234F"
-                          pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}"
-                          title="Please enter a valid 10-digit PAN (e.g. ABCDE1234F)"
                           value={donor.pan}
                           onChange={(e) => setDonor({ ...donor, pan: e.target.value.toUpperCase() })}
                           className="cry-underline-input"

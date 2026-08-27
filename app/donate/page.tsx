@@ -311,11 +311,6 @@ export default function DonatePage() {
                 <div style={{ fontSize: "11.5px", color: "#64748B", lineHeight: "1.4" }}>
                   Kautike Charitable Foundation is registered under Section 12A &amp; 80G of the Income Tax Act. Official 80G tax receipt and Certificate of Contribution are issued immediately upon successful donation.
                 </div>
-                <div style={{ marginTop: "8px" }}>
-                  <a href="/receipt-preview" target="_blank" rel="noopener noreferrer" style={{ fontSize: "11.5px", fontWeight: 800, color: "#134B36", textDecoration: "underline", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                    👁️ View Sample 80G Tax Receipt ➔
-                  </a>
-                </div>
               </div>
 
             </div>

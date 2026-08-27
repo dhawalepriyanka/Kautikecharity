@@ -22,6 +22,7 @@ interface PaymentSuccessData {
   date: string;
   receiptNumber: string;
   verified?: boolean;
+  preview?: boolean;
 }
 
 const apiUrl = typeof window !== "undefined" && window.location.hostname !== "localhost"
@@ -270,7 +271,7 @@ export default function DonatePage() {
         <div className="donate-main-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "32px", alignItems: "start" }}>
           
           {/* ── LEFT PANEL: INSPIRING STORY & IMPACT ── */}
-          <div style={{ background: "#FFFFFF", borderRadius: "14px", border: "1.5px solid #E5E7EB", borderTop: "4px solid #F5A623", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.05)" }}>
+          <div style={{ display: successData ? "none" : undefined, background: "#FFFFFF", borderRadius: "14px", border: "1.5px solid #E5E7EB", borderTop: "4px solid #F5A623", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.05)" }}>
             
             {/* Impact Breakdown Body */}
             <div style={{ padding: "28px" }}>
@@ -319,8 +320,9 @@ export default function DonatePage() {
                       date: new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "medium" }).format(new Date()),
                       receiptNumber: `KCF-80G-${String(Date.now()).slice(-6)}`,
                       verified: false,
+                      preview: true,
                     });
-                    setSuccessViewTab("certificate");
+                    setSuccessViewTab("receipt");
                     window.scrollTo({ top: 280, behavior: "smooth" });
                   }}
                   style={{
@@ -347,11 +349,11 @@ export default function DonatePage() {
           </div>
 
           {/* ── RIGHT PANEL: THE EXACT DONATION FORM ── */}
-          <div style={{ width: "100%" }}>
+          <div style={{ width: "100%", gridColumn: successData ? "1 / -1" : undefined }}>
             
             {/* Payment Success View: Official Certificate of Contribution */}
             {successData ? (
-              <div style={{ background: "#FFFFFF", padding: "24px 18px", borderRadius: "16px", border: "1.5px solid #E5E7EB", boxShadow: "0 10px 30px rgba(0,0,0,0.04)" }}>
+              <div style={{ background: "#FFFFFF", padding: "24px clamp(12px, 2.5vw, 30px)", borderRadius: "16px", border: "1.5px solid #E5E7EB", boxShadow: "0 10px 30px rgba(0,0,0,0.04)" }}>
                 <div style={{ textAlign: "center", marginBottom: "16px" }}>
                   <div style={{ fontSize: "36px", marginBottom: "4px" }}>🎉</div>
                   <h2 style={{ margin: "0 0 4px", fontSize: "22px", color: "#0F172A", fontWeight: 800 }}>
@@ -365,7 +367,7 @@ export default function DonatePage() {
                 </div>
 
                 <div className="donation-success-tabs no-print" role="tablist" aria-label="Donation documents">
-                  {successData.verified && <button
+                  {(successData.verified || successData.preview) && <button
                       type="button"
                       role="tab"
                       aria-selected={successViewTab === "receipt"}
@@ -385,7 +387,7 @@ export default function DonatePage() {
                   </button>
                 </div>
 
-                {successData.verified && successViewTab === "receipt" ? (
+                {(successData.verified || successData.preview) && successViewTab === "receipt" ? (
                   <DonationReceipt
                     donorName={donor.name || "Generous Donor"}
                     email={donor.email}
@@ -397,6 +399,7 @@ export default function DonatePage() {
                     receiptNumber={successData.receiptNumber}
                     paymentId={successData.paymentId}
                     purpose={cause}
+                    isPreview={successData.preview}
                     onClose={() => { setSuccessData(null); setStep(1); }}
                   />
                 ) : (

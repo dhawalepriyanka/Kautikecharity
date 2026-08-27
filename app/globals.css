@@ -9395,6 +9395,33 @@ footer {
   box-shadow: 0 18px 42px rgba(10, 54, 37, 0.16);
   color: #18372d;
   padding: clamp(20px, 4vw, 42px);
+  min-height: 620px;
+}
+
+.donation-receipt-watermark {
+  position: absolute;
+  width: min(42%, 350px);
+  height: auto;
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  opacity: 0.055;
+  pointer-events: none;
+}
+
+.donation-receipt-preview-label {
+  position: relative;
+  z-index: 2;
+  margin: -6px 0 16px;
+  border: 1px dashed #c77d10;
+  border-radius: 7px;
+  background: #fff5dc;
+  color: #935b08;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  padding: 8px 10px;
+  text-align: center;
 }
 
 .donation-receipt-sheet::before,
@@ -9500,6 +9527,7 @@ footer {
 
 .donation-receipt-title { text-align: center; padding: 26px 0 18px; }
 .donation-receipt-title h2 { margin: 0; color: #155b41; font-family: Georgia, serif; font-size: clamp(28px, 4vw, 46px); font-style: italic; }
+.donation-receipt-title span { display: block; color: #31493e; font-size: 13px; margin-top: 8px; }
 .donation-receipt-title p { margin: 5px 0 0; color: #4b695b; font-weight: 800; }
 
 .donation-receipt-grid {
@@ -9527,8 +9555,77 @@ footer {
   padding: 14px 18px;
 }
 .donation-receipt-amount strong { font-size: clamp(22px, 4vw, 32px); }
+.donation-receipt-amount b { display: flex; flex-direction: column; gap: 3px; }
+.donation-receipt-amount em { font-size: 14px; font-weight: 700; }
 .donation-receipt-note { margin-top: 22px; padding-top: 18px; border-top: 1px solid #b8cfc4; color: #40564b; font-size: 12px; font-style: italic; line-height: 1.55; }
 .donation-receipt-footer { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid #b8cfc4; margin-top: 18px; padding-top: 12px; color: #155b41; font-size: 12px; font-weight: 800; }
+
+/* The receipt image supplied by Kautike is the visual template. The values
+   below deliberately cover its sample data and insert verified live data. */
+.donation-receipt-template {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 980px);
+  aspect-ratio: 1149 / 1369;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 20px 48px rgba(10, 54, 37, 0.16);
+}
+
+.donation-receipt-template-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.donation-receipt-template-values {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  color: #123e2a;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(6px, 1.42vw, 17px);
+  font-weight: 700;
+}
+
+.receipt-template-field {
+  position: absolute;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.97);
+  line-height: 1.18;
+  padding: 0.12em 0.28em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.receipt-template-number { left: 67%; top: 9.25%; width: 23%; color: #0d5136; font-size: 1.08em; }
+.receipt-template-date { left: 70%; top: 14.75%; width: 20%; color: #173e2c; }
+.receipt-template-name { left: 25.5%; top: 32.5%; width: 23%; }
+.receipt-template-pan { left: 25.5%; top: 36.35%; width: 22%; }
+.receipt-template-address { left: 25.5%; top: 39.85%; width: 24%; min-height: 5.5%; white-space: normal; font-size: 0.78em; }
+.receipt-template-email { left: 25.5%; top: 45.45%; width: 23%; }
+.receipt-template-phone { left: 25.5%; top: 48.65%; width: 21%; }
+.receipt-template-amount { left: 77%; top: 32.5%; width: 16%; }
+.receipt-template-mode { left: 77%; top: 36.35%; width: 16%; }
+.receipt-template-payment { left: 77%; top: 40.3%; width: 16%; font-size: 0.67em; }
+.receipt-template-purpose { left: 77%; top: 44.1%; width: 17%; height: 5%; white-space: normal; font-size: 0.63em; }
+.receipt-template-words { left: 28.5%; top: 54.3%; width: 54%; color: #174c37; font-style: italic; }
+
+.donation-receipt-template .donation-receipt-preview-label {
+  position: absolute;
+  z-index: 2;
+  top: 1.2%;
+  left: 50%;
+  width: 52%;
+  margin: 0;
+  padding: 0.34em 0.6em;
+  transform: translateX(-50%);
+  font-size: clamp(5px, 0.9vw, 11px);
+}
 
 @media (max-width: 640px) {
   .donation-receipt-actions { flex-direction: column-reverse; align-items: stretch; }
@@ -9540,6 +9637,9 @@ footer {
   .donation-receipt-grid > div + div { border-left: 0; border-top: 1px solid #d7e1dc; padding: 14px 0 0; }
   .donation-receipt-grid p { grid-template-columns: 1fr; gap: 2px; margin-bottom: 10px; }
   .donation-receipt-footer { flex-direction: column; gap: 5px; }
+  .donation-receipt-sheet { min-height: 0; }
+  .donation-receipt-watermark { width: 66%; }
+  .donation-receipt-template { width: 100%; }
 }
 
 

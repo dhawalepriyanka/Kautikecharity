@@ -11,10 +11,32 @@ type ReceiptProps = {
   receiptNumber: string;
   paymentId: string;
   purpose: string;
+  isPreview?: boolean;
   onClose?: () => void;
 };
 
 const formatAmount = (amount: number) => `₹${amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}`;
+
+const belowTwenty = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+const wordsBelowThousand = (value: number): string => {
+  if (value < 20) return belowTwenty[value];
+  if (value < 100) return `${tens[Math.floor(value / 10)]}${value % 10 ? ` ${belowTwenty[value % 10]}` : ""}`;
+  return `${belowTwenty[Math.floor(value / 100)]} Hundred${value % 100 ? ` ${wordsBelowThousand(value % 100)}` : ""}`;
+};
+const amountInWords = (amount: number) => {
+  let value = Math.max(0, Math.round(amount));
+  if (!value) return "Rupees Zero Only";
+  const parts: string[] = [];
+  const crore = Math.floor(value / 10000000); value %= 10000000;
+  const lakh = Math.floor(value / 100000); value %= 100000;
+  const thousand = Math.floor(value / 1000); value %= 1000;
+  if (crore) parts.push(`${wordsBelowThousand(crore)} Crore`);
+  if (lakh) parts.push(`${wordsBelowThousand(lakh)} Lakh`);
+  if (thousand) parts.push(`${wordsBelowThousand(thousand)} Thousand`);
+  if (value) parts.push(wordsBelowThousand(value));
+  return `Rupees ${parts.join(" ")} Only`;
+};
 
 export function DonationReceipt({
   donorName,
@@ -27,6 +49,7 @@ export function DonationReceipt({
   receiptNumber,
   paymentId,
   purpose,
+  isPreview = false,
   onClose,
 }: ReceiptProps) {
   const printReceipt = () => window.print();
@@ -38,58 +61,23 @@ export function DonationReceipt({
         <button type="button" className="donation-receipt-print" onClick={printReceipt}>🖨 Print / Save as PDF</button>
       </div>
 
-      <article className="donation-receipt-sheet" id="donation-receipt-print-area">
-        <header className="donation-receipt-header">
-          <div className="donation-receipt-brand">
-            <img src="/kautike-logo.png" alt="Kautike Charitable Foundation" />
-            <div>
-              <strong>KAUTIKE</strong>
-              <span>CHARITABLE FOUNDATION</span>
-              <em>Every Help — A New Hope</em>
-            </div>
-          </div>
-          <div className="donation-receipt-meta">
-            <span>Receipt No.</span>
-            <strong>{receiptNumber}</strong>
-            <span>Date</span>
-            <b>{date}</b>
-          </div>
-        </header>
-
-        <div className="donation-receipt-title">
-          <h2>Donation Receipt</h2>
-          <p>Thank you for your generous support!</p>
+      <article className="donation-receipt-template" id="donation-receipt-print-area">
+        {isPreview && <div className="donation-receipt-preview-label no-print">SAMPLE RECEIPT — NOT A PAYMENT CONFIRMATION</div>}
+        <img className="donation-receipt-template-image" src="/images/receipt.jpeg" alt="Kautike donation receipt" />
+        <div className="donation-receipt-template-values" aria-label="Verified donation information">
+          <span className="receipt-template-field receipt-template-number">{receiptNumber}</span>
+          <span className="receipt-template-field receipt-template-date">{date}</span>
+          <span className="receipt-template-field receipt-template-name">{donorName || "Generous Donor"}</span>
+          <span className="receipt-template-field receipt-template-pan">{pan ? pan.toUpperCase() : "—"}</span>
+          <span className="receipt-template-field receipt-template-address">{address || "—"}</span>
+          <span className="receipt-template-field receipt-template-email">{email || "—"}</span>
+          <span className="receipt-template-field receipt-template-phone">{phone || "—"}</span>
+          <span className="receipt-template-field receipt-template-amount">{formatAmount(amount)}</span>
+          <span className="receipt-template-field receipt-template-mode">Online (Razorpay)</span>
+          <span className="receipt-template-field receipt-template-payment">{paymentId}</span>
+          <span className="receipt-template-field receipt-template-purpose">{purpose}</span>
+          <span className="receipt-template-field receipt-template-words">{amountInWords(amount)}</span>
         </div>
-
-        <div className="donation-receipt-grid">
-          <div>
-            <p><b>Donor name</b><span>{donorName || "Generous Donor"}</span></p>
-            {pan && <p><b>PAN</b><span>{pan.toUpperCase()}</span></p>}
-            {address && <p><b>Address</b><span>{address}</span></p>}
-            <p><b>Email</b><span>{email}</span></p>
-            <p><b>Mobile</b><span>{phone}</span></p>
-          </div>
-          <div>
-            <p><b>Donation amount</b><span>{formatAmount(amount)}</span></p>
-            <p><b>Payment mode</b><span>Online payment (Razorpay)</span></p>
-            <p><b>Transaction ID</b><span className="receipt-payment-id">{paymentId}</span></p>
-            <p><b>Donation purpose</b><span>{purpose}</span></p>
-          </div>
-        </div>
-
-        <div className="donation-receipt-amount">
-          <b>Amount received</b>
-          <strong>{formatAmount(amount)}</strong>
-        </div>
-
-        <div className="donation-receipt-note">
-          We gratefully acknowledge receipt of the donation above. Your contribution helps support education, health, protection, community relief, and environmental initiatives.
-        </div>
-
-        <footer className="donation-receipt-footer">
-          <span>Kautike Charitable Foundation</span>
-          <span>kautikefoundation.org</span>
-        </footer>
       </article>
     </section>
   );

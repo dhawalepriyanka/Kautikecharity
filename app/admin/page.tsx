@@ -78,17 +78,17 @@ type EventItem = {
 const initialEvents: EventItem[] = [
   {
     id: "mission-1-notebook-distribution-2025",
-    title: "Mission 1: Notebook Distribution to Needy Students",
+    title: "Notebook Distribution to Needy Students",
     category: "Education",
     date: "2025-08-02",
     location: "RZP School Kondap, Kondap, Panvel, Raigad",
     coverImage: "/images/events/mission-1/mission-1-01.jpeg",
     gallery: Array.from({ length: 28 }, (_, index) => `/images/events/mission-1/mission-1-${String(index + 1).padStart(2, "0")}.jpeg`),
-    summary: "Notebook distribution to needy students, held at 10:30 AM at RZP School Kondap. Address: Kondap, near Mohoder village, Post Vavanje, Taluka Panvel, District Raigad.",
+    summary: "Notebook distribution to needy students at RZP School Kondap, Taluka Panvel, District Raigad.",
   },
   {
     id: "mission-2-school-supplies-2025",
-    title: "Mission 2: School Supplies Distribution to 48 Students",
+    title: "School Supplies Distribution to 48 Students",
     category: "Education",
     date: "2025-09-13",
     location: "Raigad Zilla Parishad School, Mahodar, Panvel, Raigad",
@@ -98,7 +98,7 @@ const initialEvents: EventItem[] = [
   },
   {
     id: "mission-3-saundari-school-supplies-2025",
-    title: "Mission 3: School Supplies Distribution at Saundari",
+    title: "School Supplies Distribution at Saundari",
     titleMr: "शालेय साहित्य वाटप - जि.प. प्राथ. शाळा सौंदरी",
     category: "Education",
     date: "2025-10-04",
@@ -116,7 +116,7 @@ const initialEvents: EventItem[] = [
   },
   {
     id: "mission-10-educational-supplies-2026",
-    title: "Mission 10: Educational Supplies for 40 Students",
+    title: "Educational Supplies for 40 Students",
     titleMr: "Every act of kindness — a new ray of hope",
     category: "Education",
     date: "2026-08-08",
@@ -154,7 +154,7 @@ const initialEvents: EventItem[] = [
   },
   {
     id: "mission-12-devecamp-school-supplies-2026",
-    title: "Mission 12: Educational Kit & Study Supplies Distribution at Devecamp",
+    title: "Educational Kit & Study Supplies Distribution at Devecamp",
     titleMr: "शैक्षणिक साहित्य वाटप - रायगड जिल्हा परिषद शाळा देवकॅम्प",
     category: "Education",
     date: "2026-08-27",
@@ -438,7 +438,7 @@ function mergeAdminVolunteers(savedList: any[]): Volunteer[] {
   return Array.from(map.values()).filter((v) => !v.name.toLowerCase().includes("yogesh"));
 }
 
-const apiUrl = "http://localhost:4000";
+const apiUrl = "";
 
 export default function AdminPage() {
   const [section, setSection] = useState("Overview");
@@ -544,12 +544,12 @@ export default function AdminPage() {
     presidentImage: "/images/team/nilesh-kute.png",
     presidentLocation: "Maharashtra, India",
     orgName: "Kautike Charitable Foundation",
-    reg80G: "AAACK6892RF20214",
-    reg12A: "AAACK6892RE20211",
-    nitiDarpan: "MH/2021/0289134",
-    phone: "+91 810 836 2688",
-    email: "kc.chfoundation2025@gmail.com",
-    address: "Flat No. 102, Shanti Heights, Sector 15, Panvel, Navi Mumbai, Maharashtra 410206",
+    reg80G: "AALCK6167AF20251",
+    reg12A: "12-Sub-clause (A) of clause (iv) of first proviso to sub-section (5) of section 80G",
+    nitiDarpan: "AALCK6167AF2025101",
+    phone: "+91 83560 08675 / +91 81083 62688",
+    email: "info@kautikefoundation.org",
+    address: "Office No. A-1, D'Souza Sadan, Lokmanya Tilak Nagar, 90 Feet Road, Sakinaka, Mumbai - 400 072",
   });
 
   // Selected Message Modal
@@ -559,77 +559,99 @@ export default function AdminPage() {
   const auth = () => ({ Authorization: "Basic " + btoa(credentials.username + ":" + credentials.password) });
 
   const request = async (path: string, method = "GET", body?: any) => {
-    const headers: Record<string, string> = { ...auth() };
-    if (body) headers["Content-Type"] = "application/json";
-    const response = await fetch(apiUrl + path, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || "Unable to process request.");
-    return data;
+    if (!apiUrl) return null;
+    try {
+      const headers: Record<string, string> = { ...auth() };
+      if (body) headers["Content-Type"] = "application/json";
+      const response = await fetch(apiUrl + path, {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : undefined,
+      });
+      if (!response.ok) return null;
+      return await response.json();
+    } catch (_) {
+      return null;
+    }
   };
 
   const load = async () => {
     try {
-      const [dashboard, messageRows, serverSettings, serverStories, serverVols, serverPages, serverNews] = await Promise.all([
-        request("/api/admin/overview"),
-        request("/api/admin/messages"),
-        request("/api/settings").catch(() => null),
-        request("/api/stories").catch(() => null),
-        request("/api/volunteers").catch(() => null),
-        request("/api/pages").catch(() => null),
-        request("/api/news").catch(() => null),
-      ]);
-      setOverview(dashboard);
-      let allMessages: Message[] = Array.isArray(messageRows) ? messageRows : [];
-      try {
-        const savedMsgs = localStorage.getItem("kautike_admin_messages");
-        if (savedMsgs) {
-          const localParsed = JSON.parse(savedMsgs);
-          if (Array.isArray(localParsed)) {
-            const ids = new Set(allMessages.map((m) => m.id));
-            allMessages = [...allMessages, ...localParsed.filter((m) => !ids.has(m.id))];
-          }
-        }
-      } catch (_) {}
-      setMessages(allMessages);
-      localStorage.setItem("kautike_admin_messages", JSON.stringify(allMessages));
-
-      if (serverSettings) {
-        setPersonalInfo(serverSettings);
-        localStorage.setItem("kautike_admin_personal", JSON.stringify(serverSettings));
-      }
-      if (serverStories && Array.isArray(serverStories) && serverStories.length > 0) {
-        setStories(serverStories);
-        localStorage.setItem("kautike_admin_stories", JSON.stringify(serverStories));
-      }
-      if (serverVols && Array.isArray(serverVols) && serverVols.length > 0) {
-        const merged = mergeAdminVolunteers(serverVols);
-        setVolunteers(merged);
-        localStorage.setItem("kautike_admin_volunteers", JSON.stringify(merged));
-      }
-      if (serverPages && Array.isArray(serverPages) && serverPages.length > 0) {
-        setPages(serverPages);
-        localStorage.setItem("kautike_admin_pages", JSON.stringify(serverPages));
-      }
-      if (serverNews && Array.isArray(serverNews) && serverNews.length > 0) {
-        setNewsList(serverNews);
-        localStorage.setItem("kautike_admin_news", JSON.stringify(serverNews));
-      }
-      const serverEvents = await request<EventItem[]>("/api/events").catch(() => null);
-      if (serverEvents && Array.isArray(serverEvents) && serverEvents.length > 0) {
-        const mergedEvents = mergeAdminEvents(serverEvents);
-        setEvents(mergedEvents);
-        localStorage.setItem("kautike_admin_events", JSON.stringify(mergedEvents));
-      }
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Connected in offline mode.");
+      // 1. Load Local Storage Data
       try {
         const savedMsgs = localStorage.getItem("kautike_admin_messages");
         if (savedMsgs) setMessages(JSON.parse(savedMsgs));
+        
+        const savedPersonal = localStorage.getItem("kautike_admin_personal");
+        if (savedPersonal) setPersonalInfo(JSON.parse(savedPersonal));
+        
+        const savedStories = localStorage.getItem("kautike_admin_stories");
+        if (savedStories) setStories(JSON.parse(savedStories));
+        
+        const savedVols = localStorage.getItem("kautike_admin_volunteers");
+        if (savedVols) setVolunteers(mergeAdminVolunteers(JSON.parse(savedVols)));
+        
+        const savedPages = localStorage.getItem("kautike_admin_pages");
+        if (savedPages) setPages(JSON.parse(savedPages));
+        
+        const savedNews = localStorage.getItem("kautike_admin_news");
+        if (savedNews) setNewsList(JSON.parse(savedNews));
+        
+        const savedEvents = localStorage.getItem("kautike_admin_events");
+        if (savedEvents) setEvents(mergeAdminEvents(JSON.parse(savedEvents)));
       } catch (_) {}
+
+      // 2. Optional remote sync if backend is configured
+      if (apiUrl) {
+        const [dashboard, messageRows, serverSettings, serverStories, serverVols, serverPages, serverNews, serverEvents] = await Promise.all([
+          request("/api/admin/overview"),
+          request("/api/admin/messages"),
+          request("/api/settings"),
+          request("/api/stories"),
+          request("/api/volunteers"),
+          request("/api/pages"),
+          request("/api/news"),
+          request("/api/events"),
+        ]);
+
+        if (dashboard) setOverview(dashboard);
+        if (Array.isArray(messageRows) && messageRows.length > 0) {
+          setMessages((prev) => {
+            const ids = new Set(prev.map((m) => m.id));
+            const merged = [...prev, ...messageRows.filter((m: Message) => !ids.has(m.id))];
+            localStorage.setItem("kautike_admin_messages", JSON.stringify(merged));
+            return merged;
+          });
+        }
+        if (serverSettings) {
+          setPersonalInfo(serverSettings);
+          localStorage.setItem("kautike_admin_personal", JSON.stringify(serverSettings));
+        }
+        if (Array.isArray(serverStories) && serverStories.length > 0) {
+          setStories(serverStories);
+          localStorage.setItem("kautike_admin_stories", JSON.stringify(serverStories));
+        }
+        if (Array.isArray(serverVols) && serverVols.length > 0) {
+          const merged = mergeAdminVolunteers(serverVols);
+          setVolunteers(merged);
+          localStorage.setItem("kautike_admin_volunteers", JSON.stringify(merged));
+        }
+        if (Array.isArray(serverPages) && serverPages.length > 0) {
+          setPages(serverPages);
+          localStorage.setItem("kautike_admin_pages", JSON.stringify(serverPages));
+        }
+        if (Array.isArray(serverNews) && serverNews.length > 0) {
+          setNewsList(serverNews);
+          localStorage.setItem("kautike_admin_news", JSON.stringify(serverNews));
+        }
+        if (Array.isArray(serverEvents) && serverEvents.length > 0) {
+          const mergedEvents = mergeAdminEvents(serverEvents);
+          setEvents(mergedEvents);
+          localStorage.setItem("kautike_admin_events", JSON.stringify(mergedEvents));
+        }
+      }
+    } catch (_) {
+      // Keep UI clean without displaying connection errors
     }
   };
 
@@ -1062,7 +1084,7 @@ export default function AdminPage() {
     return (
       <main className="admin-login-page">
         <form className="admin-login-card" onSubmit={login}>
-          <img src="/kautike-logo.png" alt="Kautike Charitable Foundation" />
+          <img src="/images/logo.png" alt="Kautike Charitable Foundation" />
           <p>KAUTIKE CHARITABLE FOUNDATION</p>
           <h1>Admin Sign In</h1>
           <label>
@@ -1087,7 +1109,7 @@ export default function AdminPage() {
       <aside className={`admin-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
         <div className="admin-mobile-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <a className="admin-brand" href="/">
-            <img src="/kautike-logo.png" alt="Kautike Charitable Foundation" />
+            <img src="/images/logo.png" alt="Kautike Charitable Foundation" />
             <span>
               Kautike
               <br />

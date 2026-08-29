@@ -73,9 +73,6 @@ export default function Home() {
               <div className="wwd-card-back">
                 <h3 className="wwd-card-title">Education</h3>
                 <p className="wwd-card-text">Providing school kits, academic support centers, and learning materials for every child.</p>
-                <a href="/events" className="wwd-btn" style={{ borderColor: "#E91E63", color: "#E91E63" }}>
-                  View Drives ➔
-                </a>
               </div>
             </div>
 
@@ -90,9 +87,6 @@ export default function Home() {
               <div className="wwd-card-back">
                 <h3 className="wwd-card-title">Health &amp; Nutrition</h3>
                 <p className="wwd-card-text">Increasing access to proper nutrition, growth monitoring, and quality healthcare.</p>
-                <a href="/causes" className="wwd-btn" style={{ borderColor: "#00BCD4", color: "#00BCD4" }}>
-                  Learn More ➔
-                </a>
               </div>
             </div>
 
@@ -107,9 +101,6 @@ export default function Home() {
               <div className="wwd-card-back">
                 <h3 className="wwd-card-title">Safety &amp; Protection</h3>
                 <p className="wwd-card-text">Preventing child labor, supporting child rights, and protecting vulnerable youth.</p>
-                <a href="/about" className="wwd-btn" style={{ borderColor: "#9C27B0", color: "#9C27B0" }}>
-                  Our Mission ➔
-                </a>
               </div>
             </div>
 
@@ -124,9 +115,6 @@ export default function Home() {
               <div className="wwd-card-back">
                 <h3 className="wwd-card-title">Environment &amp; Plants</h3>
                 <p className="wwd-card-text">Planting saplings, restoring urban green cover, and promoting environmental care.</p>
-                <a href="/donate" className="wwd-btn" style={{ borderColor: "#4CAF50", color: "#4CAF50" }}>
-                  Support Green ➔
-                </a>
               </div>
             </div>
           </div>

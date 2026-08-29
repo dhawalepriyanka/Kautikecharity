@@ -208,7 +208,9 @@ export default function EventsPage() {
         if (Array.isArray(data) && data.length > 0) {
           const merged = mergeEventsList(data);
           setEvents(merged);
-          localStorage.setItem("kautike_admin_events", JSON.stringify(merged));
+          try {
+            localStorage.setItem("kautike_admin_events", JSON.stringify(merged));
+          } catch (_) {}
         }
       })
       .catch(() => {});

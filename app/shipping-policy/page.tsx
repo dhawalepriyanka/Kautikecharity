@@ -66,7 +66,7 @@ export default function ShippingPolicyPage() {
                 If you do not receive your digital donation receipt or 80G certificate in your email inbox within the specified timeframe (please also verify your spam/junk folder), you can request a duplicate digital copy at zero cost.
               </p>
               <p className="mt-3">
-                Please email us at <strong>kautikecharitable@gmail.com</strong> with your Name, Phone Number, Date of Contribution, and Razorpay Payment ID. Our support team will re-issue your certificate within 24 working hours.
+                Please email us at <strong>info@kautikefoundation.org</strong> with your Name, Phone Number, Date of Contribution, and Razorpay Payment ID. Our support team will re-issue your certificate within 24 working hours.
               </p>
             </div>
 
@@ -74,7 +74,7 @@ export default function ShippingPolicyPage() {
               <h3>5. Contact Details for Delivery Support</h3>
               <div className="contact-callout-box">
                 <p><strong>Kautike Charitable Foundation</strong></p>
-                <p>📧 Email: <a href="mailto:kautikecharitable@gmail.com">kautikecharitable@gmail.com</a></p>
+                <p>📧 Email: <a href="mailto:info@kautikefoundation.org">info@kautikefoundation.org</a></p>
                 <p>📞 Phone: <a href="tel:+918108362688">+91 810 836 2688</a></p>
                 <p>📍 Registered Address: Maharashtra, India</p>
               </div>

@@ -52,7 +52,7 @@ export default function RefundPolicyPage() {
                 To request a refund for an erroneous or duplicate transaction, the donor must contact Kautike Charitable Foundation within <strong>7 (seven) days</strong> of making the transaction. Requests made after 7 days may not be eligible for a refund as funds are disbursed to field operations.
               </p>
               <p className="mt-3">
-                Please email your refund request to <strong>kautikecharitable@gmail.com</strong> with the following details:
+                Please email your refund request to <strong>info@kautikefoundation.org</strong> with the following details:
               </p>
               <ul className="policy-list">
                 <li>Full Name of the Donor</li>
@@ -77,7 +77,7 @@ export default function RefundPolicyPage() {
             <div className="policy-block">
               <h3>5. Cancellation of Recurring / Monthly Pledges</h3>
               <p>
-                Donors who have set up a recurring monthly donation mandate via Razorpay Subscriptions / e-Mandate can cancel their recurring plan at any time with zero penalty. Simply send an email to <strong>kautikecharitable@gmail.com</strong> at least 3 business days before the next scheduled deduction date, and your mandate will be stopped immediately.
+                Donors who have set up a recurring monthly donation mandate via Razorpay Subscriptions / e-Mandate can cancel their recurring plan at any time with zero penalty. Simply send an email to <strong>info@kautikefoundation.org</strong> at least 3 business days before the next scheduled deduction date, and your mandate will be stopped immediately.
               </p>
             </div>
 
@@ -92,7 +92,7 @@ export default function RefundPolicyPage() {
               <h3>7. Contact for Grievances &amp; Support</h3>
               <div className="contact-callout-box">
                 <p><strong>Kautike Charitable Foundation</strong></p>
-                <p>📧 Email: <a href="mailto:kautikecharitable@gmail.com">kautikecharitable@gmail.com</a></p>
+                <p>📧 Email: <a href="mailto:info@kautikefoundation.org">info@kautikefoundation.org</a></p>
                 <p>📞 Phone: <a href="tel:+918108362688">+91 810 836 2688</a></p>
                 <p>📍 Registered Address: Maharashtra, India</p>
               </div>

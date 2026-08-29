@@ -55,7 +55,7 @@ export default function AboutPage() {
   const [volunteers, setVolunteers] = useState(defaultVolunteers);
   const [president, setPresident] = useState(defaultPresidentData);
   const [contactInfo, setContactInfo] = useState({
-    email: "kc.chfoundation2025@gmail.com",
+    email: "info@kautikefoundation.org",
     phone: "+91 810 836 2688",
     address: "Office No. A-1, D'Souza Sadan, Lokmanya Tilak Nagar, 90 Feet Road, Sakinaka, Mumbai - 400 072",
   });
@@ -92,11 +92,18 @@ export default function AboutPage() {
             quote: p.presidentQuote || defaultPresidentData.quote,
           });
         }
-        if (p.email || p.phone) {
+        const cleanAddress = (addr?: string) => {
+          if (!addr || addr.includes("Panvel") || addr.includes("Shanti Heights")) {
+            return "Office No. A-1, D'Souza Sadan, Lokmanya Tilak Nagar, 90 Feet Road, Sakinaka, Mumbai - 400 072";
+          }
+          return addr;
+        };
+
+        if (p.email || p.phone || p.address) {
           setContactInfo({
-            email: p.email || "kc.chfoundation2025@gmail.com",
+            email: p.email || "info@kautikefoundation.org",
             phone: p.phone || "+91 810 836 2688",
-            address: p.address || contactInfo.address,
+            address: cleanAddress(p.address),
           });
         }
       }
@@ -116,22 +123,15 @@ export default function AboutPage() {
       fetch("http://localhost:4000/api/settings")
         .then((res) => res.json())
         .then((data) => {
-          if (data && data.presidentName) {
-            setPresident({
-              name: data.presidentName,
-              role: data.presidentRole || "President & Founder",
-              image: data.presidentImage || "/images/team/nilesh-kute.png",
-              location: data.presidentLocation || "Maharashtra, India",
-              bio: data.presidentBio || defaultPresidentData.bio,
-              quote: data.presidentQuote || defaultPresidentData.quote,
+          if (data) {
+            const cleanAddr = (!data.address || data.address.includes("Panvel") || data.address.includes("Shanti Heights"))
+              ? "Office No. A-1, D'Souza Sadan, Lokmanya Tilak Nagar, 90 Feet Road, Sakinaka, Mumbai - 400 072"
+              : data.address;
+            setContactInfo({
+              email: data.email || "info@kautikefoundation.org",
+              phone: data.phone || "+91 810 836 2688",
+              address: cleanAddr,
             });
-            if (data.email || data.phone) {
-              setContactInfo({
-                email: data.email || "kc.chfoundation2025@gmail.com",
-                phone: data.phone || "+91 810 836 2688",
-                address: data.address || contactInfo.address,
-              });
-            }
           }
         })
         .catch(() => {});

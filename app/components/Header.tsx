@@ -5,7 +5,7 @@ import { NavDropdown } from "./NavDropdown";
 
 const DEFAULT_SETTINGS = {
   phone: "+91 810 836 2688",
-  email: "kc.chfoundation2025@gmail.com",
+  email: "info@kautikefoundation.org",
 };
 
 export function Header() {

@@ -20,7 +20,7 @@ const faqData = [
   },
   {
     q: "Can I donate offline or via direct Bank Transfer (NEFT / RTGS / IMPS)?",
-    a: "Yes! You can transfer funds directly into our official Foundation bank account. After making the transfer, please email the transaction reference number (UTR), your PAN card number, and donor name to kautikecharitable@gmail.com so we can generate your 80G certificate.",
+    a: "Yes! You can transfer funds directly into our official Foundation bank account. After making the transfer, please email the transaction reference number (UTR), your PAN card number, and donor name to info@kautikefoundation.org so we can generate your 80G certificate.",
   },
   {
     q: "Is online payment completely safe and encrypted?",
@@ -32,7 +32,7 @@ const faqData = [
   },
   {
     q: "How can my company partner with Kautike Foundation for 2% CSR compliance?",
-    a: "We provide turnkey statutory CSR project execution, comprehensive baseline surveys, quarterly impact tracking reports, and audited utilization certificates meeting MCA and NITI Aayog norms. Visit our Corporate Partnerships page or email kautikecharitable@gmail.com.",
+    a: "We provide turnkey statutory CSR project execution, comprehensive baseline surveys, quarterly impact tracking reports, and audited utilization certificates meeting MCA and NITI Aayog norms. Visit our Corporate Partnerships page or email info@kautikefoundation.org.",
   },
 ];
 

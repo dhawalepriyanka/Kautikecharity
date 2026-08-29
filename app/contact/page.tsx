@@ -110,8 +110,8 @@ export default function ContactPage() {
                 </div>
                 <h3>Email Inquiries</h3>
                 <p>Send your queries, donation receipts, or proposal documents.</p>
-                <a href="mailto:kc.chfoundation2025@gmail.com" className="contact-action-link">
-                  kc.chfoundation2025@gmail.com ➔
+                <a href="mailto:info@kautikefoundation.org" className="contact-action-link">
+                  info@kautikefoundation.org ➔
                 </a>
               </div>
 
@@ -141,7 +141,7 @@ export default function ContactPage() {
                       <div className="c-dot-icon">📍</div>
                       <div>
                         <strong>Registered Office Address</strong>
-                        <p>Kautike Charitable Foundation<br />Office No A-1,D'Sauza Sadan,Lokmanya Tilak Nagar,90 Feet Road,Sakinama,Mumbai-400 072 Maharashtra, India</p>
+                        <p>Office No. A-1, D'Souza Sadan, Lokmanya Tilak Nagar, 90 Feet Road, Sakinaka, Mumbai - 400 072, Maharashtra, India</p>
                       </div>
                     </div>
 

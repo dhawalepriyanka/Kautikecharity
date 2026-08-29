@@ -32,7 +32,7 @@ export default function PrivacyPage() {
           <p>All financial transactions are conducted through banking-grade 256-bit SSL encrypted payment gateways. We never store credit/debit card numbers, CVVs, or online banking passwords on our servers.</p>
 
           <h2>4. Contact for Privacy Inquiries</h2>
-          <p>For any questions regarding your personal data or to update your contact preferences, please email us at <a href="mailto:kautikecharitable@gmail.com">kautikecharitable@gmail.com</a>.</p>
+          <p>For any questions regarding your personal data or to update your contact preferences, please email us at <a href="mailto:info@kautikefoundation.org">info@kautikefoundation.org</a>.</p>
         </div>
       </section>
 

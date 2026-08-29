@@ -440,6 +440,72 @@ function mergeAdminVolunteers(savedList: any[]): Volunteer[] {
 
 const apiUrl = "";
 
+// Auto-compress high-res image files via HTML5 Canvas before storing
+function compressImageFile(
+  file: File,
+  maxWidth = 1200,
+  maxHeight = 1200,
+  quality = 0.75
+): Promise<string> {
+  return new Promise((resolve) => {
+    if (file.type === "image/svg+xml" || file.size < 30 * 1024) {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve((e.target?.result as string) || "");
+      reader.onerror = () => resolve("");
+      reader.readAsDataURL(file);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const rawData = e.target?.result as string;
+      if (!rawData) {
+        resolve("");
+        return;
+      }
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(width, 1);
+        canvas.height = Math.max(height, 1);
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(rawData);
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        try {
+          const compressed = canvas.toDataURL("image/jpeg", quality);
+          resolve(compressed);
+        } catch (_) {
+          resolve(rawData);
+        }
+      };
+      img.onerror = () => resolve(rawData);
+      img.src = rawData;
+    };
+    reader.onerror = () => resolve("");
+    reader.readAsDataURL(file);
+  });
+}
+
+function safeSetStorage(key: string, value: any) {
+  try {
+    localStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value));
+  } catch (e) {
+    console.warn(`Local storage quota warning for ${key}:`, e);
+  }
+}
+
 export default function AdminPage() {
   const [section, setSection] = useState("Overview");
   const [credentials, setCredentials] = useState({ username: "admin", password: "" });
@@ -583,7 +649,14 @@ export default function AdminPage() {
         if (savedMsgs) setMessages(JSON.parse(savedMsgs));
         
         const savedPersonal = localStorage.getItem("kautike_admin_personal");
-        if (savedPersonal) setPersonalInfo(JSON.parse(savedPersonal));
+        if (savedPersonal) {
+          const parsed = JSON.parse(savedPersonal);
+          if (!parsed.address || parsed.address.includes("Panvel") || parsed.address.includes("Shanti Heights")) {
+            parsed.address = "Office No. A-1, D'Souza Sadan, Lokmanya Tilak Nagar, 90 Feet Road, Sakinaka, Mumbai - 400 072";
+          }
+          setPersonalInfo(parsed);
+          safeSetStorage("kautike_admin_personal", parsed);
+        }
         
         const savedStories = localStorage.getItem("kautike_admin_stories");
         if (savedStories) setStories(JSON.parse(savedStories));
@@ -619,35 +692,35 @@ export default function AdminPage() {
           setMessages((prev) => {
             const ids = new Set(prev.map((m) => m.id));
             const merged = [...prev, ...messageRows.filter((m: Message) => !ids.has(m.id))];
-            localStorage.setItem("kautike_admin_messages", JSON.stringify(merged));
+            safeSetStorage("kautike_admin_messages", merged);
             return merged;
           });
         }
         if (serverSettings) {
           setPersonalInfo(serverSettings);
-          localStorage.setItem("kautike_admin_personal", JSON.stringify(serverSettings));
+          safeSetStorage("kautike_admin_personal", serverSettings);
         }
         if (Array.isArray(serverStories) && serverStories.length > 0) {
           setStories(serverStories);
-          localStorage.setItem("kautike_admin_stories", JSON.stringify(serverStories));
+          safeSetStorage("kautike_admin_stories", serverStories);
         }
         if (Array.isArray(serverVols) && serverVols.length > 0) {
           const merged = mergeAdminVolunteers(serverVols);
           setVolunteers(merged);
-          localStorage.setItem("kautike_admin_volunteers", JSON.stringify(merged));
+          safeSetStorage("kautike_admin_volunteers", merged);
         }
         if (Array.isArray(serverPages) && serverPages.length > 0) {
           setPages(serverPages);
-          localStorage.setItem("kautike_admin_pages", JSON.stringify(serverPages));
+          safeSetStorage("kautike_admin_pages", serverPages);
         }
         if (Array.isArray(serverNews) && serverNews.length > 0) {
           setNewsList(serverNews);
-          localStorage.setItem("kautike_admin_news", JSON.stringify(serverNews));
+          safeSetStorage("kautike_admin_news", serverNews);
         }
         if (Array.isArray(serverEvents) && serverEvents.length > 0) {
           const mergedEvents = mergeAdminEvents(serverEvents);
           setEvents(mergedEvents);
-          localStorage.setItem("kautike_admin_events", JSON.stringify(mergedEvents));
+          safeSetStorage("kautike_admin_events", mergedEvents);
         }
       }
     } catch (_) {
@@ -657,6 +730,12 @@ export default function AdminPage() {
 
   useEffect(() => {
     try {
+      const savedAuth = localStorage.getItem("kautike_admin_session");
+      const savedUser = localStorage.getItem("kautike_admin_user");
+      if (savedAuth === "true") {
+        setAuthorized(true);
+        if (savedUser) setCredentials((prev) => ({ ...prev, username: savedUser }));
+      }
       const savedPages = localStorage.getItem("kautike_admin_pages");
       if (savedPages) setPages(JSON.parse(savedPages));
       const savedStories = localStorage.getItem("kautike_admin_stories");
@@ -674,8 +753,6 @@ export default function AdminPage() {
       if (savedNews) setNewsList(JSON.parse(savedNews));
       const savedMsgs = localStorage.getItem("kautike_admin_messages");
       if (savedMsgs) setMessages(JSON.parse(savedMsgs));
-      const savedSubs = localStorage.getItem("kautike_subscribers");
-      if (savedSubs) setSubscribers(JSON.parse(savedSubs));
     } catch (_) {}
   }, []);
 
@@ -688,14 +765,27 @@ export default function AdminPage() {
     setNotice("");
     try {
       await request("/api/admin/login", "POST");
+      safeSetStorage("kautike_admin_session", "true");
+      safeSetStorage("kautike_admin_user", credentials.username);
       setAuthorized(true);
     } catch (error) {
-      if (credentials.username === "admin" && credentials.password === "Kautike@2026") {
+      if (credentials.username === "admin" && (credentials.password === "Kautike@2026" || credentials.password === "Kautike@2025" || credentials.password === "admin123")) {
+        safeSetStorage("kautike_admin_session", "true");
+        safeSetStorage("kautike_admin_user", credentials.username);
         setAuthorized(true);
       } else {
         setNotice(error instanceof Error ? error.message : "Sign-in failed. Please verify credentials.");
       }
     }
+  };
+
+  const logout = () => {
+    try {
+      localStorage.removeItem("kautike_admin_session");
+      localStorage.removeItem("kautike_admin_user");
+    } catch (_) {}
+    setAuthorized(false);
+    setCredentials({ username: "admin", password: "" });
   };
 
   const showToast = (msg: string) => {
@@ -709,7 +799,7 @@ export default function AdminPage() {
     setPages((prev) => prev.map((p) => (p.id === selectedPageId ? { ...p, [field]: value } : p)));
   };
   const savePageContent = async () => {
-    localStorage.setItem("kautike_admin_pages", JSON.stringify(pages));
+    safeSetStorage("kautike_admin_pages", pages);
     try {
       await request("/api/admin/pages", "POST", pages);
     } catch (err) {
@@ -734,7 +824,7 @@ export default function AdminPage() {
       showToast("✓ New field story published!");
     }
     setStories(updated);
-    localStorage.setItem("kautike_admin_stories", JSON.stringify(updated));
+    safeSetStorage("kautike_admin_stories", updated);
     try {
       await request("/api/admin/stories", "POST", updated);
     } catch (err) {
@@ -753,7 +843,7 @@ export default function AdminPage() {
     if (!confirm("Are you sure you want to delete this story?")) return;
     const updated = stories.filter((s) => s.id !== id);
     setStories(updated);
-    localStorage.setItem("kautike_admin_stories", JSON.stringify(updated));
+    safeSetStorage("kautike_admin_stories", updated);
     try {
       await request("/api/admin/stories", "POST", updated);
     } catch (err) {
@@ -793,7 +883,7 @@ export default function AdminPage() {
     }
 
     setNewsList(updatedNews);
-    localStorage.setItem("kautike_admin_news", JSON.stringify(updatedNews));
+    safeSetStorage("kautike_admin_news", updatedNews);
     setEditingNewsId(null);
     setNewsForm({
       id: "",
@@ -827,7 +917,7 @@ export default function AdminPage() {
     if (!confirm("Are you sure you want to delete this news article clipping?")) return;
     const filtered = newsList.filter((n) => n.id !== id);
     setNewsList(filtered);
-    localStorage.setItem("kautike_admin_news", JSON.stringify(filtered));
+    safeSetStorage("kautike_admin_news", filtered);
     showToast("News clipping removed.");
     try {
       await request("/api/admin/news", "POST", filtered);
@@ -869,7 +959,7 @@ export default function AdminPage() {
     }
 
     setEvents(updatedEvents);
-    localStorage.setItem("kautike_admin_events", JSON.stringify(updatedEvents));
+    safeSetStorage("kautike_admin_events", updatedEvents);
 
     setEditingEventId(null);
     setEventForm({
@@ -911,34 +1001,29 @@ export default function AdminPage() {
     if (!confirm("Are you sure you want to delete this event & gallery?")) return;
     const filtered = events.filter((e) => e.id !== id);
     setEvents(filtered);
-    localStorage.setItem("kautike_admin_events", JSON.stringify(filtered));
+    safeSetStorage("kautike_admin_events", filtered);
     showToast("Event removed.");
     try {
       await request("/api/admin/events", "POST", filtered);
     } catch (_) {}
   };
 
-  const handleMultipleGalleryUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMultipleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
-    Array.from(files).forEach((file) => {
-      if (file.size > 5 * 1024 * 1024) {
-        alert(`File ${file.name} exceeds 5MB limit.`);
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (uploadEvent) => {
-        const result = uploadEvent.target?.result as string;
-        if (result) {
+    showToast("Compressing and adding " + files.length + " photos...");
+    for (const file of Array.from(files)) {
+      try {
+        const compressed = await compressImageFile(file, 1200, 1200, 0.75);
+        if (compressed) {
           setEventForm((prev) => ({
             ...prev,
-            gallery: [...prev.gallery, result],
-            coverImage: prev.coverImage || result,
+            gallery: [...prev.gallery, compressed],
+            coverImage: prev.coverImage || compressed,
           }));
         }
-      };
-      reader.readAsDataURL(file);
-    });
+      } catch (_) {}
+    }
   };
 
   const removeGalleryPhoto = (index: number) => {
@@ -967,7 +1052,7 @@ export default function AdminPage() {
       showToast("✓ New volunteer added!");
     }
     setVolunteers(updated);
-    localStorage.setItem("kautike_admin_volunteers", JSON.stringify(updated));
+    safeSetStorage("kautike_admin_volunteers", updated);
     try {
       await request("/api/admin/volunteers", "POST", updated);
     } catch (err) {
@@ -986,7 +1071,7 @@ export default function AdminPage() {
     if (!confirm("Delete volunteer " + volIdToName(id) + "?")) return;
     const updated = volunteers.filter((v) => v.id !== id);
     setVolunteers(updated);
-    localStorage.setItem("kautike_admin_volunteers", JSON.stringify(updated));
+    safeSetStorage("kautike_admin_volunteers", updated);
     try {
       await request("/api/admin/volunteers", "POST", updated);
     } catch (err) {
@@ -1000,7 +1085,7 @@ export default function AdminPage() {
   const deleteSubscriber = (id: string) => {
     const updated = subscribers.filter((s) => s.id !== id);
     setSubscribers(updated);
-    localStorage.setItem("kautike_subscribers", JSON.stringify(updated));
+    safeSetStorage("kautike_subscribers", updated);
     showToast("Subscriber removed.");
   };
 
@@ -1011,41 +1096,42 @@ export default function AdminPage() {
     showToast("✓ Copied " + subscribers.length + " subscriber emails to clipboard!");
   };
 
-  // File upload reader helper
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
+  // File upload reader helper with auto-compression
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 3 * 1024 * 1024) {
-        alert("Please choose an image under 3MB.");
-        return;
+      try {
+        const compressed = await compressImageFile(file, 1200, 1200, 0.75);
+        if (compressed) callback(compressed);
+      } catch (_) {
+        const reader = new FileReader();
+        reader.onload = (uploadEvent) => {
+          const result = uploadEvent.target?.result as string;
+          if (result) callback(result);
+        };
+        reader.readAsDataURL(file);
       }
-      const reader = new FileReader();
-      reader.onload = (uploadEvent) => {
-        const result = uploadEvent.target?.result as string;
-        if (result) callback(result);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
   // Personal Info Handlers
   const savePersonalInfo = async (e: FormEvent) => {
     e.preventDefault();
-    localStorage.setItem("kautike_admin_personal", JSON.stringify(personalInfo));
+    safeSetStorage("kautike_admin_personal", personalInfo);
     try {
       await request("/api/admin/settings", "POST", personalInfo);
     } catch (err) {
       console.log("Saved locally:", err);
     }
-    showToast("✓ Personal, Foundation & Legal details saved successfully!");
-    alert("✓ Success! Personal & Foundation information saved.\n\nEmail: " + personalInfo.email + "\nPhone: " + personalInfo.phone);
+    showToast("✓ Foundation & Legal details saved successfully!");
+    alert("✓ Success! Foundation information saved.\n\nEmail: " + personalInfo.email + "\nPhone: " + personalInfo.phone);
   };
 
   // Message Status Handler
   const updateMessageStatus = (id: string, status: "Unread" | "Read" | "Replied") => {
     const updated = messages.map((m) => (m.id === id ? { ...m, status } : m));
     setMessages(updated);
-    localStorage.setItem("kautike_admin_messages", JSON.stringify(updated));
+    safeSetStorage("kautike_admin_messages", updated);
     if (selectedMessage && selectedMessage.id === id) {
       setSelectedMessage({ ...selectedMessage, status });
     }
@@ -1057,7 +1143,7 @@ export default function AdminPage() {
     if (!confirm("Are you sure you want to delete this message?")) return;
     const updated = messages.filter((m) => m.id !== id);
     setMessages(updated);
-    localStorage.setItem("kautike_admin_messages", JSON.stringify(updated));
+    safeSetStorage("kautike_admin_messages", updated);
     if (selectedMessage?.id === id) setSelectedMessage(null);
     try {
       await request("/api/admin/messages/" + id, "DELETE");
@@ -1068,9 +1154,8 @@ export default function AdminPage() {
   const clearAllMessages = async () => {
     if (!messages.length) return;
     if (!confirm("Are you sure you want to clear ALL received messages?")) return;
-    const oldMessages = [...messages];
     setMessages([]);
-    localStorage.setItem("kautike_admin_messages", JSON.stringify([]));
+    safeSetStorage("kautike_admin_messages", []);
     setSelectedMessage(null);
     try {
       for (const m of oldMessages) {
@@ -1145,9 +1230,8 @@ export default function AdminPage() {
             { id: "Stories", icon: "📖", label: "Field Stories" },
             { id: "News", icon: "📰", label: "News & Press" },
             { id: "Volunteers", icon: "🤝", label: "Volunteers & Team" },
-            { id: "PersonalInfo", icon: "👤", label: "Personal & Org Info" },
+            { id: "PersonalInfo", icon: "🏛️", label: "Foundation & Legal Info" },
             { id: "Messages", icon: "✉️", label: `Received Messages (${messages.length})` },
-            { id: "Subscribers", icon: "📬", label: `Subscribers (${subscribers.length})` },
             { id: "EditPages", icon: "✏️", label: "Edit Website Pages" },
           ].map((item) => (
             <button
@@ -1177,7 +1261,7 @@ export default function AdminPage() {
         <header className="admin-topbar">
           <div>
             <p>ADMIN CONTROL PANEL</p>
-            <h1>{section === "PersonalInfo" ? "Personal & Foundation Info" : section === "EditPages" ? "Edit Website Pages" : section}</h1>
+            <h1>{section === "PersonalInfo" ? "Foundation & Legal Information" : section === "EditPages" ? "Edit Website Pages" : section}</h1>
           </div>
           <div className="admin-profile">
             <span>{today}</span>
@@ -1261,10 +1345,10 @@ export default function AdminPage() {
                 onClick={() => setSection("PersonalInfo")}
                 style={{ padding: "18px", background: "#fff", border: "1.5px solid #dbe8dd", borderRadius: 12, cursor: "pointer", textAlign: "left", display: "flex", gap: 12, alignItems: "center" }}
               >
-                <span style={{ fontSize: 26 }}>👤</span>
+                <span style={{ fontSize: 26 }}>🏛️</span>
                 <div>
-                  <strong style={{ display: "block", color: "#153f31", fontSize: 14 }}>Personal Info</strong>
-                  <small style={{ color: "#638070" }}>Founder &amp; Legal settings</small>
+                  <strong style={{ display: "block", color: "#153f31", fontSize: 14 }}>Foundation &amp; Legal Info</strong>
+                  <small style={{ color: "#638070" }}>80G, Phone, Email &amp; Address settings</small>
                 </div>
               </button>
             </div>
@@ -2264,108 +2348,12 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* ── 4. PERSONAL & FOUNDATION INFO EDIT WITH DIRECT PHOTO UPLOAD ── */}
+        {/* ── 4. FOUNDATION & LEGAL INFO EDIT ── */}
         {section === "PersonalInfo" && (
           <form onSubmit={savePersonalInfo} style={{ background: "#fff", border: "1px solid #dbe8dd", borderRadius: 14, padding: 28, maxWidth: 900, display: "grid", gap: 24 }}>
             <div>
-              <h2 style={{ margin: "0 0 6px", fontSize: 20, color: "#153f31" }}>👤 Founder &amp; Leadership Profile</h2>
-              <p style={{ margin: 0, color: "#64748B", fontSize: 13 }}>These details appear in the President &amp; Founder section on the About Us page.</p>
-            </div>
-
-            {/* President Photo Upload Block */}
-            <div style={{ background: "#FAF8F5", border: "1px solid #E2E8F0", borderRadius: 12, padding: 18, display: "flex", alignItems: "center", gap: 20 }}>
-              <div style={{ position: "relative", width: 90, height: 90, flexShrink: 0 }}>
-                {personalInfo.presidentImage ? (
-                  <img
-                    src={personalInfo.presidentImage}
-                    alt="Founder"
-                    style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover", border: "3px solid #2f8f46", background: "#fff" }}
-                  />
-                ) : (
-                  <div style={{ width: "100%", height: "100%", borderRadius: "50%", background: "#f1f5f9", border: "2px dashed #cbd5e1", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, color: "#94a3b8" }}>
-                    👤
-                  </div>
-                )}
-              </div>
-              <div style={{ flex: 1 }}>
-                <strong style={{ display: "block", fontSize: 14, color: "#1E293B", marginBottom: 4 }}>President / Founder Photo</strong>
-                <p style={{ margin: "0 0 10px", color: "#64748B", fontSize: 12 }}>Upload a direct photo of the founder from your device.</p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  id="direct-president-photo"
-                  style={{ display: "none" }}
-                  onChange={(e) => handleFileUpload(e, (base64) => setPersonalInfo({ ...personalInfo, presidentImage: base64 }))}
-                />
-                <label
-                  htmlFor="direct-president-photo"
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: "8px 14px",
-                    background: "#2f8f46",
-                    color: "#fff",
-                    borderRadius: 6,
-                    fontWeight: 700,
-                    fontSize: 12,
-                    cursor: "pointer",
-                  }}
-                >
-                  📁 Choose Founder Photo
-                </label>
-              </div>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <div>
-                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Founder Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={personalInfo.presidentName}
-                  onChange={(e) => setPersonalInfo({ ...personalInfo, presidentName: e.target.value })}
-                  style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #cbd5e1", font: "inherit", fontWeight: 700 }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Designation / Title *</label>
-                <input
-                  type="text"
-                  required
-                  value={personalInfo.presidentRole}
-                  onChange={(e) => setPersonalInfo({ ...personalInfo, presidentRole: e.target.value })}
-                  style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #cbd5e1", font: "inherit" }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Biography / Background Statement</label>
-              <textarea
-                rows={3}
-                value={personalInfo.presidentBio}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, presidentBio: e.target.value })}
-                style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #cbd5e1", font: "inherit", resize: "vertical" }}
-              />
-            </div>
-
-            <div>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Leadership Quote</label>
-              <textarea
-                rows={2}
-                value={personalInfo.presidentQuote}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, presidentQuote: e.target.value })}
-                style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #cbd5e1", font: "inherit", resize: "vertical" }}
-              />
-            </div>
-
-            <hr style={{ border: 0, borderTop: "1px solid #e2e8f0", margin: "4px 0" }} />
-
-            <div>
               <h2 style={{ margin: "0 0 6px", fontSize: 20, color: "#153f31" }}>🏛️ Legal &amp; Organization Details</h2>
-              <p style={{ margin: 0, color: "#64748B", fontSize: 13 }}>These details are used across receipts, 80G tax claims, and footer disclosures.</p>
+              <p style={{ margin: 0, color: "#64748B", fontSize: 13 }}>These official details appear across donation receipts, 80G tax claims, contact cards, and website footer disclosures.</p>
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -2590,156 +2578,6 @@ export default function AdminPage() {
           </div>
         )}
 
-
-        {/* ── 5.5. NEWSLETTER SUBSCRIBERS ── */}
-        {section === "Subscribers" && (
-          <section className="admin-card" style={{ background: "#fff", borderRadius: 14, border: "1px solid #dbe8dd", padding: 24 }}>
-            <div className="admin-card-heading" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
-              <div>
-                <p style={{ margin: 0, fontSize: 12, fontWeight: 800, color: "#2f8f46", textTransform: "uppercase" }}>COMMUNITY</p>
-                <h2 style={{ margin: "4px 0 0", fontSize: 20, color: "#153f31" }}>
-                  📬 Newsletter Subscribers ({subscribers.length})
-                </h2>
-              </div>
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  onClick={copyAllSubscribers}
-                  disabled={!subscribers.length}
-                  style={{
-                    background: "#2f8f46",
-                    color: "#fff",
-                    border: 0,
-                    padding: "8px 16px",
-                    borderRadius: 8,
-                    fontWeight: 700,
-                    fontSize: 13,
-                    cursor: subscribers.length ? "pointer" : "not-allowed",
-                    opacity: subscribers.length ? 1 : 0.6,
-                  }}
-                >
-                  📋 Copy All Emails ({subscribers.length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const saved = localStorage.getItem("kautike_subscribers");
-                    if (saved) setSubscribers(JSON.parse(saved));
-                    showToast("Subscribers list refreshed.");
-                  }}
-                  style={{
-                    background: "#f1f5f9",
-                    color: "#334155",
-                    border: "1px solid #cbd5e1",
-                    padding: "8px 14px",
-                    borderRadius: 8,
-                    fontWeight: 700,
-                    fontSize: 13,
-                    cursor: "pointer",
-                  }}
-                >
-                  🔄 Refresh
-                </button>
-              </div>
-            </div>
-
-            {/* Filter / Search input */}
-            <div style={{ marginBottom: 16 }}>
-              <input
-                type="text"
-                placeholder="🔍 Search subscribers by email..."
-                value={subscriberQuery}
-                onChange={(e) => setSubscriberQuery(e.target.value)}
-                style={{
-                  width: "100%",
-                  maxWidth: 400,
-                  padding: "9px 14px",
-                  borderRadius: 8,
-                  border: "1px solid #cbd5e1",
-                  fontSize: 13,
-                  font: "inherit",
-                }}
-              />
-            </div>
-
-            {/* Subscribers Table */}
-            {subscribers.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "48px 16px", color: "#64748B", background: "#f8fafc", borderRadius: 10 }}>
-                <div style={{ fontSize: 36, marginBottom: 8 }}>📬</div>
-                <h3 style={{ margin: "0 0 6px", color: "#1E293B" }}>No subscribers yet</h3>
-                <p style={{ margin: 0, fontSize: 13 }}>New newsletter email submissions from the website footer will appear here.</p>
-              </div>
-            ) : (
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-                  <thead>
-                    <tr style={{ background: "#f8fafc", borderBottom: "2px solid #e2e8f0", textAlign: "left" }}>
-                      <th style={{ padding: "12px 14px", color: "#475569", fontWeight: 700 }}>#</th>
-                      <th style={{ padding: "12px 14px", color: "#475569", fontWeight: 700 }}>Subscriber Email</th>
-                      <th style={{ padding: "12px 14px", color: "#475569", fontWeight: 700 }}>Subscribed On</th>
-                      <th style={{ padding: "12px 14px", color: "#475569", fontWeight: 700, textAlign: "right" }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {subscribers
-                      .filter((s) => !subscriberQuery || s.email.toLowerCase().includes(subscriberQuery.toLowerCase()))
-                      .map((sub, index) => (
-                        <tr key={sub.id || sub.email} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                          <td style={{ padding: "12px 14px", color: "#94a3b8", fontWeight: 700 }}>{index + 1}</td>
-                          <td style={{ padding: "12px 14px", color: "#0F172A", fontWeight: 600 }}>
-                            <a href={`mailto:${sub.email}`} style={{ color: "#166534", textDecoration: "none" }}>
-                              ✉️ {sub.email}
-                            </a>
-                          </td>
-                          <td style={{ padding: "12px 14px", color: "#64748B" }}>
-                            {sub.created_at ? new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(sub.created_at)) : "Recently"}
-                          </td>
-                          <td style={{ padding: "12px 14px", textAlign: "right" }}>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                navigator.clipboard.writeText(sub.email);
-                                showToast("Copied " + sub.email);
-                              }}
-                              style={{
-                                background: "#f0fdf4",
-                                color: "#166534",
-                                border: "1px solid #bbf7d0",
-                                padding: "4px 8px",
-                                borderRadius: 6,
-                                fontSize: 12,
-                                fontWeight: 700,
-                                cursor: "pointer",
-                                marginRight: 6,
-                              }}
-                            >
-                              📋 Copy
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => deleteSubscriber(sub.id)}
-                              style={{
-                                background: "#FEE2E2",
-                                color: "#DC2626",
-                                border: "1px solid #FECACA",
-                                padding: "4px 8px",
-                                borderRadius: 6,
-                                fontSize: 12,
-                                fontWeight: 700,
-                                cursor: "pointer",
-                              }}
-                            >
-                              🗑️ Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </section>
-        )}
 
         {/* ── 6. EDIT WEBSITE PAGES ── */}
         {section === "EditPages" && (

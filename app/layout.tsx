@@ -31,21 +31,60 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://kautikefoundation.org"),
   title: "Kautike Charitable Foundation | Ensuring Brighter Futures for Children & Communities",
-  description: "Kautike Charitable Foundation works for child rights, education, health & nutrition, and community welfare across India.",
+  description: "Kautike Charitable Foundation is a registered non-profit organization dedicated to child education, nutrition, health, and community welfare across India.",
   openGraph: {
     title: "Kautike Charitable Foundation",
     description: "Ensuring Brighter Futures for Children & Communities.",
-    images: ["/og.png"],
+    url: "https://kautikefoundation.org",
+    siteName: "Kautike Charitable Foundation",
+    images: [
+      {
+        url: "/kautike-logo.png",
+        width: 622,
+        height: 622,
+        alt: "Kautike Charitable Foundation Logo",
+      },
+    ],
+    locale: "en_IN",
+    type: "website",
   },
   icons: {
     icon: [
+      { url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon-192x192.png", sizes: "192x192", type: "image/png" },
       { url: "/favicon.png", type: "image/png" },
-      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico" },
     ],
-    shortcut: "/favicon.png",
-    apple: "/favicon.png",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
   },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "NGO",
+  "name": "Kautike Charitable Foundation",
+  "alternateName": ["Kautike Foundation", "Kautike Charity"],
+  "url": "https://kautikefoundation.org",
+  "logo": "https://kautikefoundation.org/kautike-logo.png",
+  "image": "https://kautikefoundation.org/kautike-logo.png",
+  "description": "Kautike Charitable Foundation is a registered Section 8 non-profit organization working for child education, nutrition, health, and community empowerment.",
+  "email": "info@kautikefoundation.org",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Support & Inquiries",
+    "email": "info@kautikefoundation.org",
+    "areaServed": "IN",
+    "availableLanguage": ["English", "Hindi", "Marathi"]
+  },
+  "sameAs": [
+    "https://kautikefoundation.org"
+  ]
 };
 
 export default function RootLayout({
@@ -56,9 +95,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${montserrat.variable} ${caveat.variable} ${cinzel.variable}`}>
       <head>
-        <link rel="icon" href="/favicon.png" type="image/png" />
-        <link rel="shortcut icon" href="/favicon.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body>
         {children}

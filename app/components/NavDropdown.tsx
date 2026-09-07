@@ -12,6 +12,7 @@ export const menus: DropdownMenu[] = [
     title: "Who We Are?",
     links: [
       { label: "About Kautike Foundation", href: "/about" },
+      { label: "Recognitions & Awards", href: "/recognition-awards" },
       { label: "Why Children & Community?", href: "/why-children" },
       { label: "Our Approach", href: "/approach" },
       { label: "Our Impact", href: "/impact" },
@@ -39,6 +40,7 @@ export const menus: DropdownMenu[] = [
   {
     title: "Resources",
     links: [
+      { label: "Recognitions & Awards", href: "/recognition-awards" },
       { label: "Events & Photo Gallery", href: "/events" },
       { label: "Impact Reports", href: "/impact" },
       { label: "Stories & News", href: "/stories" },

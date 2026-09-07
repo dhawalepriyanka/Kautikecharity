@@ -7,6 +7,10 @@ import { Footer } from "../components/Footer";
 import { FloatingActions } from "../components/FloatingActions";
 import { CertificateOfContribution } from "../components/CertificateOfContribution";
 import { DonationReceipt } from "../components/DonationReceipt";
+import {
+  generateReceiptPdfBase64,
+  generateCertificatePdfBase64,
+} from "../utils/generateDonationPdfs";
 
 declare global {
   interface Window {
@@ -39,6 +43,9 @@ export default function DonatePage() {
   const [showCertificatePreview, setShowCertificatePreview] = useState(false);
   const [successViewTab, setSuccessViewTab] = useState<"certificate" | "receipt">("certificate");
 
+  const [emailStatus, setEmailStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [emailStatusMsg, setEmailStatusMsg] = useState<string>("");
+
   // Donor Form State
   const [donor, setDonor] = useState({
     name: "",
@@ -58,6 +65,67 @@ export default function DonatePage() {
 
   const effectiveAmount = customAmount ? parseInt(customAmount) || 0 : selectedAmount;
   const taxSavings = Math.round(effectiveAmount * 0.15); // Approx 50% deduction under Section 80G
+
+  // Auto-send Receipt and Certificate to Donor Email with PDF attachments
+  const triggerEmailDispatch = async (currentSuccessData: PaymentSuccessData) => {
+    if (!donor.email) return;
+    setEmailStatus("sending");
+    setEmailStatusMsg(`Generating PDF documents & sending to ${donor.email}...`);
+
+    try {
+      const pdfPayload = {
+        donorName: donor.name || "Generous Donor",
+        email: donor.email,
+        phone: donor.phone,
+        address: [donor.address, donor.city, donor.state, donor.pincode].filter(Boolean).join(", "),
+        pan: donor.pan,
+        amount: currentSuccessData.amount,
+        date: currentSuccessData.date,
+        receiptNumber: currentSuccessData.receiptNumber,
+        paymentId: currentSuccessData.paymentId,
+        purpose: cause,
+      };
+
+      // Generate both PDF base64 strings in client browser
+      let receiptPdfBase64 = "";
+      let certificatePdfBase64 = "";
+
+      try {
+        receiptPdfBase64 = await generateReceiptPdfBase64(pdfPayload);
+      } catch (err) {
+        console.error("Receipt PDF creation error:", err);
+      }
+
+      try {
+        certificatePdfBase64 = await generateCertificatePdfBase64(pdfPayload);
+      } catch (err) {
+        console.error("Certificate PDF creation error:", err);
+      }
+
+      const res = await fetch(`${apiUrl}/api/donations/send-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...pdfPayload,
+          receiptPdfBase64,
+          certificatePdfBase64,
+        }),
+      });
+
+      const data = await res.json().catch(() => null);
+      if (res.ok) {
+        setEmailStatus("sent");
+        setEmailStatusMsg(`✓ 80G Tax Receipt & Certificate PDF sent to ${donor.email}`);
+      } else {
+        setEmailStatus("error");
+        setEmailStatusMsg(data?.message || "Could not dispatch email. You can download your PDF below.");
+      }
+    } catch (err: any) {
+      console.error("Email dispatch failed:", err);
+      setEmailStatus("error");
+      setEmailStatusMsg("Could not dispatch email. You can download your PDF directly below.");
+    }
+  };
 
   const handlePincodeChange = (pin: string) => {
     setDonor((prev) => {
@@ -183,7 +251,7 @@ export default function DonatePage() {
             }
 
             const receiptNum = `KCF/${new Date().getFullYear()}/${donationId.replaceAll("-", "").slice(-5).toUpperCase()}`;
-            setSuccessData({
+            const successObj: PaymentSuccessData = {
               paymentId: payId,
               orderId: ordId,
               signature: sig,
@@ -191,8 +259,12 @@ export default function DonatePage() {
               date: new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(new Date()),
               receiptNumber: receiptNum,
               verified: true,
-            });
+            };
+            setSuccessData(successObj);
             setSuccessViewTab("receipt");
+
+            // Auto dispatch official 80G Receipt & Certificate PDF to donor email
+            triggerEmailDispatch(successObj);
 
             const newRecord = {
               id: donationId,
@@ -327,9 +399,49 @@ export default function DonatePage() {
                   <h2 style={{ margin: "0 0 4px", fontSize: "22px", color: "#0F172A", fontWeight: 800 }}>
                     Thank You, {donor.name || "Generous Donor"}!
                   </h2>
-                  <p style={{ color: "#64748B", fontSize: "13.5px", margin: "0" }}>
-                    Your donation of <strong>₹{successData.amount.toLocaleString("en-IN")}</strong> has been successfully received and verified. Your 80G tax receipt and official certificate are ready below.
+                  <p style={{ color: "#64748B", fontSize: "13.5px", margin: "0 0 12px 0" }}>
+                    Your donation of <strong>₹{successData.amount.toLocaleString("en-IN")}</strong> has been successfully received and verified.
                   </p>
+
+                  {/* Email Delivery Status Box */}
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      background: emailStatus === "error" ? "#FEF2F2" : "#F0FDF4",
+                      border: `1.5px solid ${emailStatus === "error" ? "#FECACA" : "#BBF7D0"}`,
+                      borderRadius: "10px",
+                      padding: "8px 16px",
+                      margin: "0 auto 14px auto",
+                      maxWidth: "600px",
+                    }}
+                  >
+                    <span style={{ fontSize: "13px", fontWeight: 700, color: emailStatus === "error" ? "#991B1B" : "#166534" }}>
+                      {emailStatus === "sending" && "⏳ Generating & emailing your 80G Receipt & Certificate PDF..."}
+                      {emailStatus === "sent" && (emailStatusMsg || `✓ 80G Tax Receipt & Certificate PDF sent to ${donor.email}`)}
+                      {emailStatus === "error" && (emailStatusMsg || `Email dispatch encountered an issue.`)}
+                      {emailStatus === "idle" && `✉️ PDF Receipt will be delivered to ${donor.email}`}
+                    </span>
+                    {emailStatus !== "sending" && (
+                      <button
+                        type="button"
+                        onClick={() => triggerEmailDispatch(successData)}
+                        style={{
+                          background: "#FFFFFF",
+                          border: "1px solid #CBD5E1",
+                          borderRadius: "6px",
+                          padding: "4px 10px",
+                          fontSize: "12px",
+                          fontWeight: 700,
+                          color: "#334155",
+                          cursor: "pointer",
+                        }}
+                      >
+                        📧 Resend Email
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="donation-success-tabs no-print" role="tablist" aria-label="Donation documents">

@@ -47,6 +47,7 @@ export function Footer() {
           <h4>About Us</h4>
           <ul>
             <li><a href="/about">Who We Are</a></li>
+            <li><a href="/recognition-awards">Recognitions &amp; Awards</a></li>
             <li><a href="/why-children">Why Children & Community</a></li>
             <li><a href="/approach">Our Systemic Approach</a></li>
             <li><a href="/impact#governance">Governance & Trust</a></li>

@@ -18,7 +18,7 @@ export function CertificateOfContribution({
   const [downloading, setDownloading] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  const cleanName = (donorName || "DHANASHRI WALE").trim().toUpperCase();
+  const cleanName = (donorName?.trim() || "VALUED DONOR").toUpperCase();
 
   useEffect(() => {
     const canvas = canvasRef.current;

@@ -156,16 +156,16 @@ export function DonationReceipt({
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  const safeReceiptNo = receiptNumber || "KCF/2026/00001";
-  const safeDate = date || "26 May 2026";
-  const safeName = donorName || "Nilesh Kute";
-  const safePan = pan ? pan.toUpperCase() : "ABCDE1234F";
-  const safeAddress = address || "123, Ganesh Nagar, Junnar, Pune, Maharashtra - 410502";
-  const safeEmail = email || "nileshkute@email.com";
-  const safePhone = phone || "+91 98765 43210";
-  const safeAmount = typeof amount === "number" && !isNaN(amount) ? amount : 5000;
-  const safePaymentMode = paymentMode || "UPI";
-  const safePaymentId = paymentId || "UPI/426812345678";
+  const safeReceiptNo = receiptNumber || `KCF/${new Date().getFullYear()}/${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+  const safeDate = date || "";
+  const safeName = donorName?.trim() || "Generous Donor";
+  const safePan = pan?.trim() ? pan.trim().toUpperCase() : "";
+  const safeAddress = address?.trim() || "";
+  const safeEmail = email?.trim() || "";
+  const safePhone = phone?.trim() || "";
+  const safeAmount = typeof amount === "number" && !isNaN(amount) ? amount : 0;
+  const safePaymentMode = paymentMode || "UPI / Online";
+  const safePaymentId = paymentId || "";
   const safePurpose = purpose || "General Donation";
 
   const safeFilename = `Kautike_Donation_Receipt_${safeReceiptNo.replace(/[^a-zA-Z0-9_-]/g, "_")}`;
@@ -201,10 +201,12 @@ export function DonationReceipt({
       ctx.fillStyle = "#0F172A";
       ctx.fillText(safeName, 312, 452);
 
-      // PAN
-      ctx.font = '700 17px "Inter", "Segoe UI", Arial, sans-serif';
-      ctx.fillStyle = "#0F172A";
-      ctx.fillText(safePan, 312, 502);
+      // PAN (Only rendered if donor entered PAN)
+      if (safePan) {
+        ctx.font = '700 17px "Inter", "Segoe UI", Arial, sans-serif';
+        ctx.fillStyle = "#0F172A";
+        ctx.fillText(safePan, 312, 502);
+      }
 
       // Address (wrapped)
       ctx.font = '500 14.5px "Inter", "Segoe UI", Arial, sans-serif';

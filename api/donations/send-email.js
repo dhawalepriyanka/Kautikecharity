@@ -187,12 +187,11 @@ export default async function handler(request, response) {
 
   if (smtpUser && smtpPass) {
     try {
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: smtpPort,
-        secure: smtpSecure,
-        auth: { user: smtpUser, pass: smtpPass },
-      });
+      const transportConfig = (smtpHost === "smtp.gmail.com" || smtpUser.endsWith("@gmail.com"))
+        ? { service: "gmail", auth: { user: smtpUser, pass: smtpPass } }
+        : { host: smtpHost, port: smtpPort, secure: smtpSecure, auth: { user: smtpUser, pass: smtpPass } };
+
+      const transporter = nodemailer.createTransport(transportConfig);
 
       const info = await transporter.sendMail({
         from: smtpFrom,

@@ -28,12 +28,11 @@ const smtpSecure = process.env.SMTP_SECURE === "true" || smtpPort === 465;
 const smtpFrom = process.env.SMTP_FROM || (smtpUser ? `"Kautike Charitable Foundation" <${smtpUser}>` : '"Kautike Charitable Foundation" <info@kautikefoundation.org>');
 
 const mailTransporter = (smtpUser && smtpPass)
-  ? nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpSecure,
-      auth: { user: smtpUser, pass: smtpPass },
-    })
+  ? nodemailer.createTransport(
+      (smtpHost === "smtp.gmail.com" || smtpUser.endsWith("@gmail.com"))
+        ? { service: "gmail", auth: { user: smtpUser, pass: smtpPass } }
+        : { host: smtpHost, port: smtpPort, secure: smtpSecure, auth: { user: smtpUser, pass: smtpPass } }
+    )
   : null;
 
 app.use(cors({ origin: process.env.CLIENT_ORIGIN ?? "http://localhost:3000" }));

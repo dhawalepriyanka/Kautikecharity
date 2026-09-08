@@ -1,5 +1,127 @@
 import { sendJson } from "../_payments.js";
 import nodemailer from "nodemailer";
+import { jsPDF } from "jspdf";
+
+function generateFallbackReceiptPdf(donorName, amount, receiptNo, pan, date) {
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  doc.setFillColor(19, 75, 54);
+  doc.rect(0, 0, 210, 42, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(18);
+  doc.setFont("helvetica", "bold");
+  doc.text("KAUTIKE CHARITABLE FOUNDATION", 105, 18, { align: "center" });
+  doc.setFontSize(10);
+  doc.setTextColor(212, 175, 55);
+  doc.text("EMPOWERING LIVES, ENRICHING SOCIETY", 105, 26, { align: "center" });
+  doc.setFontSize(8.5);
+  doc.setTextColor(226, 232, 240);
+  doc.text("Regd. Under Section 12A & 80G of Income Tax Act | URN: AALCK6167AF20251", 105, 34, { align: "center" });
+
+  doc.setTextColor(15, 23, 42);
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text("DONATION RECEIPT (SECTION 80G TAX EXEMPTION)", 105, 54, { align: "center" });
+
+  doc.setDrawColor(203, 213, 225);
+  doc.setFillColor(248, 250, 252);
+  doc.roundedRect(18, 62, 174, 110, 3, 3, "FD");
+
+  doc.setFontSize(11);
+  doc.setTextColor(71, 85, 105);
+  doc.setFont("helvetica", "bold");
+  doc.text("Receipt Number:", 26, 76);
+  doc.text("Date of Issue:", 115, 76);
+  doc.text("Donor Name:", 26, 92);
+  doc.text("Donation Amount:", 115, 92);
+  doc.text("PAN Number:", 26, 108);
+  doc.text("Payment Mode:", 115, 108);
+  doc.text("Purpose / Cause:", 26, 124);
+  doc.text("Tax Exemption:", 115, 124);
+
+  doc.setTextColor(15, 23, 42);
+  doc.text(receiptNo, 62, 76);
+  doc.text(date || new Date().toLocaleDateString("en-IN", { dateStyle: "long" }), 148, 76);
+  doc.setTextColor(19, 75, 54);
+  doc.text(donorName, 62, 92);
+  doc.text("INR " + Number(amount).toLocaleString("en-IN", { minimumFractionDigits: 2 }), 156, 92);
+  doc.setTextColor(15, 23, 42);
+  doc.text(pan || "APPLIED / N.A.", 62, 108);
+  doc.text("Online / Razorpay", 152, 108);
+  doc.text("Child Education & Nutrition", 62, 124);
+  doc.setTextColor(22, 101, 52);
+  doc.text("50% Deductible (80G)", 152, 124);
+
+  doc.setFontSize(9.5);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(51, 65, 85);
+  doc.text("Thank you for your valuable contribution towards child education drives of", 26, 144);
+  doc.text("Kautike Charitable Foundation. This receipt is eligible for 50% tax deduction under Section 80G.", 26, 150);
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.setTextColor(19, 75, 54);
+  doc.text("For Kautike Charitable Foundation", 140, 195);
+  doc.setFontSize(9);
+  doc.setTextColor(100, 116, 139);
+  doc.text("Authorized Signatory & Trustee", 140, 203);
+
+  return Buffer.from(doc.output("arraybuffer"));
+}
+
+function generateFallbackCertificatePdf(donorName, amount, date) {
+  const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  doc.setDrawColor(212, 175, 55);
+  doc.setLineWidth(3);
+  doc.rect(10, 10, 277, 190);
+  doc.setLineWidth(0.8);
+  doc.rect(14, 14, 269, 182);
+
+  doc.setFillColor(19, 75, 54);
+  doc.rect(14, 14, 269, 28, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text("KAUTIKE CHARITABLE FOUNDATION", 148.5, 26, { align: "center" });
+  doc.setFontSize(9);
+  doc.setTextColor(212, 175, 55);
+  doc.text("REGISTERED UNDER SECTION 12A & 80G • URN: AALCK6167AF20251", 148.5, 34, { align: "center" });
+
+  doc.setTextColor(15, 23, 42);
+  doc.setFontSize(26);
+  doc.setFont("times", "bold");
+  doc.text("Certificate of Contribution", 148.5, 62, { align: "center" });
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 116, 139);
+  doc.text("THIS CERTIFICATE IS PROUDLY PRESENTED TO", 148.5, 76, { align: "center" });
+
+  doc.setFontSize(24);
+  doc.setFont("times", "bolditalic");
+  doc.setTextColor(19, 75, 54);
+  doc.text(donorName, 148.5, 96, { align: "center" });
+  doc.setDrawColor(212, 175, 55);
+  doc.setLineWidth(1);
+  doc.line(60, 102, 237, 102);
+
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(51, 65, 85);
+  doc.text("In deep appreciation of your generous support of INR " + Number(amount).toLocaleString("en-IN") + " towards", 148.5, 118, { align: "center" });
+  doc.text("empowering underprivileged children through education, nutrition, and welfare in Maharashtra.", 148.5, 126, { align: "center" });
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("Date: " + (date || new Date().toLocaleDateString("en-IN", { dateStyle: "long" })), 35, 175);
+  doc.text("Nilesh Kute", 230, 175, { align: "center" });
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 116, 139);
+  doc.text("President & Founder", 230, 181, { align: "center" });
+  doc.text("Kautike Charitable Foundation", 230, 186, { align: "center" });
+
+  return Buffer.from(doc.output("arraybuffer"));
+}
 
 function buildDonorEmailHtml({ donorName, amount, receiptNumber, paymentId, date, purpose, pan }) {
   const formattedAmount = `₹ ${Number(amount).toLocaleString("en-IN", { minimumFractionDigits: 2 })}`;
@@ -150,23 +272,53 @@ export default async function handler(request, response) {
 
   const attachments = [];
 
-  if (receiptPdfBase64) {
-    const cleanBase64 = receiptPdfBase64.includes(",") ? receiptPdfBase64.split(",").pop() : receiptPdfBase64;
-    attachments.push({
-      filename: `Kautike_80G_Receipt_${safeReceipt.replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`,
-      content: Buffer.from(cleanBase64, "base64"),
-      contentType: "application/pdf",
-    });
+  // 1. Official 80G Tax Exemption Receipt Attachment
+  let receiptBuffer = null;
+  if (receiptPdfBase64 && typeof receiptPdfBase64 === "string" && receiptPdfBase64.length > 500) {
+    try {
+      const cleanBase64 = receiptPdfBase64.includes(",") ? receiptPdfBase64.split(",").pop() : receiptPdfBase64;
+      const buf = Buffer.from(cleanBase64, "base64");
+      if (buf.length > 500) {
+        receiptBuffer = buf;
+      }
+    } catch (e) {
+      console.error("[Email Receipt Base64 Parse Error]", e);
+    }
   }
 
-  if (certificatePdfBase64) {
-    const cleanBase64 = certificatePdfBase64.includes(",") ? certificatePdfBase64.split(",").pop() : certificatePdfBase64;
-    attachments.push({
-      filename: `Kautike_Certificate_${donorName.replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`,
-      content: Buffer.from(cleanBase64, "base64"),
-      contentType: "application/pdf",
-    });
+  if (!receiptBuffer) {
+    receiptBuffer = generateFallbackReceiptPdf(donorName, safeAmount, safeReceipt, safePan, safeDate);
   }
+
+  attachments.push({
+    filename: `Kautike_80G_Receipt_${safeReceipt.replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`,
+    content: receiptBuffer,
+    contentType: "application/pdf",
+  });
+
+  // 2. Official Certificate of Contribution Attachment
+  let certificateBuffer = null;
+  if (certificatePdfBase64 && typeof certificatePdfBase64 === "string" && certificatePdfBase64.length > 500) {
+    try {
+      const cleanBase64 = certificatePdfBase64.includes(",") ? certificatePdfBase64.split(",").pop() : certificatePdfBase64;
+      const buf = Buffer.from(cleanBase64, "base64");
+      if (buf.length > 500) {
+        certificateBuffer = buf;
+      }
+    } catch (e) {
+      console.error("[Email Certificate Base64 Parse Error]", e);
+    }
+  }
+
+  if (!certificateBuffer) {
+    certificateBuffer = generateFallbackCertificatePdf(donorName, safeAmount, safeDate);
+  }
+
+  attachments.push({
+    filename: `Kautike_Certificate_${donorName.replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`,
+    content: certificateBuffer,
+    contentType: "application/pdf",
+  });
 
   const htmlContent = buildDonorEmailHtml({
     donorName,

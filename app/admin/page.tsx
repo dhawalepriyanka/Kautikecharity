@@ -62,6 +62,55 @@ type Subscriber = {
   created_at: string;
 };
 
+type AwardItem = {
+  id: string;
+  title: string;
+  titleMr?: string;
+  issuingAuthority: string;
+  location: string;
+  udiseCode?: string;
+  date: string;
+  beneficiaries?: string;
+  signatory?: string;
+  quoteMr?: string;
+  quoteAuthor?: string;
+  summary: string;
+  image: string;
+  pdfUrl?: string;
+};
+
+const initialAwards: AwardItem[] = [
+  {
+    id: "award-raigad-school-2026",
+    title: "Letter of Gratitude & Appreciation",
+    titleMr: "रायगड जिल्हा परिषद शाळा फरशीपाडा",
+    issuingAuthority: "Raigad Zilla Parishad School Farshipada",
+    location: "Taluka Panvel, District Raigad, Maharashtra",
+    udiseCode: "27240817007",
+    date: "2026-08-10",
+    beneficiaries: "36 Rural Primary Students",
+    signatory: "S. M. Patil (President / Secretary) & Headmaster",
+    quoteMr: "शिक्षणाची ज्ञानज्योत प्रज्वलित ठेवण्यासाठी आपण दिलेले हे दातृत्व विद्यार्थ्यांच्या उज्ज्वल भविष्यासाठी अत्यंत प्रेरणादायी आहे.",
+    quoteAuthor: "School Management Committee & Headmaster, RZP School Farshipada",
+    summary: "Awarded by the School Management Committee & Headmaster of Raigad Zilla Parishad Primary School Farshipada (Taluka Panvel, District Raigad) to Kautike Charitable Foundation for providing vital educational literature, school kits, and learning supplies to 36 rural students.",
+    image: "/images/awards/raigad-school-appreciation-letter.png",
+    pdfUrl: "/documents/raigad-school-appreciation-letter.pdf",
+  },
+];
+
+function mergeAdminAwards(saved: AwardItem[]): AwardItem[] {
+  const map = new Map<string, AwardItem>();
+  initialAwards.forEach((a) => map.set(a.id, a));
+  if (Array.isArray(saved)) {
+    saved.forEach((a) => {
+      if (a && a.id) {
+        map.set(a.id, { ...(map.get(a.id) || {}), ...a });
+      }
+    });
+  }
+  return Array.from(map.values());
+}
+
 type EventItem = {
   id: string;
   title: string;
@@ -402,22 +451,22 @@ const initialNews: NewsArticle[] = [
 ];
 
 const initialVolunteers: Volunteer[] = [
-  { id: "v0", name: "Nilesh Kute", role: "President & Volunteer", location: "Maharashtra, India", image: "/images/team/nilesh-kute.png", phone: "+91 810 836 2688" },
-  { id: "v1", name: "Ashish Mishra", role: "Field Volunteer", location: "Panvel, Raigad", image: "/images/team/ashish-mishra.png", phone: "+91 98201 12345" },
-  { id: "v2", name: "Abhinay Singh", role: "Youth Coordinator", location: "Mumbai & Raigad", image: "/images/team/abhinay-singh-hd.png", phone: "+91 98202 23456" },
-  { id: "v4", name: "Dnyaneshwar Jadhav", role: "Education Volunteer", location: "Panvel, Raigad", image: "/images/team/dnyaneshwar-jadhav.png", phone: "+91 98204 45678" },
-  { id: "v5", name: "Jayshree Sutar", role: "Community Organizer", location: "Maharashtra", image: "/images/team/jayshree-sutar.png", phone: "+91 98205 56789" },
-  { id: "v6", name: "Santosh Jadhav", role: "Nutrition Camp Volunteer", location: "Panvel, Raigad", image: "/images/team/santosh-jadhav.png", phone: "+91 98206 67890" },
-  { id: "v7", name: "Vijay Jadhav", role: "Logistics Volunteer", location: "Mahodar, Panvel", image: "/images/team/vijay-jadhav.png", phone: "+91 98207 78901" },
-  { id: "v8", name: "Satish Jadhav", role: "School Drive Volunteer", location: "Panvel, Raigad", image: "/images/team/satish-jadhav.png", phone: "+91 98208 89012" },
-  { id: "v9", name: "Deepak Thorat", role: "Tree Plantation Coordinator", location: "Kondap, Panvel", image: "/images/team/deepak-thorat.png", phone: "+91 98209 90123" },
-  { id: "v10", name: "Suman Yadav", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/suman-yadav.png", phone: "+91 98210 01234" },
-  { id: "v11", name: "Ankit Dubey", role: "Youth Volunteer", location: "Mumbai, Maharashtra", image: "/images/team/ankit-dubey.png", phone: "+91 98211 12345" },
-  { id: "v12", name: "Brijesh Pandey", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/brijesh-pandey.png", phone: "+91 98212 23456" },
-  { id: "v13", name: "Akash Mishra", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/akash-mishra.png", phone: "+91 98213 34567" },
-  { id: "v14", name: "Vinayak Jadhav", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/vinayak-jadhav.png", phone: "+91 98214 45678" },
-  { id: "v15", name: "Vicky Jadhav", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/vicky-jadhav.png", phone: "+91 98215 56789" },
-  { id: "v16", name: "Abhishek Singh", role: "Field Volunteer", location: "Maharashtra, India", image: "/images/team/abhishek-singh.png", phone: "+91 98216 67890" },
+  { id: "v0", name: "Nilesh Kute", role: "Volunteer", location: "Maharashtra, India", image: "/images/team/nilesh-kute.png", phone: "+91 810 836 2688" },
+  { id: "v1", name: "Ashish Mishra", role: "Volunteer", location: "Panvel, Raigad", image: "/images/team/ashish-mishra.png", phone: "+91 98201 12345" },
+  { id: "v2", name: "Abhinay Singh", role: "Volunteer", location: "Mumbai & Raigad", image: "/images/team/abhinay-singh-hd.png", phone: "+91 98202 23456" },
+  { id: "v4", name: "Dnyaneshwar Jadhav", role: "Volunteer", location: "Panvel, Raigad", image: "/images/team/dnyaneshwar-jadhav.png", phone: "+91 98204 45678" },
+  { id: "v5", name: "Jayshree Sutar", role: "Volunteer", location: "Maharashtra", image: "/images/team/jayshree-sutar.png", phone: "+91 98205 56789" },
+  { id: "v6", name: "Santosh Jadhav", role: "Volunteer", location: "Panvel, Raigad", image: "/images/team/santosh-jadhav.png", phone: "+91 98206 67890" },
+  { id: "v7", name: "Vijay Jadhav", role: "Volunteer", image: "/images/team/vijay-jadhav.png", location: "Mahodar, Panvel", phone: "+91 98207 78901" },
+  { id: "v8", name: "Satish Jadhav", role: "Volunteer", image: "/images/team/satish-jadhav.png", location: "Panvel, Raigad", phone: "+91 98208 89012" },
+  { id: "v9", name: "Deepak Thorat", role: "Volunteer", image: "/images/team/deepak-thorat.png", location: "Kondap, Panvel", phone: "+91 98209 90123" },
+  { id: "v10", name: "Suman Yadav", role: "Volunteer", location: "Maharashtra, India", image: "/images/team/suman-yadav.png", phone: "+91 98210 01234" },
+  { id: "v11", name: "Ankit Dubey", role: "Volunteer", location: "Mumbai, Maharashtra", image: "/images/team/ankit-dubey.png", phone: "+91 98211 12345" },
+  { id: "v12", name: "Brijesh Pandey", role: "Volunteer", location: "Maharashtra, India", image: "/images/team/brijesh-pandey.png", phone: "+91 98212 23456" },
+  { id: "v13", name: "Akash Mishra", role: "Volunteer", image: "/images/team/akash-mishra.png", location: "Maharashtra, India", phone: "+91 98213 34567" },
+  { id: "v14", name: "Vinayak Jadhav", role: "Volunteer", image: "/images/team/vinayak-jadhav.png", location: "Maharashtra, India", phone: "+91 98214 45678" },
+  { id: "v15", name: "Vicky Jadhav", role: "Volunteer", image: "/images/team/vicky-jadhav.png", location: "Maharashtra, India", phone: "+91 98215 56789" },
+  { id: "v16", name: "Abhishek Singh", role: "Volunteer", image: "/images/team/abhishek-singh.png", location: "Maharashtra, India", phone: "+91 98216 67890" },
 ];
 
 function mergeAdminVolunteers(savedList: any[]): Volunteer[] {
@@ -551,6 +600,26 @@ export default function AdminPage() {
     attendeesText: "",
   });
 
+  // Recognitions & Awards State
+  const [awards, setAwards] = useState<AwardItem[]>(initialAwards);
+  const [editingAwardId, setEditingAwardId] = useState<string | null>(null);
+  const [awardForm, setAwardForm] = useState<AwardItem>({
+    id: "",
+    title: "",
+    titleMr: "",
+    issuingAuthority: "",
+    location: "",
+    udiseCode: "",
+    date: new Date().toISOString().split("T")[0],
+    beneficiaries: "",
+    signatory: "",
+    quoteMr: "",
+    quoteAuthor: "",
+    summary: "",
+    image: "",
+    pdfUrl: "",
+  });
+
   // Stories State & Editing
   const [stories, setStories] = useState<Story[]>([
     {
@@ -599,7 +668,7 @@ export default function AdminPage() {
 
   const [volunteers, setVolunteers] = useState<Volunteer[]>(initialVolunteers);
   const [editingVolunteerId, setEditingVolunteerId] = useState<string | null>(null);
-  const [volunteerForm, setVolunteerForm] = useState<Volunteer>({ id: "", name: "", role: "", location: "", image: "", phone: "", email: "" });
+  const [volunteerForm, setVolunteerForm] = useState<Volunteer>({ id: "", name: "", role: "Volunteer", location: "", image: "", phone: "", email: "" });
 
   // Personal Info / President Profile State
   const [personalInfo, setPersonalInfo] = useState({
@@ -672,11 +741,14 @@ export default function AdminPage() {
         
         const savedEvents = localStorage.getItem("kautike_admin_events");
         if (savedEvents) setEvents(mergeAdminEvents(JSON.parse(savedEvents)));
+
+        const savedAwards = localStorage.getItem("kautike_admin_awards");
+        if (savedAwards) setAwards(mergeAdminAwards(JSON.parse(savedAwards)));
       } catch (_) {}
 
       // 2. Optional remote sync if backend is configured
       if (apiUrl) {
-        const [dashboard, messageRows, serverSettings, serverStories, serverVols, serverPages, serverNews, serverEvents] = await Promise.all([
+        const [dashboard, messageRows, serverSettings, serverStories, serverVols, serverPages, serverNews, serverEvents, serverAwards] = await Promise.all([
           request("/api/admin/overview"),
           request("/api/admin/messages"),
           request("/api/settings"),
@@ -685,6 +757,7 @@ export default function AdminPage() {
           request("/api/pages"),
           request("/api/news"),
           request("/api/events"),
+          request("/api/awards"),
         ]);
 
         if (dashboard) setOverview(dashboard);
@@ -722,6 +795,11 @@ export default function AdminPage() {
           setEvents(mergedEvents);
           safeSetStorage("kautike_admin_events", mergedEvents);
         }
+        if (Array.isArray(serverAwards) && serverAwards.length > 0) {
+          const mergedAwards = mergeAdminAwards(serverAwards);
+          setAwards(mergedAwards);
+          safeSetStorage("kautike_admin_awards", mergedAwards);
+        }
       }
     } catch (_) {
       // Keep UI clean without displaying connection errors
@@ -744,6 +822,11 @@ export default function AdminPage() {
       if (savedEvents) {
         const parsedEvents = JSON.parse(savedEvents);
         if (Array.isArray(parsedEvents)) setEvents(mergeAdminEvents(parsedEvents));
+      }
+      const savedAwards = localStorage.getItem("kautike_admin_awards");
+      if (savedAwards) {
+        const parsedAwards = JSON.parse(savedAwards);
+        if (Array.isArray(parsedAwards)) setAwards(mergeAdminAwards(parsedAwards));
       }
       const savedVols = localStorage.getItem("kautike_admin_volunteers");
       if (savedVols) setVolunteers(mergeAdminVolunteers(JSON.parse(savedVols)));
@@ -1037,17 +1120,95 @@ export default function AdminPage() {
     });
   };
 
+  // Recognitions & Awards Handlers
+  const handleAwardSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!awardForm.title.trim() || !awardForm.issuingAuthority.trim()) {
+      alert("Please enter the Recognition Title and Issuing Authority/School.");
+      return;
+    }
+
+    const newOrUpdatedAward: AwardItem = {
+      id: editingAwardId || ("award-" + Date.now()),
+      title: awardForm.title.trim(),
+      titleMr: awardForm.titleMr?.trim() || "",
+      issuingAuthority: awardForm.issuingAuthority.trim(),
+      location: awardForm.location.trim(),
+      udiseCode: awardForm.udiseCode?.trim() || "",
+      date: awardForm.date || new Date().toISOString().split("T")[0],
+      beneficiaries: awardForm.beneficiaries?.trim() || "",
+      signatory: awardForm.signatory?.trim() || "",
+      quoteMr: awardForm.quoteMr?.trim() || "",
+      quoteAuthor: awardForm.quoteAuthor?.trim() || "",
+      summary: awardForm.summary.trim(),
+      image: awardForm.image || "/images/awards/raigad-school-appreciation-letter.png",
+      pdfUrl: awardForm.pdfUrl || "",
+    };
+
+    let updatedAwards: AwardItem[];
+    if (editingAwardId) {
+      updatedAwards = awards.map((a) => (a.id === editingAwardId ? newOrUpdatedAward : a));
+      showToast("✓ Recognition & Award updated successfully!");
+    } else {
+      updatedAwards = [newOrUpdatedAward, ...awards];
+      showToast("✓ New Recognition & Appreciation Letter published!");
+    }
+
+    setAwards(updatedAwards);
+    safeSetStorage("kautike_admin_awards", updatedAwards);
+    setEditingAwardId(null);
+    setAwardForm({
+      id: "",
+      title: "",
+      titleMr: "",
+      issuingAuthority: "",
+      location: "",
+      udiseCode: "",
+      date: new Date().toISOString().split("T")[0],
+      beneficiaries: "",
+      signatory: "",
+      quoteMr: "",
+      quoteAuthor: "",
+      summary: "",
+      image: "",
+      pdfUrl: "",
+    });
+
+    try {
+      await request("/api/admin/awards", "POST", updatedAwards);
+    } catch (_) {}
+    alert("✓ Success: Recognition & Award updated! Changes are live on the website.");
+  };
+
+  const handleEditAward = (item: AwardItem) => {
+    setEditingAwardId(item.id);
+    setAwardForm(item);
+    window.scrollTo({ top: 180, behavior: "smooth" });
+  };
+
+  const handleDeleteAward = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this recognition / appreciation letter?")) return;
+    const filtered = awards.filter((a) => a.id !== id);
+    setAwards(filtered);
+    safeSetStorage("kautike_admin_awards", filtered);
+    showToast("Recognition item removed.");
+    try {
+      await request("/api/admin/awards", "POST", filtered);
+    } catch (_) {}
+  };
+
   // Volunteer Handlers
   const handleVolunteerSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!volunteerForm.name) return;
+    const roleValue = volunteerForm.role?.trim() || "Volunteer";
     let updated: Volunteer[] = [];
     if (editingVolunteerId) {
-      updated = volunteers.map((v) => (v.id === editingVolunteerId ? { ...volunteerForm, id: editingVolunteerId } : v));
+      updated = volunteers.map((v) => (v.id === editingVolunteerId ? { ...volunteerForm, role: roleValue, location: "", id: editingVolunteerId } : v));
       showToast("✓ Volunteer details updated!");
       setEditingVolunteerId(null);
     } else {
-      const newEntry = { ...volunteerForm, id: "v" + Date.now() };
+      const newEntry = { ...volunteerForm, role: roleValue, location: "", id: "v" + Date.now() };
       updated = [...volunteers, newEntry];
       showToast("✓ New volunteer added!");
     }
@@ -1058,13 +1219,13 @@ export default function AdminPage() {
     } catch (err) {
       console.log("Saved locally:", err);
     }
-    setVolunteerForm({ id: "", name: "", role: "", location: "", image: "", phone: "", email: "" });
+    setVolunteerForm({ id: "", name: "", role: "Volunteer", location: "", image: "", phone: "", email: "" });
     alert("✓ Volunteer saved successfully!");
   };
 
   const startEditVolunteer = (vol: Volunteer) => {
     setEditingVolunteerId(vol.id);
-    setVolunteerForm(vol);
+    setVolunteerForm({ ...vol, role: vol.role || "Volunteer" });
   };
 
   const deleteVolunteer = async (id: string) => {
@@ -1227,6 +1388,7 @@ export default function AdminPage() {
           {[
             { id: "Overview", icon: "📊", label: "Dashboard" },
             { id: "Events", icon: "📸", label: `Events & Gallery (${events.length})` },
+            { id: "Awards", icon: "🏆", label: `Recognitions & Awards (${awards.length})` },
             { id: "Stories", icon: "📖", label: "Field Stories" },
             { id: "News", icon: "📰", label: "News & Press" },
             { id: "Volunteers", icon: "🤝", label: "Volunteers & Team" },
@@ -1243,6 +1405,7 @@ export default function AdminPage() {
                 setEditingVolunteerId(null);
                 setEditingNewsId(null);
                 setEditingEventId(null);
+                setEditingAwardId(null);
                 setMobileMenuOpen(false);
               }}
             >
@@ -1261,7 +1424,7 @@ export default function AdminPage() {
         <header className="admin-topbar">
           <div>
             <p>ADMIN CONTROL PANEL</p>
-            <h1>{section === "PersonalInfo" ? "Foundation & Legal Information" : section === "EditPages" ? "Edit Website Pages" : section}</h1>
+            <h1>{section === "PersonalInfo" ? "Foundation & Legal Information" : section === "EditPages" ? "Edit Website Pages" : section === "Awards" ? "Recognitions & Appreciation Letters" : section}</h1>
           </div>
           <div className="admin-profile">
             <span>{today}</span>
@@ -1282,10 +1445,33 @@ export default function AdminPage() {
             <div className="admin-summary-grid">
               <Metric label="Received Inquiries" value={String(messages.length || overview?.message_count || 0)} note="From contact & volunteer forms" />
               <Metric label="Active Volunteers" value={String(volunteers.length)} note="Registered team members" />
+              <Metric label="Recognitions & Awards" value={String(awards.length)} note="Official letters & certs" />
               <Metric label="Published Stories" value={String(stories.length)} note="Field quotes live on site" />
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 24 }}>
+              <button
+                onClick={() => setSection("Awards")}
+                style={{ padding: "18px", background: "#fff", border: "1.5px solid #dbe8dd", borderRadius: 12, cursor: "pointer", textAlign: "left", display: "flex", gap: 12, alignItems: "center" }}
+              >
+                <span style={{ fontSize: 26 }}>🏆</span>
+                <div>
+                  <strong style={{ display: "block", color: "#153f31", fontSize: 14 }}>Recognitions &amp; Awards</strong>
+                  <small style={{ color: "#638070" }}>Manage appreciation letters</small>
+                </div>
+              </button>
+
+              <button
+                onClick={() => setSection("Events")}
+                style={{ padding: "18px", background: "#fff", border: "1.5px solid #dbe8dd", borderRadius: 12, cursor: "pointer", textAlign: "left", display: "flex", gap: 12, alignItems: "center" }}
+              >
+                <span style={{ fontSize: 26 }}>📸</span>
+                <div>
+                  <strong style={{ display: "block", color: "#153f31", fontSize: 14 }}>Events &amp; Gallery</strong>
+                  <small style={{ color: "#638070" }}>Add event photos &amp; drives</small>
+                </div>
+              </button>
+
               <button
                 onClick={() => setSection("Stories")}
                 style={{ padding: "18px", background: "#fff", border: "1.5px solid #dbe8dd", borderRadius: 12, cursor: "pointer", textAlign: "left", display: "flex", gap: 12, alignItems: "center" }}
@@ -1327,17 +1513,6 @@ export default function AdminPage() {
                 <div>
                   <strong style={{ display: "block", color: "#153f31", fontSize: 14 }}>View Messages</strong>
                   <small style={{ color: "#638070" }}>Read incoming inquiries</small>
-                </div>
-              </button>
-
-              <button
-                onClick={() => setSection("Events")}
-                style={{ padding: "18px", background: "#fff", border: "1.5px solid #dbe8dd", borderRadius: 12, cursor: "pointer", textAlign: "left", display: "flex", gap: 12, alignItems: "center" }}
-              >
-                <span style={{ fontSize: 26 }}>📸</span>
-                <div>
-                  <strong style={{ display: "block", color: "#153f31", fontSize: 14 }}>Events &amp; Gallery</strong>
-                  <small style={{ color: "#638070" }}>Add event photos &amp; drives</small>
                 </div>
               </button>
 
@@ -1662,6 +1837,439 @@ export default function AdminPage() {
               >
                 {editingEventId ? "✓ Update Event & Photos" : "💾 Save & Publish Event"}
               </button>
+            </form>
+          </div>
+        )}
+
+        {/* ── 1.8. RECOGNITIONS & AWARDS MANAGER ── */}
+        {section === "Awards" && (
+          <div className="admin-two-col-grid" style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: 24, alignItems: "start" }}>
+            {/* Award / Letter List */}
+            <div style={{ background: "#fff", border: "1px solid #dbe8dd", borderRadius: 14, padding: 24 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: 19, color: "#153f31" }}>Appreciation Letters &amp; Awards ({awards.length})</h2>
+                  <small style={{ color: "#64748B" }}>Official school letters, government certifications, and recognitions</small>
+                </div>
+                {editingAwardId && (
+                  <button
+                    onClick={() => {
+                      setEditingAwardId(null);
+                      setAwardForm({
+                        id: "",
+                        title: "",
+                        titleMr: "",
+                        issuingAuthority: "",
+                        location: "",
+                        udiseCode: "",
+                        date: new Date().toISOString().split("T")[0],
+                        beneficiaries: "",
+                        signatory: "",
+                        quoteMr: "",
+                        quoteAuthor: "",
+                        summary: "",
+                        image: "",
+                        pdfUrl: "",
+                      });
+                    }}
+                    style={{ background: "#e2e8f0", color: "#334155", border: 0, padding: "6px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer", fontWeight: 700 }}
+                  >
+                    Cancel Edit
+                  </button>
+                )}
+              </div>
+
+              {awards.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "40px 16px", color: "#64748B", background: "#f8fafc", borderRadius: 10 }}>
+                  <div style={{ fontSize: 32, marginBottom: 6 }}>🏆</div>
+                  <p style={{ margin: 0 }}>No recognitions added yet. Use the form on the right to add your first appreciation letter!</p>
+                </div>
+              ) : (
+                <div style={{ display: "grid", gap: 18 }}>
+                  {awards.map((item) => (
+                    <div
+                      key={item.id}
+                      style={{
+                        border: editingAwardId === item.id ? "2px solid #2f8f46" : "1px solid #e2e8f0",
+                        borderRadius: 12,
+                        padding: 16,
+                        background: editingAwardId === item.id ? "#f0fdf4" : "#fafaf9",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+                      }}
+                    >
+                      <div style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 16, alignItems: "start" }}>
+                        {/* Thumbnail */}
+                        <div style={{ borderRadius: 8, overflow: "hidden", border: "1px solid #cbd5e1", backgroundColor: "#fff", textAlign: "center" }}>
+                          <img
+                            src={item.image || "/images/awards/raigad-school-appreciation-letter.png"}
+                            alt={item.title}
+                            style={{ width: "100%", height: "130px", objectFit: "contain", display: "block" }}
+                          />
+                        </div>
+
+                        {/* Information */}
+                        <div>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 4 }}>
+                            <div>
+                              <span style={{ fontSize: 11, fontWeight: 800, background: "#FEF3C7", color: "#92400E", padding: "2px 8px", borderRadius: 4, display: "inline-block", marginBottom: 4 }}>
+                                🏆 OFFICIAL RECOGNITION
+                              </span>
+                              <strong style={{ display: "block", fontSize: 15, color: "#0F172A" }}>{item.title}</strong>
+                              {item.titleMr && (
+                                <span style={{ fontSize: 13, color: "#134B36", fontWeight: 700, display: "block" }}>{item.titleMr}</span>
+                              )}
+                            </div>
+                            <div style={{ display: "flex", gap: 6 }}>
+                              <button
+                                onClick={() => handleEditAward(item)}
+                                style={{ background: "#2f8f46", color: "#fff", border: 0, borderRadius: 5, padding: "4px 10px", fontSize: 12, cursor: "pointer", fontWeight: 700 }}
+                              >
+                                ✏️ Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeleteAward(item.id)}
+                                style={{ background: "#FEE2E2", color: "#B91C1C", border: 0, borderRadius: 5, padding: "4px 10px", fontSize: 12, cursor: "pointer" }}
+                              >
+                                🗑️ Delete
+                              </button>
+                            </div>
+                          </div>
+
+                          <div style={{ fontSize: 12, color: "#64748B", display: "grid", gap: 2, marginTop: 6 }}>
+                            <div>🏛️ <strong>Authority:</strong> {item.issuingAuthority}</div>
+                            {item.location && <div>📍 <strong>Location:</strong> {item.location}</div>}
+                            {item.udiseCode && <div>🔢 <strong>UDISE Code:</strong> {item.udiseCode}</div>}
+                            {item.date && <div>📅 <strong>Date:</strong> {item.date}</div>}
+                            {item.beneficiaries && <div>🎒 <strong>Beneficiaries:</strong> {item.beneficiaries}</div>}
+                          </div>
+
+                          {item.quoteMr && (
+                            <div style={{ background: "#F0FDF4", borderLeft: "3px solid #134B36", padding: "6px 10px", borderRadius: 4, marginTop: 8, fontSize: 12, color: "#14532D", fontStyle: "italic" }}>
+                              “{item.quoteMr}”
+                            </div>
+                          )}
+
+                          {/* Quick Download Link Actions */}
+                          <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                            {item.image && (
+                              <a
+                                href={item.image}
+                                download="Appreciation_Letter.png"
+                                style={{
+                                  background: "#0F766E",
+                                  color: "#fff",
+                                  padding: "4px 10px",
+                                  borderRadius: 5,
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  textDecoration: "none",
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: 4,
+                                }}
+                              >
+                                🖼️ Download Image
+                              </a>
+                            )}
+                            {item.pdfUrl && (
+                              <a
+                                href={item.pdfUrl}
+                                download="Appreciation_Letter.pdf"
+                                style={{
+                                  background: "#134B36",
+                                  color: "#fff",
+                                  padding: "4px 10px",
+                                  borderRadius: 5,
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  textDecoration: "none",
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: 4,
+                                }}
+                              >
+                                📥 Download PDF
+                              </a>
+                            )}
+                            <a
+                              href="/recognition-awards"
+                              target="_blank"
+                              rel="noreferrer"
+                              style={{
+                                background: "#E2E8F0",
+                                color: "#334155",
+                                padding: "4px 10px",
+                                borderRadius: 5,
+                                fontSize: 11,
+                                fontWeight: 600,
+                                textDecoration: "none",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 4,
+                              }}
+                            >
+                              🌐 View Public Page ↗
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Add / Edit Form */}
+            <form onSubmit={handleAwardSubmit} style={{ background: "#fff", border: "1px solid #dbe8dd", borderRadius: 14, padding: 24, display: "grid", gap: 14 }}>
+              <h2 style={{ margin: 0, fontSize: 18, color: "#153f31" }}>
+                {editingAwardId ? "✏️ Edit Recognition & Award" : "➕ Add New Appreciation Letter"}
+              </h2>
+
+              {/* Document Image Upload / Preview */}
+              <div style={{ background: "#FAF8F5", border: "1px solid #E2E8F0", borderRadius: 10, padding: 14, textAlign: "center" }}>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 6, textTransform: "uppercase" }}>
+                  Appreciation Letter Document Photo *
+                </label>
+
+                {awardForm.image ? (
+                  <div style={{ position: "relative", maxWidth: "220px", margin: "0 auto 10px" }}>
+                    <img
+                      src={awardForm.image}
+                      alt="Letter Preview"
+                      style={{ width: "100%", maxHeight: "200px", objectFit: "contain", borderRadius: 6, border: "1.5px solid #2f8f46", backgroundColor: "#fff" }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setAwardForm({ ...awardForm, image: "" })}
+                      title="Remove Image"
+                      style={{
+                        position: "absolute",
+                        top: -6,
+                        right: -6,
+                        background: "#EF4444",
+                        color: "#fff",
+                        border: "2px solid #fff",
+                        borderRadius: "50%",
+                        width: 22,
+                        height: 22,
+                        cursor: "pointer",
+                        fontSize: 11,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 900,
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ padding: "20px", border: "2px dashed #cbd5e1", borderRadius: 8, background: "#f8fafc", marginBottom: 10 }}>
+                    <div style={{ fontSize: 28, marginBottom: 4 }}>📜</div>
+                    <small style={{ color: "#64748b" }}>Upload the scanned high-res appreciation letter or certificate</small>
+                  </div>
+                )}
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="direct-award-photo-input"
+                  style={{ display: "none" }}
+                  onChange={(e) => handleFileUpload(e, (base64) => setAwardForm({ ...awardForm, image: base64 }))}
+                />
+
+                <label
+                  htmlFor="direct-award-photo-input"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "8px 16px",
+                    background: "#2f8f46",
+                    color: "#fff",
+                    borderRadius: 6,
+                    fontWeight: 700,
+                    fontSize: 12,
+                    cursor: "pointer",
+                  }}
+                >
+                  📁 Choose Document Photo
+                </label>
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Title (English) *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Letter of Gratitude & Appreciation"
+                  value={awardForm.title}
+                  onChange={(e) => setAwardForm({ ...awardForm, title: e.target.value })}
+                  style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Title / School Name (Marathi)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. रायगड जिल्हा परिषद शाळा फरशीपाडा"
+                  value={awardForm.titleMr || ""}
+                  onChange={(e) => setAwardForm({ ...awardForm, titleMr: e.target.value })}
+                  style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit" }}
+                />
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Issuing Authority / School *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Raigad Z.P. School Farshipada"
+                    value={awardForm.issuingAuthority}
+                    onChange={(e) => setAwardForm({ ...awardForm, issuingAuthority: e.target.value })}
+                    style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit" }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Location / Taluka / Dist *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Panvel, Raigad, Maharashtra"
+                    value={awardForm.location}
+                    onChange={(e) => setAwardForm({ ...awardForm, location: e.target.value })}
+                    style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit" }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>UDISE Code (School Code)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 27240817007"
+                    value={awardForm.udiseCode || ""}
+                    onChange={(e) => setAwardForm({ ...awardForm, udiseCode: e.target.value })}
+                    style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit", fontFamily: "monospace" }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Date of Issue</label>
+                  <input
+                    type="date"
+                    value={awardForm.date}
+                    onChange={(e) => setAwardForm({ ...awardForm, date: e.target.value })}
+                    style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit" }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Beneficiaries / Students</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 36 Rural Primary Students"
+                    value={awardForm.beneficiaries || ""}
+                    onChange={(e) => setAwardForm({ ...awardForm, beneficiaries: e.target.value })}
+                    style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit" }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Signed &amp; Stamped By</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Headmaster & SMC President"
+                    value={awardForm.signatory || ""}
+                    onChange={(e) => setAwardForm({ ...awardForm, signatory: e.target.value })}
+                    style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit" }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>PDF Document Link / File Path</label>
+                <input
+                  type="text"
+                  placeholder="e.g. /documents/raigad-school-appreciation-letter.pdf"
+                  value={awardForm.pdfUrl || ""}
+                  onChange={(e) => setAwardForm({ ...awardForm, pdfUrl: e.target.value })}
+                  style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Marathi Key Quote / Testimonial</label>
+                <textarea
+                  rows={2}
+                  placeholder="e.g. शिक्षणाची ज्ञानज्योत प्रज्वलित ठेवण्यासाठी आपण दिलेले हे दातृत्व विद्यार्थ्यांच्या उज्ज्वल भविष्यासाठी अत्यंत प्रेरणादायी आहे."
+                  value={awardForm.quoteMr || ""}
+                  onChange={(e) => setAwardForm({ ...awardForm, quoteMr: e.target.value })}
+                  style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit", resize: "vertical" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Quote Author / Designation</label>
+                <input
+                  type="text"
+                  placeholder="e.g. School Management Committee & Headmaster, RZP School Farshipada"
+                  value={awardForm.quoteAuthor || ""}
+                  onChange={(e) => setAwardForm({ ...awardForm, quoteAuthor: e.target.value })}
+                  style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Summary / Description *</label>
+                <textarea
+                  rows={3}
+                  required
+                  placeholder="Detailed summary of the appreciation, donation materials provided, and institutional context..."
+                  value={awardForm.summary}
+                  onChange={(e) => setAwardForm({ ...awardForm, summary: e.target.value })}
+                  style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit", resize: "vertical" }}
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
+                <button type="submit" style={{ flex: 1, background: "#2f8f46", color: "#fff", border: 0, borderRadius: 8, padding: "12px", fontWeight: 700, cursor: "pointer", fontSize: 14 }}>
+                  {editingAwardId ? "💾 Save Recognition Changes" : "➕ Publish Appreciation Letter"}
+                </button>
+                {editingAwardId && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingAwardId(null);
+                      setAwardForm({
+                        id: "",
+                        title: "",
+                        titleMr: "",
+                        issuingAuthority: "",
+                        location: "",
+                        udiseCode: "",
+                        date: new Date().toISOString().split("T")[0],
+                        beneficiaries: "",
+                        signatory: "",
+                        quoteMr: "",
+                        quoteAuthor: "",
+                        summary: "",
+                        image: "",
+                        pdfUrl: "",
+                      });
+                    }}
+                    style={{ background: "#e2e8f0", color: "#334155", border: 0, borderRadius: 8, padding: "12px 16px", cursor: "pointer" }}
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
             </form>
           </div>
         )}
@@ -2120,7 +2728,7 @@ export default function AdminPage() {
                 <h2 style={{ margin: 0, fontSize: 19, color: "#153f31" }}>Volunteers &amp; Team ({volunteers.length})</h2>
                 {editingVolunteerId && (
                   <button
-                    onClick={() => { setEditingVolunteerId(null); setVolunteerForm({ id: "", name: "", role: "", location: "", image: "", phone: "", email: "" }); }}
+                    onClick={() => { setEditingVolunteerId(null); setVolunteerForm({ id: "", name: "", role: "Volunteer", location: "", image: "", phone: "", email: "" }); }}
                     style={{ background: "#e2e8f0", color: "#334155", border: 0, padding: "4px 10px", borderRadius: 6, fontSize: 12, cursor: "pointer" }}
                   >
                     Cancel Edit
@@ -2153,8 +2761,7 @@ export default function AdminPage() {
                       </div>
                     )}
                     <strong style={{ display: "block", fontSize: 13, color: "#0F172A", marginBottom: 2 }}>{vol.name}</strong>
-                    <span style={{ fontSize: 11, color: "#2f8f46", fontWeight: 700, display: "block" }}>{vol.role || "Volunteer"}</span>
-                    {vol.location && <small style={{ color: "#64748B", fontSize: 11, display: "block", marginTop: 2 }}>📍 {vol.location}</small>}
+                    <span style={{ fontSize: 11, color: "#2f8f46", fontWeight: 700, display: "block" }}>Volunteer</span>
 
                     <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10 }}>
                       <button
@@ -2281,6 +2888,7 @@ export default function AdminPage() {
                 <input
                   type="text"
                   required
+                  placeholder="e.g. Rahul Sharma"
                   value={volunteerForm.name}
                   onChange={(e) => setVolunteerForm({ ...volunteerForm, name: e.target.value })}
                   style={{ width: "100%", padding: "9px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit" }}
@@ -2288,46 +2896,13 @@ export default function AdminPage() {
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Role / Title *</label>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Position</label>
                 <input
                   type="text"
-                  required
-                  value={volunteerForm.role}
+                  value={volunteerForm.role || "Volunteer"}
                   onChange={(e) => setVolunteerForm({ ...volunteerForm, role: e.target.value })}
-                  style={{ width: "100%", padding: "9px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit" }}
+                  style={{ width: "100%", padding: "9px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit", background: "#f8fafc" }}
                 />
-              </div>
-
-              <div>
-                <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Location / Area *</label>
-                <input
-                  type="text"
-                  required
-                  value={volunteerForm.location}
-                  onChange={(e) => setVolunteerForm({ ...volunteerForm, location: e.target.value })}
-                  style={{ width: "100%", padding: "9px 12px", borderRadius: 6, border: "1px solid #cbd5e1", font: "inherit" }}
-                />
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                <div>
-                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Phone (Optional)</label>
-                  <input
-                    type="text"
-                    value={volunteerForm.phone || ""}
-                    onChange={(e) => setVolunteerForm({ ...volunteerForm, phone: e.target.value })}
-                    style={{ width: "100%", padding: "8px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 4 }}>Email (Optional)</label>
-                  <input
-                    type="email"
-                    value={volunteerForm.email || ""}
-                    onChange={(e) => setVolunteerForm({ ...volunteerForm, email: e.target.value })}
-                    style={{ width: "100%", padding: "8px 10px", borderRadius: 6, border: "1px solid #cbd5e1" }}
-                  />
-                </div>
               </div>
 
               <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
@@ -2337,7 +2912,7 @@ export default function AdminPage() {
                 {editingVolunteerId && (
                   <button
                     type="button"
-                    onClick={() => { setEditingVolunteerId(null); setVolunteerForm({ id: "", name: "", role: "", location: "", image: "", phone: "", email: "" }); }}
+                    onClick={() => { setEditingVolunteerId(null); setVolunteerForm({ id: "", name: "", role: "Volunteer", location: "", image: "", phone: "", email: "" }); }}
                     style={{ background: "#e2e8f0", color: "#334155", border: 0, borderRadius: 8, padding: "12px 16px", cursor: "pointer" }}
                   >
                     Cancel

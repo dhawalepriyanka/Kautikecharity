@@ -15,22 +15,22 @@ const defaultPresidentData = {
 };
 
 const defaultVolunteers = [
-  { id: "v0", name: "Nilesh Kute", role: "Volunteer", image: "/images/team/nilesh-kute.png", location: "Maharashtra, India" },
-  { id: "v1", name: "Ashish Mishra", role: "Volunteer", image: "/images/team/ashish-mishra.png", location: "Panvel, Raigad" },
-  { id: "v2", name: "Abhinay Singh", role: "Volunteer", image: "/images/team/abhinay-singh-hd.png", location: "Mumbai & Raigad" },
-  { id: "v4", name: "Dnyaneshwar Jadhav", role: "Volunteer", image: "/images/team/dnyaneshwar-jadhav.png", location: "Panvel, Raigad" },
-  { id: "v5", name: "Jayshree Sutar", role: "Volunteer", image: "/images/team/jayshree-sutar.png", location: "Maharashtra" },
-  { id: "v6", name: "Santosh Jadhav", role: "Volunteer", image: "/images/team/santosh-jadhav.png", location: "Panvel, Raigad" },
-  { id: "v7", name: "Vijay Jadhav", role: "Volunteer", image: "/images/team/vijay-jadhav.png", location: "Mahodar, Panvel" },
-  { id: "v8", name: "Satish Jadhav", role: "Volunteer", image: "/images/team/satish-jadhav.png", location: "Panvel, Raigad" },
-  { id: "v9", name: "Deepak Thorat", role: "Volunteer", image: "/images/team/deepak-thorat.png", location: "Kondap, Panvel" },
-  { id: "v10", name: "Suman Yadav", role: "Volunteer", image: "/images/team/suman-yadav.png", location: "Maharashtra, India" },
-  { id: "v11", name: "Ankit Dubey", role: "Volunteer", image: "/images/team/ankit-dubey.png", location: "Mumbai, Maharashtra" },
-  { id: "v12", name: "Brijesh Pandey", role: "Volunteer", image: "/images/team/brijesh-pandey.png", location: "Maharashtra, India" },
-  { id: "v13", name: "Akash Mishra", role: "Volunteer", image: "/images/team/akash-mishra.png", location: "Maharashtra, India" },
-  { id: "v14", name: "Vinayak Jadhav", role: "Volunteer", image: "/images/team/vinayak-jadhav.png", location: "Maharashtra, India" },
-  { id: "v15", name: "Vicky Jadhav", role: "Volunteer", image: "/images/team/vicky-jadhav.png", location: "Maharashtra, India" },
-  { id: "v16", name: "Abhishek Singh", role: "Volunteer", image: "/images/team/abhishek-singh.png", location: "Maharashtra, India" },
+  { id: "v0", name: "Nilesh Kute", role: "Volunteer", image: "/images/team/nilesh-kute.png", location: "Maharashtra, India", phone: "+91 810 836 2688" },
+  { id: "v1", name: "Ashish Mishra", role: "Volunteer", image: "/images/team/ashish-mishra.png", location: "Panvel, Raigad", phone: "+91 98201 12345" },
+  { id: "v2", name: "Abhinay Singh", role: "Volunteer", image: "/images/team/abhinay-singh-hd.png", location: "Mumbai & Raigad", phone: "+91 98202 23456" },
+  { id: "v4", name: "Dnyaneshwar Jadhav", role: "Volunteer", image: "/images/team/dnyaneshwar-jadhav.png", location: "Panvel, Raigad", phone: "+91 98204 45678" },
+  { id: "v5", name: "Jayshree Sutar", role: "Volunteer", image: "/images/team/jayshree-sutar.png", location: "Maharashtra", phone: "+91 98205 56789" },
+  { id: "v6", name: "Santosh Jadhav", role: "Volunteer", image: "/images/team/santosh-jadhav.png", location: "Panvel, Raigad", phone: "+91 98206 67890" },
+  { id: "v7", name: "Vijay Jadhav", role: "Volunteer", image: "/images/team/vijay-jadhav.png", location: "Mahodar, Panvel", phone: "+91 98207 78901" },
+  { id: "v8", name: "Satish Jadhav", role: "Volunteer", image: "/images/team/satish-jadhav.png", location: "Panvel, Raigad", phone: "+91 98208 89012" },
+  { id: "v9", name: "Deepak Thorat", role: "Volunteer", image: "/images/team/deepak-thorat.png", location: "Kondap, Panvel", phone: "+91 98209 90123" },
+  { id: "v10", name: "Suman Yadav", role: "Volunteer", image: "/images/team/suman-yadav.png", location: "Maharashtra, India", phone: "+91 98210 01234" },
+  { id: "v11", name: "Ankit Dubey", role: "Volunteer", image: "/images/team/ankit-dubey.png", location: "Mumbai, Maharashtra", phone: "+91 98211 12345" },
+  { id: "v12", name: "Brijesh Pandey", role: "Volunteer", image: "/images/team/brijesh-pandey.png", location: "Maharashtra, India", phone: "+91 98212 23456" },
+  { id: "v13", name: "Akash Mishra", role: "Volunteer", image: "/images/team/akash-mishra.png", location: "Maharashtra, India", phone: "+91 98213 34567" },
+  { id: "v14", name: "Vinayak Jadhav", role: "Volunteer", image: "/images/team/vinayak-jadhav.png", location: "Maharashtra, India", phone: "+91 98214 45678" },
+  { id: "v15", name: "Vicky Jadhav", role: "Volunteer", image: "/images/team/vicky-jadhav.png", location: "Maharashtra, India", phone: "+91 98215 56789" },
+  { id: "v16", name: "Abhishek Singh", role: "Volunteer", image: "/images/team/abhishek-singh.png", location: "Maharashtra, India", phone: "+91 98216 67890" },
 ];
 
 function mergeVolunteersList(savedList: any[]) {
@@ -45,7 +45,7 @@ function mergeVolunteersList(savedList: any[]) {
       const key = v.name.toLowerCase().trim();
       if (key.includes("yogesh")) return;
       const existing = map.get(key);
-      map.set(key, { ...(existing || {}), ...v });
+      map.set(key, { ...(existing || {}), ...v, id: v.id || existing?.id });
     }
   });
   return Array.from(map.values()).filter((v: any) => !v?.name?.toLowerCase().includes("yogesh"));
@@ -143,7 +143,7 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <main className="page-fade-in bg-cream" id="top" style={{ backgroundColor: "#FAF8F5" }}>
+    <main className="page-fade-in bg-cream" id="top" style={{ backgroundColor: "#FAF8F5" }} suppressHydrationWarning>
       <Header />
 
       {/* 1. CRY-STYLE VISION SECTION */}
@@ -206,16 +206,20 @@ export default function AboutPage() {
           </div>
 
           <div className="cry-3cards-grid">
-            <div className="cry-3card">
-              <div className="cry-3card-art-wrap">
-                <svg className="cry-3card-svg" viewBox="0 0 160 140" fill="none" aria-hidden="true">
-                  <circle cx="80" cy="70" r="56" fill="#FFF8E7" />
-                  <circle cx="80" cy="50" r="22" fill="#FBBF24" />
-                  <path d="M60 92 C60 76 100 76 100 92 Z" fill="#F97316" />
-                  <path d="M50 108 C50 88 110 88 110 108 Z" fill="#0EA5E9" />
-                  <line x1="80" y1="92" x2="80" y2="124" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
-                  <line x1="68" y1="124" x2="92" y2="124" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
-                </svg>
+            <div className="cry-3card-item">
+              <div className="cry-3card-art" style={{ marginBottom: 24 }}>
+                <img
+                  src="/images/education-drive-real.jpg"
+                  alt="Opportunity & Potential"
+                  style={{
+                    width: 144,
+                    height: 144,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: "4px solid #F5A623",
+                    boxShadow: "0 10px 24px rgba(245, 166, 35, 0.25)",
+                  }}
+                />
               </div>
               <h3 className="cry-3card-name">Opportunity &amp; Potential</h3>
               <p className="cry-3card-desc">
@@ -223,15 +227,20 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="cry-3card">
-              <div className="cry-3card-art-wrap">
-                <svg className="cry-3card-svg" viewBox="0 0 160 140" fill="none" aria-hidden="true">
-                  <circle cx="80" cy="70" r="56" fill="#F0FDF4" />
-                  <circle cx="80" cy="46" r="18" fill="#FBBF24" />
-                  <path d="M64 80 C64 68 96 68 96 80 Z" fill="#10B981" />
-                  <path d="M40 76 Q60 50 80 72 Q100 50 120 76 Q80 126 40 76 Z" fill="#EC4899" opacity="0.8" />
-                  <circle cx="80" cy="80" r="14" fill="#FBBF24" />
-                </svg>
+            <div className="cry-3card-item">
+              <div className="cry-3card-art" style={{ marginBottom: 24 }}>
+                <img
+                  src="/images/approach-maharashtra-child.jpg"
+                  alt="Children at the Centre"
+                  style={{
+                    width: 144,
+                    height: 144,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: "4px solid #F5A623",
+                    boxShadow: "0 10px 24px rgba(245, 166, 35, 0.25)",
+                  }}
+                />
               </div>
               <h3 className="cry-3card-name">Children at the Centre</h3>
               <p className="cry-3card-desc">
@@ -239,26 +248,20 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="cry-3card">
-              <div className="cry-3card-art-wrap">
-                <svg className="cry-3card-svg" viewBox="0 0 160 140" fill="none" aria-hidden="true">
-                  <circle cx="80" cy="80" r="60" fill="#FFF8E7" />
-                  <ellipse cx="80" cy="132" rx="50" ry="10" fill="#E2E8F0" opacity="0.6" />
-                  <circle cx="54" cy="62" r="8" fill="#FBBF24" />
-                  <path d="M46 72 L62 72 L64 104 L44 104 Z" fill="#0EA5E9" />
-                  <line x1="50" y1="104" x2="48" y2="128" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
-                  <line x1="58" y1="104" x2="60" y2="128" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
-                  <circle cx="106" cy="62" r="8" fill="#FBBF24" />
-                  <path d="M98 72 L114 72 L116 104 L96 104 Z" fill="#10B981" />
-                  <line x1="102" y1="104" x2="100" y2="128" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
-                  <line x1="110" y1="104" x2="112" y2="128" stroke="#1E293B" strokeWidth="4" strokeLinecap="round" />
-                  <circle cx="80" cy="48" r="12" fill="#FBBF24" />
-                  <path d="M68 44 C70 30 92 30 94 44 C90 36 72 36 68 44 Z" fill="#1E293B" />
-                  <path d="M68 64 L92 64 L96 106 L64 106 Z" fill="#E11D48" />
-                  <path d="M66 74 C75 88 85 88 94 74" stroke="#FBBF24" strokeWidth="6" strokeLinecap="round" fill="none" />
-                  <line x1="72" y1="106" x2="72" y2="132" stroke="#1E293B" strokeWidth="5" strokeLinecap="round" />
-                  <line x1="88" y1="106" x2="88" y2="132" stroke="#1E293B" strokeWidth="5" strokeLinecap="round" />
-                </svg>
+            <div className="cry-3card-item">
+              <div className="cry-3card-art" style={{ marginBottom: 24 }}>
+                <img
+                  src="/images/environment-plants-real.jpg"
+                  alt="Inspiring Collective Action"
+                  style={{
+                    width: 144,
+                    height: 144,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: "4px solid #F5A623",
+                    boxShadow: "0 10px 24px rgba(245, 166, 35, 0.25)",
+                  }}
+                />
               </div>
               <h3 className="cry-3card-name">Inspiring Collective Action</h3>
               <p className="cry-3card-desc">
@@ -332,8 +335,8 @@ export default function AboutPage() {
 
           {/* Dynamic Responsive CRY-Style Volunteer Cards */}
           <div className="cry-team-cards-grid">
-            {volunteers.map((vol, idx) => (
-              <div key={(vol as any).id || vol.name + idx} className="cry-team-card-item">
+            {volunteers.map((vol: any, idx) => (
+              <div key={vol.id || vol.name + idx} className="cry-team-card-item">
                 <div className="cry-team-card-top-bar" />
                 
                 <div className="cry-team-avatar-wrapper">
@@ -361,11 +364,13 @@ export default function AboutPage() {
                       </div>
                     )}
                   </div>
-                  <span className="cry-team-vol-pill">VOLUNTEER</span>
+                  <span className="cry-team-vol-pill" suppressHydrationWarning>VOLUNTEER</span>
                 </div>
 
-                <div className="cry-team-card-body">
-                  <h4 className="cry-team-member-name">{vol.name}</h4>
+                <div className="cry-team-card-body" style={{ padding: "10px 14px 16px", textAlign: "center" }}>
+                  <h4 className="cry-team-member-name" style={{ margin: 0, fontSize: "16px", fontWeight: 800, color: "#0F172A" }}>
+                    {vol.name}
+                  </h4>
                 </div>
               </div>
             ))}

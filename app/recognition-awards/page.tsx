@@ -1,12 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { FloatingActions } from "../components/FloatingActions";
 
+type AwardItem = {
+  id: string;
+  title: string;
+  titleMr?: string;
+  issuingAuthority: string;
+  location: string;
+  udiseCode?: string;
+  date: string;
+  beneficiaries?: string;
+  signatory?: string;
+  quoteMr?: string;
+  quoteAuthor?: string;
+  summary: string;
+  image: string;
+  pdfUrl?: string;
+};
+
+const defaultAwards: AwardItem[] = [
+  {
+    id: "award-raigad-school-2026",
+    title: "Letter of Gratitude & Appreciation",
+    titleMr: "रायगड जिल्हा परिषद शाळा फरशीपाडा",
+    issuingAuthority: "Raigad Zilla Parishad School Farshipada",
+    location: "Taluka Panvel, District Raigad, Maharashtra",
+    udiseCode: "27240817007",
+    date: "10 August 2026",
+    beneficiaries: "36 Rural Primary Students",
+    signatory: "S. M. Patil (President / Secretary) & Headmaster",
+    quoteMr: "शिक्षणाची ज्ञानज्योत प्रज्वलित ठेवण्यासाठी आपण दिलेले हे दातृत्व विद्यार्थ्यांच्या उज्ज्वल भविष्यासाठी अत्यंत प्रेरणादायी आहे.",
+    quoteAuthor: "School Management Committee & Headmaster, RZP School Farshipada",
+    summary: "Awarded by the School Management Committee & Headmaster of Raigad Zilla Parishad Primary School Farshipada (Taluka Panvel, District Raigad) to Kautike Charitable Foundation for providing vital educational literature, school kits, and learning supplies to 36 rural students.",
+    image: "/images/awards/raigad-school-appreciation-letter.png",
+    pdfUrl: "/documents/raigad-school-appreciation-letter.pdf",
+  },
+];
+
 export default function RecognitionAwardsPage() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [awards, setAwards] = useState<AwardItem[]>(defaultAwards);
+
+  useEffect(() => {
+    try {
+      const savedAwards = localStorage.getItem("kautike_admin_awards");
+      if (savedAwards) {
+        const parsed = JSON.parse(savedAwards);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setAwards(parsed);
+        }
+      }
+    } catch (_) {}
+  }, []);
 
   return (
     <main className="page-fade-in bg-cream" id="top" style={{ backgroundColor: "#FAF8F5", minHeight: "100vh" }}>
@@ -42,200 +91,200 @@ export default function RecognitionAwardsPage() {
       {/* ── Main Container ── */}
       <section style={{ maxWidth: "1220px", margin: "0 auto", padding: "10px 24px 70px" }}>
 
-        {/* ── FEATURED RECOGNITION: Raigad ZP School Farshipada ── */}
-        <div
-          style={{
-            background: "#FFFFFF",
-            borderRadius: "16px",
-            border: "1.5px solid #E2E8F0",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
-            overflow: "hidden",
-            marginBottom: "48px",
-          }}
-        >
-          {/* Card Top Accent Bar */}
-          <div style={{ background: "linear-gradient(90deg, #134B36 0%, #2F963A 50%, #D4AF37 100%)", height: "6px" }} />
+        {/* ── DYNAMIC RECOGNITION LETTERS LIST ── */}
+        <div style={{ display: "grid", gap: "48px", marginBottom: "48px" }}>
+          {awards.map((award) => (
+            <div
+              key={award.id}
+              style={{
+                background: "#FFFFFF",
+                borderRadius: "16px",
+                border: "1.5px solid #E2E8F0",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+                overflow: "hidden",
+              }}
+            >
+              {/* Card Top Accent Bar */}
+              <div style={{ background: "linear-gradient(90deg, #134B36 0%, #2F963A 50%, #D4AF37 100%)", height: "6px" }} />
 
-          <div style={{ padding: "clamp(24px, 4vw, 40px)" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "36px", alignItems: "center" }}>
-              
-              {/* Left Column: Interactive Document Preview */}
-              <div style={{ textAlign: "center" }}>
-                <div
-                  onClick={() => setModalOpen(true)}
-                  style={{
-                    position: "relative",
-                    borderRadius: "12px",
-                    overflow: "hidden",
-                    border: "2px solid #CBD5E1",
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-                    cursor: "pointer",
-                    backgroundColor: "#FAF8F5",
-                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                  }}
-                  className="award-doc-preview"
-                >
-                  <img
-                    src="/images/awards/raigad-school-appreciation-letter.jpg"
-                    alt="Letter of Appreciation - Raigad Zilla Parishad Primary School Farshipada"
-                    style={{
-                      width: "100%",
-                      maxHeight: "520px",
-                      objectFit: "contain",
-                      display: "block",
-                      backgroundColor: "#FFFFFF",
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      background: "rgba(15, 23, 42, 0.88)",
-                      color: "#FFFFFF",
-                      padding: "10px 16px",
-                      fontSize: "13px",
-                      fontWeight: 700,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "8px",
-                    }}
-                  >
-                    🔍 Click to View Full Resolution Document
+              <div style={{ padding: "clamp(24px, 4vw, 40px)" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "36px", alignItems: "center" }}>
+                  
+                  {/* Left Column: Full Resolution Document Display */}
+                  <div style={{ textAlign: "center" }}>
+                    <div
+                      style={{
+                        position: "relative",
+                        borderRadius: "10px",
+                        overflow: "hidden",
+                        border: "1.5px solid #CBD5E1",
+                        boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+                        backgroundColor: "#FFFFFF",
+                      }}
+                    >
+                      <img
+                        src={award.image || "/images/awards/raigad-school-appreciation-letter.png"}
+                        alt={award.title}
+                        style={{
+                          width: "100%",
+                          height: "auto",
+                          display: "block",
+                          backgroundColor: "#FFFFFF",
+                        }}
+                      />
+                    </div>
+
+                    {/* Direct Download & Action Buttons */}
+                    <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "16px", flexWrap: "wrap" }}>
+                      {award.image && (
+                        <a
+                          href={award.image}
+                          download="Appreciation_Letter.png"
+                          style={{
+                            background: "#0F766E",
+                            color: "#FFFFFF",
+                            padding: "10px 18px",
+                            borderRadius: "8px",
+                            fontSize: "13px",
+                            fontWeight: 700,
+                            textDecoration: "none",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            boxShadow: "0 4px 12px rgba(15,118,110,0.2)",
+                          }}
+                        >
+                          🖼️ Download PNG
+                        </a>
+                      )}
+                      {award.pdfUrl && (
+                        <a
+                          href={award.pdfUrl}
+                          download="Appreciation_Letter_Kautike_Foundation.pdf"
+                          style={{
+                            background: "#134B36",
+                            color: "#FFFFFF",
+                            padding: "10px 18px",
+                            borderRadius: "8px",
+                            fontSize: "13px",
+                            fontWeight: 700,
+                            textDecoration: "none",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            boxShadow: "0 4px 12px rgba(19,75,54,0.2)",
+                          }}
+                        >
+                          📥 Download PDF
+                        </a>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                {/* Quick Action Buttons */}
-                <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginTop: "16px", flexWrap: "wrap" }}>
-                  <button
-                    type="button"
-                    onClick={() => setModalOpen(true)}
-                    style={{
-                      background: "#134B36",
-                      color: "#FFFFFF",
-                      border: "none",
-                      padding: "10px 18px",
-                      borderRadius: "8px",
-                      fontSize: "13px",
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
-                    }}
-                  >
-                    🔍 Zoom / Inspect
-                  </button>
-                  <a
-                    href="/documents/raigad-school-appreciation-letter.pdf"
-                    download="Raigad_School_Appreciation_Letter_Kautike_Foundation.pdf"
-                    style={{
-                      background: "#F8FAFC",
-                      color: "#1E293B",
-                      border: "1.5px solid #CBD5E1",
-                      padding: "10px 18px",
-                      borderRadius: "8px",
-                      fontSize: "13px",
-                      fontWeight: 700,
-                      textDecoration: "none",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
-                    }}
-                  >
-                    📥 Download PDF
-                  </a>
+                  {/* Right Column: Structured Overview & Transcriptions */}
+                  <div>
+                    <div
+                      style={{
+                        display: "inline-block",
+                        background: "#FEF3C7",
+                        color: "#92400E",
+                        padding: "4px 12px",
+                        borderRadius: "6px",
+                        fontSize: "11.5px",
+                        fontWeight: 800,
+                        letterSpacing: "0.05em",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      🏆 OFFICIAL INSTITUTIONAL RECOGNITION
+                    </div>
+                    
+                    <h2 style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 800, color: "#0F172A", margin: "0 0 8px" }}>
+                      {award.title}
+                    </h2>
+                    
+                    {award.titleMr && (
+                      <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#134B36", margin: "0 0 16px" }}>
+                        {award.titleMr}
+                      </h3>
+                    )}
+
+                    <p style={{ fontSize: "14px", color: "#475569", lineHeight: 1.6, margin: "0 0 18px" }}>
+                      {award.summary}
+                    </p>
+
+                    {/* Key Quote Box */}
+                    {award.quoteMr && (
+                      <div
+                        style={{
+                          background: "#F0FDF4",
+                          borderLeft: "4px solid #134B36",
+                          padding: "14px 18px",
+                          borderRadius: "0 8px 8px 0",
+                          marginBottom: "20px",
+                        }}
+                      >
+                        <p style={{ margin: 0, fontSize: "14.5px", fontWeight: 700, color: "#14532D", fontStyle: "italic", lineHeight: 1.5 }}>
+                          “{award.quoteMr}”
+                        </p>
+                        {award.quoteAuthor && (
+                          <span style={{ display: "block", fontSize: "12px", color: "#166534", marginTop: "6px" }}>
+                            — {award.quoteAuthor}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Document Metadata Table */}
+                    <div style={{ background: "#FAF8F5", borderRadius: "10px", padding: "16px", border: "1px solid #E2E8F0" }}>
+                      <table style={{ width: "100%", fontSize: "13px", borderCollapse: "collapse" }}>
+                        <tbody>
+                          <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
+                            <td style={{ padding: "8px 0", color: "#64748B", fontWeight: 600, width: "40%" }}>Issuing Authority:</td>
+                            <td style={{ padding: "8px 0", color: "#0F172A", fontWeight: 700 }}>{award.issuingAuthority}</td>
+                          </tr>
+                          {award.location && (
+                            <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
+                              <td style={{ padding: "8px 0", color: "#64748B", fontWeight: 600 }}>Location:</td>
+                              <td style={{ padding: "8px 0", color: "#0F172A" }}>{award.location}</td>
+                            </tr>
+                          )}
+                          {award.udiseCode && (
+                            <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
+                              <td style={{ padding: "8px 0", color: "#64748B", fontWeight: 600 }}>UDISE Code:</td>
+                              <td style={{ padding: "8px 0", color: "#0F172A", fontFamily: "monospace", fontWeight: 700 }}>{award.udiseCode}</td>
+                            </tr>
+                          )}
+                          {award.date && (
+                            <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
+                              <td style={{ padding: "8px 0", color: "#64748B", fontWeight: 600 }}>Date of Issue:</td>
+                              <td style={{ padding: "8px 0", color: "#0F172A" }}>{award.date}</td>
+                            </tr>
+                          )}
+                          {award.beneficiaries && (
+                            <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
+                              <td style={{ padding: "8px 0", color: "#64748B", fontWeight: 600 }}>Beneficiaries:</td>
+                              <td style={{ padding: "8px 0", color: "#134B36", fontWeight: 700 }}>{award.beneficiaries}</td>
+                            </tr>
+                          )}
+                          {award.signatory && (
+                            <tr>
+                              <td style={{ padding: "8px 0", color: "#64748B", fontWeight: 600 }}>Signed &amp; Stamped By:</td>
+                              <td style={{ padding: "8px 0", color: "#0F172A", fontWeight: 600 }}>
+                                {award.signatory}
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+
+                  </div>
+
                 </div>
               </div>
-
-              {/* Right Column: Structured Overview & Transcriptions */}
-              <div>
-                <div
-                  style={{
-                    display: "inline-block",
-                    background: "#FEF3C7",
-                    color: "#92400E",
-                    padding: "4px 12px",
-                    borderRadius: "6px",
-                    fontSize: "11.5px",
-                    fontWeight: 800,
-                    letterSpacing: "0.05em",
-                    marginBottom: "12px",
-                  }}
-                >
-                  🏆 OFFICIAL INSTITUTIONAL RECOGNITION
-                </div>
-                
-                <h2 style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 800, color: "#0F172A", margin: "0 0 8px" }}>
-                  Letter of Gratitude &amp; Appreciation
-                </h2>
-                
-                <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#134B36", margin: "0 0 16px" }}>
-                  रायगड जिल्हा परिषद शाळा फरशीपाडा (Raigad Z.P. School Farshipada)
-                </h3>
-
-                <p style={{ fontSize: "14px", color: "#475569", lineHeight: 1.6, margin: "0 0 18px" }}>
-                  Awarded by the <strong>School Management Committee &amp; Headmaster</strong> of Raigad Zilla Parishad Primary School Farshipada (Taluka Panvel, District Raigad) to <strong>Kautike Charitable Foundation</strong> for providing vital educational literature, school kits, and learning supplies to <strong>36 rural students</strong>.
-                </p>
-
-                {/* Key Quote Box */}
-                <div
-                  style={{
-                    background: "#F0FDF4",
-                    borderLeft: "4px solid #134B36",
-                    padding: "14px 18px",
-                    borderRadius: "0 8px 8px 0",
-                    marginBottom: "20px",
-                  }}
-                >
-                  <p style={{ margin: 0, fontSize: "14.5px", fontWeight: 700, color: "#14532D", fontStyle: "italic", lineHeight: 1.5 }}>
-                    “शिक्षणाची ज्ञानज्योत प्रज्वलित ठेवण्यासाठी आपण दिलेले हे दातृत्व विद्यार्थ्यांच्या उज्ज्वल भविष्यासाठी अत्यंत प्रेरणादायी आहे.”
-                  </p>
-                  <span style={{ display: "block", fontSize: "12px", color: "#166534", marginTop: "6px" }}>
-                    — School Management Committee &amp; Headmaster, RZP School Farshipada
-                  </span>
-                </div>
-
-                {/* Document Metadata Table */}
-                <div style={{ background: "#FAF8F5", borderRadius: "10px", padding: "16px", border: "1px solid #E2E8F0" }}>
-                  <table style={{ width: "100%", fontSize: "13px", borderCollapse: "collapse" }}>
-                    <tbody>
-                      <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
-                        <td style={{ padding: "8px 0", color: "#64748B", fontWeight: 600, width: "40%" }}>Issuing Authority:</td>
-                        <td style={{ padding: "8px 0", color: "#0F172A", fontWeight: 700 }}>Raigad Zilla Parishad School Farshipada</td>
-                      </tr>
-                      <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
-                        <td style={{ padding: "8px 0", color: "#64748B", fontWeight: 600 }}>Location:</td>
-                        <td style={{ padding: "8px 0", color: "#0F172A" }}>Taluka Panvel, District Raigad, Maharashtra</td>
-                      </tr>
-                      <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
-                        <td style={{ padding: "8px 0", color: "#64748B", fontWeight: 600 }}>UDISE Code:</td>
-                        <td style={{ padding: "8px 0", color: "#0F172A", fontFamily: "monospace", fontWeight: 700 }}>27240817007</td>
-                      </tr>
-                      <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
-                        <td style={{ padding: "8px 0", color: "#64748B", fontWeight: 600 }}>Date of Issue:</td>
-                        <td style={{ padding: "8px 0", color: "#0F172A" }}>10 August 2026</td>
-                      </tr>
-                      <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
-                        <td style={{ padding: "8px 0", color: "#64748B", fontWeight: 600 }}>Beneficiaries:</td>
-                        <td style={{ padding: "8px 0", color: "#134B36", fontWeight: 700 }}>36 Rural Primary Students</td>
-                      </tr>
-                      <tr>
-                        <td style={{ padding: "8px 0", color: "#64748B", fontWeight: 600 }}>Signed &amp; Stamped By:</td>
-                        <td style={{ padding: "8px 0", color: "#0F172A", fontWeight: 600 }}>
-                          S. M. Patil (President / Secretary) &amp; Headmaster
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-              </div>
-
             </div>
-          </div>
+          ))}
         </div>
 
         {/* ── STATUTORY & GOVERNMENT REGISTRATIONS ── */}
@@ -395,106 +444,147 @@ export default function RecognitionAwardsPage() {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: "rgba(15, 23, 42, 0.88)",
+            backgroundColor: "rgba(15, 23, 42, 0.85)",
             zIndex: 999999,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "20px",
-            backdropFilter: "blur(4px)",
+            padding: "16px",
+            boxSizing: "border-box",
+            backdropFilter: "blur(6px)",
           }}
         >
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
               position: "relative",
-              maxWidth: "880px",
-              maxHeight: "92vh",
+              width: "min(94vw, 760px)",
+              height: "85vh",
+              maxHeight: "85vh",
               background: "#FFFFFF",
-              borderRadius: "14px",
+              borderRadius: "10px",
               overflow: "hidden",
-              boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
+              boxShadow: "0 25px 50px rgba(0, 0, 0, 0.6)",
               display: "flex",
               flexDirection: "column",
             }}
           >
-            {/* Modal Header */}
+            {/* Modal Header (Fixed height, always visible at top) */}
             <div
               style={{
+                height: "48px",
+                padding: "0 16px",
+                background: "#134B36",
+                color: "#FFFFFF",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                padding: "14px 20px",
-                background: "#134B36",
-                color: "#FFFFFF",
+                flexShrink: 0,
               }}
             >
-              <span style={{ fontSize: "14px", fontWeight: 700 }}>
+              <span style={{ fontSize: "13.5px", fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
                 📜 Raigad Z.P. School Farshipada - Letter of Appreciation
               </span>
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
+                aria-label="Close dialog"
                 style={{
-                  background: "transparent",
+                  background: "rgba(255, 255, 255, 0.2)",
                   border: "none",
                   color: "#FFFFFF",
-                  fontSize: "20px",
+                  width: "28px",
+                  height: "28px",
+                  borderRadius: "50%",
+                  fontSize: "14px",
                   cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   fontWeight: 800,
+                  transition: "background 0.2s ease",
                 }}
               >
                 ✕
               </button>
             </div>
 
-            {/* Modal Image Body */}
-            <div style={{ overflowY: "auto", padding: "16px", textAlign: "center", backgroundColor: "#F8FAFC" }}>
+            {/* Modal Image Body (Strictly constrained within modal bounds with smooth scroll) */}
+            <div
+              style={{
+                flex: "1 1 0%",
+                minHeight: 0,
+                overflowY: "auto",
+                overflowX: "hidden",
+                padding: "0",
+                backgroundColor: "#F8FAFC",
+              }}
+            >
               <img
-                src="/images/awards/raigad-school-appreciation-letter.jpg"
-                alt="Full Appreciation Letter"
+                src="/images/awards/raigad-school-appreciation-letter.png"
+                alt="Full Appreciation Letter - Raigad Zilla Parishad Primary School Farshipada"
                 style={{
                   width: "100%",
                   height: "auto",
-                  maxHeight: "76vh",
-                  objectFit: "contain",
-                  borderRadius: "6px",
-                  border: "1px solid #CBD5E1",
+                  display: "block",
                 }}
               />
             </div>
 
-            {/* Modal Footer */}
+            {/* Modal Footer (Fixed height, always visible at bottom) */}
             <div
               style={{
+                height: "52px",
+                padding: "0 16px",
+                background: "#FFFFFF",
+                borderTop: "1px solid #E2E8F0",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                padding: "12px 20px",
-                background: "#FFFFFF",
-                borderTop: "1px solid #E2E8F0",
+                flexShrink: 0,
                 flexWrap: "wrap",
-                gap: "10px",
+                gap: "8px",
               }}
             >
-              <span style={{ fontSize: "12px", color: "#64748B" }}>
-                UDISE Code: 27240817007 · Panvel, Raigad
+              <span style={{ fontSize: "12px", color: "#64748B", fontWeight: 600 }}>
+                UDISE: 27240817007 · Panvel, Raigad
               </span>
-              <div style={{ display: "flex", gap: "10px" }}>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <a
+                  href="/images/awards/raigad-school-appreciation-letter.png"
+                  download="Raigad_School_Appreciation_Letter.png"
+                  style={{
+                    background: "#0F766E",
+                    color: "#FFFFFF",
+                    padding: "6px 12px",
+                    borderRadius: "6px",
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                  }}
+                >
+                  🖼️ Download PNG
+                </a>
                 <a
                   href="/documents/raigad-school-appreciation-letter.pdf"
                   download="Raigad_School_Appreciation_Letter_Kautike_Foundation.pdf"
                   style={{
                     background: "#134B36",
                     color: "#FFFFFF",
-                    padding: "8px 16px",
+                    padding: "6px 12px",
                     borderRadius: "6px",
-                    fontSize: "12.5px",
+                    fontSize: "12px",
                     fontWeight: 700,
                     textDecoration: "none",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
                   }}
                 >
-                  📥 Download Official PDF
+                  📥 Download PDF
                 </a>
                 <button
                   type="button"
@@ -503,9 +593,9 @@ export default function RecognitionAwardsPage() {
                     background: "#F1F5F9",
                     color: "#334155",
                     border: "1px solid #CBD5E1",
-                    padding: "8px 14px",
+                    padding: "6px 12px",
                     borderRadius: "6px",
-                    fontSize: "12.5px",
+                    fontSize: "12px",
                     fontWeight: 600,
                     cursor: "pointer",
                   }}

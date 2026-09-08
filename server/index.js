@@ -267,7 +267,7 @@ app.post("/api/donations/send-email", async (request, response) => {
   const attachments = [];
 
   if (receiptPdfBase64) {
-    const cleanBase64 = receiptPdfBase64.replace(/^data:[^;]+;base64,/, "");
+    const cleanBase64 = receiptPdfBase64.includes(",") ? receiptPdfBase64.split(",").pop() : receiptPdfBase64;
     attachments.push({
       filename: `Kautike_80G_Receipt_${safeReceipt.replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`,
       content: Buffer.from(cleanBase64, "base64"),
@@ -276,7 +276,7 @@ app.post("/api/donations/send-email", async (request, response) => {
   }
 
   if (certificatePdfBase64) {
-    const cleanBase64 = certificatePdfBase64.replace(/^data:[^;]+;base64,/, "");
+    const cleanBase64 = certificatePdfBase64.includes(",") ? certificatePdfBase64.split(",").pop() : certificatePdfBase64;
     attachments.push({
       filename: `Kautike_Certificate_${donorName.replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`,
       content: Buffer.from(cleanBase64, "base64"),

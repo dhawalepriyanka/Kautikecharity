@@ -179,11 +179,11 @@ export default async function handler(request, response) {
   });
 
   const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
-  const smtpPort = Number(process.env.SMTP_PORT || 587);
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
+  const smtpPort = Number(process.env.SMTP_PORT || 465);
+  const smtpUser = process.env.SMTP_USER || "kc.foundation2025@gmail.com";
+  const smtpPass = process.env.SMTP_PASS || "rekswtyhdldnelso";
   const smtpSecure = process.env.SMTP_SECURE === "true" || smtpPort === 465;
-  const smtpFrom = process.env.SMTP_FROM || (smtpUser ? `"Kautike Charitable Foundation" <${smtpUser}>` : '"Kautike Charitable Foundation" <info@kautikefoundation.org>');
+  const smtpFrom = process.env.SMTP_FROM || `"Kautike Charitable Foundation" <${smtpUser}>`;
 
   if (smtpUser && smtpPass) {
     try {

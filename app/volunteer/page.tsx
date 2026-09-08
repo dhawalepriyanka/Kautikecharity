@@ -36,7 +36,7 @@ export default function VolunteerPage() {
     } catch (_) {}
 
     try {
-      await fetch("http://localhost:4000/api/contact", {
+      await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

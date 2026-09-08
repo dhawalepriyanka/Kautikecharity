@@ -38,9 +38,9 @@ export default function ContactPage() {
       localStorage.setItem("kautike_admin_messages", JSON.stringify([newMsg, ...currentList]));
     } catch (_) {}
 
-    // 2. Post to API server
+    // 2. Post to API server (triggers SMTP email to kc.foundation2025@gmail.com and donor)
     try {
-      await fetch("http://localhost:4000/api/contact", {
+      await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

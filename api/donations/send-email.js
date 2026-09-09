@@ -364,6 +364,30 @@ export default async function handler(request, response) {
     pan: safePan,
   });
 
+  const plainTextContent = `
+Dear ${donorName},
+
+Thank you for your generous contribution of ₹${Number(safeAmount).toLocaleString("en-IN", { minimumFractionDigits: 2 })} to Kautike Charitable Foundation.
+
+DONATION SUMMARY:
+- Donor Name: ${donorName}
+${safePan ? `- PAN Number: ${safePan}\n` : ""}- Amount: ₹${Number(safeAmount).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+- Receipt Number: ${safeReceipt}
+${paymentId ? `- Transaction ID: ${paymentId}\n` : ""}- Date: ${safeDate}
+- Purpose: ${purpose || "General Donation"}
+- Tax Benefit: 50% Deduction under Section 80G of the Income Tax Act (URN: AALCK6167AF20251)
+
+Attached to this email are your official documents:
+1. Section 80G Tax Exemption Receipt (PDF)
+2. Certificate of Contribution (PDF)
+
+Warm regards,
+Vijay Jadhav
+Trustee, Kautike Charitable Foundation
+Office No. A-1, D'Souza Sadan, Lokmanya Tilak Nagar, 90 Feet Road, Sakinaka, Mumbai - 400 072
+Helpline: +91 83560 08675 | info@kautikefoundation.org | https://kautikefoundation.org
+`.trim();
+
   const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
   const smtpPort = Number(process.env.SMTP_PORT || 465);
   const smtpUser = process.env.SMTP_USER || "kc.foundation2025@gmail.com";
@@ -381,10 +405,18 @@ export default async function handler(request, response) {
 
       const info = await transporter.sendMail({
         from: smtpFrom,
+        replyTo: smtpUser,
         to: email,
-        subject: `Official 80G Tax Receipt & Certificate of Contribution - ${donorName} (₹${safeAmount.toLocaleString("en-IN")})`,
+        subject: `Your Donation Receipt & Certificate from Kautike Foundation (Ref: ${safeReceipt})`,
+        text: plainTextContent,
         html: htmlContent,
         attachments,
+        headers: {
+          "X-Entity-Ref-ID": `${safeReceipt}-${Date.now()}`,
+          "X-Auto-Response-Suppress": "OOF, AutoReply",
+          "Precedence": "bulk",
+          "List-Unsubscribe": "<mailto:kc.foundation2025@gmail.com?subject=unsubscribe>",
+        },
       });
 
       // If today is the donor's birthday, automatically send the birthday wish email too!
@@ -394,11 +426,17 @@ export default async function handler(request, response) {
           const parts = String(dob).split("T")[0].split("-").map(Number);
           if (parts.length >= 3 && parts[1] === (now.getMonth() + 1) && parts[2] === now.getDate()) {
             const bHtml = buildBirthdayEmailHtml({ donorName });
+            const bText = `Dear ${donorName},\n\nHappy Birthday from everyone at Kautike Charitable Foundation! On this special day, we wish you joy, health, and happiness. Thank you for making a difference in the lives of children in need.\n\nWarm regards,\nNilesh Kute & Vijay Jadhav\nKautike Charitable Foundation`;
             await transporter.sendMail({
               from: smtpFrom,
+              replyTo: smtpUser,
               to: email,
-              subject: `🎂 Happy Birthday from Kautike Charitable Foundation, ${donorName}! 🎉`,
+              subject: `Happy Birthday from Kautike Charitable Foundation, ${donorName}!`,
+              text: bText,
               html: bHtml,
+              headers: {
+                "X-Entity-Ref-ID": `birthday-${Date.now()}`,
+              },
             });
             console.log(`[Email Dispatch] Birthday greeting also sent immediately to ${donorName} (${email})`);
           }

@@ -250,11 +250,18 @@ export default async function handler(request, response) {
     if (transporter && donor.email) {
       try {
         const html = buildBirthdayEmailHtml({ donorName: donor.name });
+        const text = `Dear ${donor.name},\n\nHappy Birthday from everyone at Kautike Charitable Foundation! On this special day, we wish you joy, health, and happiness. Thank you for making a difference in the lives of children in need.\n\nWarm regards,\nNilesh Kute & Vijay Jadhav\nKautike Charitable Foundation`;
         await transporter.sendMail({
           from: smtpFrom,
+          replyTo: smtpUser,
           to: donor.email,
-          subject: `🎂 Happy Birthday from Kautike Charitable Foundation, ${donor.name}! 🎉`,
+          subject: `Happy Birthday from Kautike Charitable Foundation, ${donor.name}!`,
+          text,
           html,
+          headers: {
+            "X-Entity-Ref-ID": `birthday-${donor.id || Date.now()}`,
+            "List-Unsubscribe": "<mailto:kc.foundation2025@gmail.com?subject=unsubscribe>",
+          },
         });
 
         results.wishesSent++;

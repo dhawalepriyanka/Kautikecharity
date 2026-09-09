@@ -11,6 +11,8 @@ ALTER TABLE donation_intents ADD COLUMN IF NOT EXISTS razorpay_order_id TEXT UNI
 ALTER TABLE donation_intents ADD COLUMN IF NOT EXISTS razorpay_payment_id TEXT UNIQUE;
 ALTER TABLE donation_intents ADD COLUMN IF NOT EXISTS razorpay_signature TEXT;
 ALTER TABLE donation_intents ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+ALTER TABLE donation_intents ADD COLUMN IF NOT EXISTS dob DATE;
+ALTER TABLE donation_intents ADD COLUMN IF NOT EXISTS last_birthday_wish_year INT;
 -- Razorpay accepts a minimum order amount of 100 paise (₹1).
 ALTER TABLE donation_intents DROP CONSTRAINT IF EXISTS donation_intents_amount_inr_check;
 ALTER TABLE donation_intents ADD CONSTRAINT donation_intents_amount_inr_check CHECK (amount_inr >= 1);

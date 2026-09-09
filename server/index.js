@@ -85,13 +85,13 @@ app.post("/api/donations", async (request, response) => {
 });
 
 app.post("/api/donations/create-order", async (request, response) => {
-  const { donorName, email, phone, amount, purpose = "General Donation" } = request.body ?? {};
+  const { donorName, email, phone, dob, amount, purpose = "General Donation" } = request.body ?? {};
   if (!donorName?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email?.trim() ?? "") || !/^[0-9+\-\s()]{8,20}$/.test(phone?.trim() ?? "") || !Number.isInteger(amount) || amount < 1 || amount > 1000000) return response.status(400).json({ message: "Enter a valid name, email, mobile number, and amount from ₹1 to ₹10,00,000." });
   if (!razorpay) return response.status(503).json({ message: "Razorpay Test Mode is not configured on the server." });
   try {
-    const created = await pool.query("INSERT INTO donation_intents (donor_name, email, phone, amount_inr, campaign) VALUES ($1,$2,$3,$4,$5) RETURNING id", [donorName.trim(), email.trim().toLowerCase(), phone.trim(), amount, String(purpose).slice(0, 180)]);
+    const created = await pool.query("INSERT INTO donation_intents (donor_name, email, phone, dob, amount_inr, campaign) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id", [donorName.trim(), email.trim().toLowerCase(), phone.trim(), dob || null, amount, String(purpose).slice(0, 180)]);
     const donationId = created.rows[0].id;
-    const order = await razorpay.orders.create({ amount: amount * 100, currency: "INR", receipt: `kcf_${donationId.replaceAll("-", "").slice(0, 28)}`, notes: { donation_id: donationId, purpose } });
+    const order = await razorpay.orders.create({ amount: amount * 100, currency: "INR", receipt: `kcf_${donationId.replaceAll("-", "").slice(0, 28)}`, notes: { donation_id: donationId, purpose, dob: dob || "" } });
     await pool.query("UPDATE donation_intents SET razorpay_order_id = $1, updated_at = NOW() WHERE id = $2", [order.id, donationId]);
     response.status(201).json({ donationId, order_id: order.id, orderId: order.id, amount: order.amount, currency: order.currency, keyId: razorpayKeyId });
   } catch (error) {
@@ -102,14 +102,33 @@ app.post("/api/donations/create-order", async (request, response) => {
 });
 
 app.post("/api/donations/verify-payment", async (request, response) => {
-  const { donationId, razorpay_payment_id: paymentId, razorpay_order_id: orderId, razorpay_signature: signature } = request.body ?? {};
+  const { donationId, razorpay_payment_id: paymentId, razorpay_order_id: orderId, razorpay_signature: signature, dob, phone } = request.body ?? {};
   if (!donationId || !paymentId || !orderId || !signature || !razorpayKeySecret) return response.status(400).json({ message: "Payment verification data is incomplete." });
   try {
     const result = await pool.query("SELECT id, razorpay_order_id, amount_inr, status FROM donation_intents WHERE id = $1", [donationId]); const donation = result.rows[0];
     if (!donation?.razorpay_order_id || donation.razorpay_order_id !== orderId) return response.status(400).json({ message: "Payment order does not match this donation." });
     const expected = crypto.createHmac("sha256", razorpayKeySecret).update(`${donation.razorpay_order_id}|${paymentId}`).digest("hex");
     if (!safeEqual(signature, expected)) return response.status(400).json({ message: "Payment signature verification failed." });
-    await pool.query("UPDATE donation_intents SET status = 'paid', razorpay_payment_id = $1, razorpay_signature = $2, updated_at = NOW() WHERE id = $3 AND status <> 'paid'", [paymentId, signature, donation.id]);
+    await pool.query("UPDATE donation_intents SET status = 'paid', razorpay_payment_id = $1, razorpay_signature = $2, dob = COALESCE($3, dob), updated_at = NOW() WHERE id = $4 AND status <> 'paid'", [paymentId, signature, dob || null, donation.id]);
+    
+    // Save to local donors.json cache as well
+    if (request.body.donorName && request.body.email) {
+      const donors = readJsonFile("donors.json", []);
+      const existingIdx = donors.findIndex(d => d.email.toLowerCase() === request.body.email.toLowerCase());
+      const donorRec = {
+        id: donation.id,
+        name: request.body.donorName,
+        email: request.body.email.toLowerCase(),
+        phone: phone || "",
+        dob: dob || "",
+        last_donation_amount: donation.amount_inr,
+        updated_at: new Date().toISOString(),
+      };
+      if (existingIdx >= 0) donors[existingIdx] = { ...donors[existingIdx], ...donorRec };
+      else donors.unshift(donorRec);
+      writeJsonFile("donors.json", donors);
+    }
+
     response.json({ id: donation.id, donorName: request.body.donorName, amount: donation.amount_inr, paymentId, status: "SUCCESS", date: new Date().toISOString() });
   } catch (error) { console.error("Payment verification failed", error); response.status(500).json({ message: "We could not verify this payment." }); }
 });
@@ -482,6 +501,219 @@ app.post("/api/donations/send-email", async (request, response) => {
   }
 });
 
+function buildBirthdayEmailHtml({ donorName }) {
+  const cleanName = donorName || "Valued Supporter";
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Happy Birthday from Kautike Charitable Foundation!</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: #FAF8F5; color: #1E293B;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #FAF8F5; padding: 36px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="background-color: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1.5px solid #E2E8F0;">
+          <tr>
+            <td style="background: linear-gradient(135deg, #0F3F2E 0%, #134B36 50%, #1E5C45 100%); padding: 40px 30px 30px; text-align: center; color: #FFFFFF;">
+              <div style="font-size: 38px; margin-bottom: 8px;">🎂 ✨ 🎈</div>
+              <h1 style="margin: 0 0 6px 0; font-size: 24px; font-weight: 800; letter-spacing: 0.04em;">HAPPY BIRTHDAY!</h1>
+              <p style="margin: 0; font-size: 13px; color: #D4AF37; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">
+                Kautike Charitable Foundation
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 36px 32px 28px;">
+              <h2 style="margin: 0 0 16px 0; font-size: 22px; color: #0F172A; font-weight: 800; text-align: center;">
+                Dear <span style="color: #134B36;">${cleanName}</span>,
+              </h2>
+              <p style="font-size: 15.5px; line-height: 1.7; color: #334155; margin: 0 0 18px 0; text-align: center;">
+                On your very special day, the children, trustees, and volunteers at <strong>Kautike Charitable Foundation</strong> send you our warmest greetings, joy, and heartfelt blessings!
+              </p>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background: linear-gradient(145deg, #F0FDF4 0%, #FEFCE8 100%); border: 1.5px solid #BBF7D0; border-radius: 12px; margin: 24px 0;">
+                <tr>
+                  <td style="padding: 24px 20px; text-align: center;">
+                    <div style="font-size: 28px; margin-bottom: 8px;">🌟 🎁 🌟</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #14532D; margin-bottom: 8px;">
+                      "A Heart That Gives Brings Eternal Light"
+                    </div>
+                    <div style="font-size: 14px; line-height: 1.6; color: #334155;">
+                      Your generous support continues to illuminate the lives of underprivileged children across Maharashtra—empowering them with education, nutrition, and hope for a brighter future.
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <p style="font-size: 15px; line-height: 1.7; color: #475569; margin: 0 0 24px 0; text-align: center;">
+                May this coming year bring you and your loved ones abundant health, lasting happiness, peace, and boundless success!
+              </p>
+              <table width="100%" cellspacing="0" cellpadding="0" style="border-top: 1.5px solid #E2E8F0; padding-top: 24px; margin-top: 20px;">
+                <tr>
+                  <td width="50%" align="left" style="vertical-align: top;">
+                    <div style="font-size: 13.5px; font-weight: 800; color: #0F172A;">Nilesh Kute</div>
+                    <div style="font-size: 11.5px; font-weight: 600; color: #134B36;">President & Founder</div>
+                    <div style="font-size: 11px; color: #64748B;">Kautike Charitable Foundation</div>
+                  </td>
+                  <td width="50%" align="right" style="vertical-align: top;">
+                    <div style="font-size: 13.5px; font-weight: 800; color: #C59428;">Vijay Jadhav</div>
+                    <div style="font-size: 11.5px; font-weight: 600; color: #134B36;">Trustee</div>
+                    <div style="font-size: 11px; color: #64748B;">Kautike Charitable Foundation</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #FAF8F5; padding: 22px 30px; text-align: center; border-top: 1px solid #E2E8F0; font-size: 11.5px; color: #64748B; line-height: 1.6;">
+              <strong>Kautike Charitable Foundation</strong><br>
+              Regd. Under Section 12A & 80G | URN: AALCK6167AF20251<br>
+              Office No. A-1, D'Souza Sadan, Lokmanya Tilak Nagar, 90 Feet Road, Sakinaka, Mumbai - 400 072<br>
+              Helpline: +91 83560 08675 | <a href="https://kautikefoundation.org" style="color: #134B36; font-weight: 600;">kautikefoundation.org</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+}
+
+app.get("/api/donations/birthdays", adminOnly, async (_req, res) => {
+  const currentMonth = new Date().getMonth() + 1;
+  const currentDay = new Date().getDate();
+  const fileDonors = readJsonFile("donors.json", []);
+  let dbDonors = [];
+
+  try {
+    const r = await pool.query("SELECT id, donor_name AS name, email, phone, dob, last_birthday_wish_year, created_at FROM donation_intents WHERE dob IS NOT NULL ORDER BY created_at DESC");
+    dbDonors = r.rows;
+  } catch (_) {}
+
+  // Merge unique
+  const all = [...dbDonors, ...fileDonors];
+  const uniqueMap = new Map();
+  all.forEach(d => {
+    if (d.email && d.dob && !uniqueMap.has(d.email.toLowerCase())) {
+      uniqueMap.set(d.email.toLowerCase(), d);
+    }
+  });
+
+  const donors = Array.from(uniqueMap.values());
+  const todayBirthdays = [];
+  const upcomingBirthdays = [];
+
+  donors.forEach(d => {
+    try {
+      const parts = String(d.dob).split("T")[0].split("-").map(Number);
+      const m = parts[1];
+      const day = parts[2];
+      if (m === currentMonth && day === currentDay) {
+        todayBirthdays.push(d);
+      } else if (m === currentMonth) {
+        upcomingBirthdays.push(d);
+      }
+    } catch (_) {}
+  });
+
+  res.json({
+    today: todayBirthdays,
+    thisMonth: upcomingBirthdays,
+    allDonorsWithDob: donors,
+  });
+});
+
+app.post("/api/donations/send-birthday-wishes", async (req, res) => {
+  const { specificEmail, testName } = req.body ?? {};
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+  const currentDay = new Date().getDate();
+
+  if (specificEmail) {
+    const donorName = testName || "Generous Donor";
+    const html = buildBirthdayEmailHtml({ donorName });
+    if (mailTransporter) {
+      try {
+        const info = await mailTransporter.sendMail({
+          from: smtpFrom,
+          to: specificEmail,
+          subject: `🎂 Happy Birthday from Kautike Charitable Foundation, ${donorName}! 🎉`,
+          html,
+        });
+        return res.json({ ok: true, message: `Birthday greeting email sent to ${specificEmail}`, messageId: info.messageId });
+      } catch (err) {
+        return res.status(500).json({ ok: false, message: err.message });
+      }
+    }
+    return res.json({ ok: true, simulated: true, message: `Birthday wish prepared for ${specificEmail}` });
+  }
+
+  // Auto-scan
+  let donorsToWish = [];
+  try {
+    const r = await pool.query(
+      `SELECT DISTINCT ON (LOWER(email)) id, donor_name AS name, email, dob, last_birthday_wish_year
+       FROM donation_intents
+       WHERE dob IS NOT NULL AND EXTRACT(MONTH FROM dob) = $1 AND EXTRACT(DAY FROM dob) = $2
+       ORDER BY LOWER(email), created_at DESC`,
+      [currentMonth, currentDay]
+    );
+    donorsToWish = r.rows;
+  } catch (_) {}
+
+  const fileDonors = readJsonFile("donors.json", []);
+  for (const d of fileDonors) {
+    if (d.dob && d.email) {
+      try {
+        const parts = String(d.dob).split("T")[0].split("-").map(Number);
+        if (parts[1] === currentMonth && parts[2] === currentDay) {
+          if (!donorsToWish.some(x => x.email.toLowerCase() === d.email.toLowerCase())) {
+            donorsToWish.push(d);
+          }
+        }
+      } catch (_) {}
+    }
+  }
+
+  let sent = 0;
+  let skipped = 0;
+
+  for (const donor of donorsToWish) {
+    if (donor.last_birthday_wish_year === currentYear) {
+      skipped++;
+      continue;
+    }
+    if (mailTransporter && donor.email) {
+      try {
+        const html = buildBirthdayEmailHtml({ donorName: donor.name });
+        await mailTransporter.sendMail({
+          from: smtpFrom,
+          to: donor.email,
+          subject: `🎂 Happy Birthday from Kautike Charitable Foundation, ${donor.name}! 🎉`,
+          html,
+        });
+        sent++;
+        donor.last_birthday_wish_year = currentYear;
+        try {
+          await pool.query("UPDATE donation_intents SET last_birthday_wish_year = $1 WHERE id = $2", [currentYear, donor.id]);
+        } catch (_) {}
+      } catch (e) {
+        console.error("Birthday send failed for " + donor.email, e);
+      }
+    }
+  }
+
+  res.json({
+    ok: true,
+    totalFound: donorsToWish.length,
+    wishesSent: sent,
+    alreadyWished: skipped,
+    message: `Processed ${donorsToWish.length} birthday(s) today. Sent: ${sent}, Already sent this year: ${skipped}.`,
+  });
+});
+
 app.get("/api/donations/:id", adminOnly, async (request, response) => {
   const result = await pool.query("SELECT id, donor_name, email, phone, amount_inr, currency, campaign, status, razorpay_payment_id, created_at FROM donation_intents WHERE id = $1", [request.params.id]);
   if (!result.rows[0]) return response.status(404).json({ message: "Donation not found." });
@@ -535,10 +767,11 @@ app.get("/api/admin/overview", adminOnly, async (_request, response) => {
 
 app.get("/api/admin/donations", adminOnly, async (_request, response) => {
   try {
-    const result = await pool.query("SELECT id, donor_name, email, amount_inr, campaign, status, created_at FROM donation_intents ORDER BY created_at DESC LIMIT 100");
+    const result = await pool.query("SELECT id, donor_name, email, phone, dob, last_birthday_wish_year, amount_inr, campaign, status, created_at FROM donation_intents ORDER BY created_at DESC LIMIT 100");
     response.json(result.rows);
   } catch (error) {
-    response.json([]);
+    const fileDonors = readJsonFile("donors.json", []);
+    response.json(fileDonors);
   }
 });
 
@@ -643,10 +876,63 @@ app.get("/api/events", (_req, res) => {
   res.json(readJsonFile("events.json", []));
 });
 
-app.post("/api/admin/events", adminOnly, (req, res) => {
-  const ok = writeJsonFile("events.json", req.body);
-  if (ok) res.json({ ok: true, message: "Events saved successfully." });
-  else res.status(500).json({ message: "Failed to save events to server." });
-});
+async function autoDispatchDailyBirthdayWishes() {
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+  const currentDay = new Date().getDate();
 
-app.listen(port, () => console.log(`Kautike API listening on http://localhost:${port}`));
+  let donorsToWish = [];
+  try {
+    const r = await pool.query(
+      `SELECT DISTINCT ON (LOWER(email)) id, donor_name AS name, email, dob, last_birthday_wish_year
+       FROM donation_intents
+       WHERE dob IS NOT NULL AND EXTRACT(MONTH FROM dob) = $1 AND EXTRACT(DAY FROM dob) = $2
+       ORDER BY LOWER(email), created_at DESC`,
+      [currentMonth, currentDay]
+    );
+    donorsToWish = r.rows;
+  } catch (_) {}
+
+  const fileDonors = readJsonFile("donors.json", []);
+  for (const d of fileDonors) {
+    if (d.dob && d.email) {
+      try {
+        const parts = String(d.dob).split("T")[0].split("-").map(Number);
+        if (parts[1] === currentMonth && parts[2] === currentDay) {
+          if (!donorsToWish.some(x => x.email.toLowerCase() === d.email.toLowerCase())) {
+            donorsToWish.push(d);
+          }
+        }
+      } catch (_) {}
+    }
+  }
+
+  for (const donor of donorsToWish) {
+    if (donor.last_birthday_wish_year === currentYear) continue;
+    if (mailTransporter && donor.email) {
+      try {
+        const html = buildBirthdayEmailHtml({ donorName: donor.name });
+        await mailTransporter.sendMail({
+          from: smtpFrom,
+          to: donor.email,
+          subject: `🎂 Happy Birthday from Kautike Charitable Foundation, ${donor.name}! 🎉`,
+          html,
+        });
+        console.log(`[Auto Birthday Engine] Automated birthday greeting sent to ${donor.name} (${donor.email})`);
+        donor.last_birthday_wish_year = currentYear;
+        try {
+          await pool.query("UPDATE donation_intents SET last_birthday_wish_year = $1 WHERE id = $2", [currentYear, donor.id]);
+        } catch (_) {}
+      } catch (e) {
+        console.error(`[Auto Birthday Engine] Failed to send wish to ${donor.email}:`, e.message);
+      }
+    }
+  }
+}
+
+app.listen(port, () => {
+  console.log(`Kautike API listening on http://localhost:${port}`);
+  // Run automated birthday greeting check on startup, then every hour
+  autoDispatchDailyBirthdayWishes();
+  setInterval(autoDispatchDailyBirthdayWishes, 1000 * 60 * 60);
+});

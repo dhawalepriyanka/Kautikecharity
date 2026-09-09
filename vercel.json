@@ -7,5 +7,11 @@
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/donations/send-birthday-wishes",
+      "schedule": "0 3 * * *"
+    }
   ]
 }

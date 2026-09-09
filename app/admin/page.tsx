@@ -690,6 +690,13 @@ export default function AdminPage() {
   // Selected Message Modal
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
 
+  // Birthday Automation State
+  const [birthdayData, setBirthdayData] = useState<{ today: any[]; thisMonth: any[]; allDonorsWithDob: any[] }>({ today: [], thisMonth: [], allDonorsWithDob: [] });
+  const [sendingWishes, setSendingWishes] = useState(false);
+  const [wishStatus, setWishStatus] = useState<string | null>(null);
+  const [testWishEmail, setTestWishEmail] = useState("");
+  const [testWishName, setTestWishName] = useState("");
+
   const today = useMemo(() => new Intl.DateTimeFormat("en-IN", { dateStyle: "full" }).format(new Date()), []);
   const auth = () => ({ Authorization: "Basic " + btoa(credentials.username + ":" + credentials.password) });
 
@@ -707,6 +714,62 @@ export default function AdminPage() {
       return await response.json();
     } catch (_) {
       return null;
+    }
+  };
+
+  const fetchBirthdays = async () => {
+    try {
+      const res = await request("/api/donations/birthdays");
+      if (res) {
+        setBirthdayData(res);
+      }
+    } catch (_) {}
+  };
+
+  const handleSendTodayWishes = async () => {
+    setSendingWishes(true);
+    setWishStatus("⏳ Sending birthday greeting emails to today's celebrants...");
+    try {
+      const res = await fetch(`${apiUrl}/api/donations/send-birthday-wishes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok) {
+        setWishStatus(`✓ ${data?.message || "Birthday wishes sent successfully!"}`);
+        fetchBirthdays();
+      } else {
+        setWishStatus(`Error: ${data?.message || "Failed to dispatch birthday emails"}`);
+      }
+    } catch (e: any) {
+      setWishStatus(`Error: ${e.message || "Network error"}`);
+    } finally {
+      setSendingWishes(false);
+    }
+  };
+
+  const handleSendTestWish = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!testWishEmail) return;
+    setSendingWishes(true);
+    setWishStatus(`⏳ Sending test birthday wish to ${testWishEmail}...`);
+    try {
+      const res = await fetch(`${apiUrl}/api/donations/send-birthday-wishes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ specificEmail: testWishEmail, testName: testWishName }),
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok) {
+        setWishStatus(`✓ Birthday greeting email delivered to ${testWishEmail}!`);
+      } else {
+        setWishStatus(`Error: ${data?.message || "Failed to send preview"}`);
+      }
+    } catch (e: any) {
+      setWishStatus(`Error: ${e.message || "Network error"}`);
+    } finally {
+      setSendingWishes(false);
     }
   };
 
@@ -1387,6 +1450,7 @@ export default function AdminPage() {
         <nav aria-label="Admin navigation">
           {[
             { id: "Overview", icon: "📊", label: "Dashboard" },
+            { id: "Birthdays", icon: "🎂", label: `Donor Birthdays (${birthdayData.today.length ? `${birthdayData.today.length} Today!` : "Automation"})` },
             { id: "Events", icon: "📸", label: `Events & Gallery (${events.length})` },
             { id: "Awards", icon: "🏆", label: `Recognitions & Awards (${awards.length})` },
             { id: "Stories", icon: "📖", label: "Field Stories" },
@@ -3369,6 +3433,214 @@ export default function AdminPage() {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── 10. DONOR BIRTHDAYS & AUTOMATION ── */}
+        {section === "Birthdays" && (
+          <div>
+            {/* Top Metrics Grid */}
+            <div className="admin-summary-grid" style={{ marginBottom: 24 }}>
+              <Metric
+                label="Today's Birthdays"
+                value={String(birthdayData.today.length)}
+                note="Donors celebrating birthday today"
+              />
+              <Metric
+                label="This Month"
+                value={String(birthdayData.thisMonth.length)}
+                note="Upcoming birthdays this month"
+              />
+              <Metric
+                label="Registered Donors"
+                value={String(birthdayData.allDonorsWithDob.length)}
+                note="Total donors with birth dates recorded"
+              />
+            </div>
+
+            {/* Quick Action & Dispatch Control Card */}
+            <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: 14, padding: 24, marginBottom: 24, boxShadow: "0 4px 16px rgba(0,0,0,0.03)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16, marginBottom: 16 }}>
+                <div>
+                  <h2 style={{ margin: "0 0 6px", fontSize: 18, fontWeight: 800, color: "#0F172A", display: "flex", alignItems: "center", gap: 8 }}>
+                    🎂 Automated Birthday Greetings Dispatch
+                  </h2>
+                  <p style={{ margin: 0, fontSize: 13.5, color: "#64748B" }}>
+                    Automated system checks date of birth (MM-DD) and sends official, warm birthday greetings with blessings from Trustees and children.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSendTodayWishes}
+                  disabled={sendingWishes}
+                  style={{
+                    background: "#134B36",
+                    color: "#FFFFFF",
+                    border: "none",
+                    borderRadius: 10,
+                    padding: "12px 24px",
+                    fontSize: 14,
+                    fontWeight: 700,
+                    cursor: sendingWishes ? "not-allowed" : "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    boxShadow: "0 4px 12px rgba(19,75,54,0.2)",
+                  }}
+                >
+                  {sendingWishes ? "⏳ Dispatching Wishes..." : `🎉 Send Today's Birthday Wishes (${birthdayData.today.length})`}
+                </button>
+              </div>
+
+              {wishStatus && (
+                <div
+                  style={{
+                    padding: "10px 16px",
+                    borderRadius: 8,
+                    fontSize: 13.5,
+                    fontWeight: 600,
+                    marginBottom: 16,
+                    background: wishStatus.startsWith("✓") ? "#F0FDF4" : wishStatus.startsWith("⏳") ? "#FEF3C7" : "#FEF2F2",
+                    color: wishStatus.startsWith("✓") ? "#166534" : wishStatus.startsWith("⏳") ? "#92400E" : "#991B1B",
+                    border: `1px solid ${wishStatus.startsWith("✓") ? "#BBF7D0" : wishStatus.startsWith("⏳") ? "#FCD34D" : "#FECACA"}`,
+                  }}
+                >
+                  {wishStatus}
+                </div>
+              )}
+
+              {/* Instant Test / Preview Tool */}
+              <div style={{ background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 10, padding: "16px 20px" }}>
+                <strong style={{ display: "block", fontSize: 13, color: "#334155", marginBottom: 10 }}>
+                  ✉️ Test &amp; Preview Birthday Email:
+                </strong>
+                <form onSubmit={handleSendTestWish} style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+                  <input
+                    type="text"
+                    placeholder="Recipient Name (e.g. Nilesh Kute)"
+                    value={testWishName}
+                    onChange={(e) => setTestWishName(e.target.value)}
+                    style={{ flex: "1 1 180px", padding: "8px 12px", borderRadius: 6, border: "1px solid #CBD5E1", fontSize: 13 }}
+                  />
+                  <input
+                    type="email"
+                    required
+                    placeholder="Recipient Email (e.g. your-email@gmail.com)"
+                    value={testWishEmail}
+                    onChange={(e) => setTestWishEmail(e.target.value)}
+                    style={{ flex: "1 1 240px", padding: "8px 12px", borderRadius: 6, border: "1px solid #CBD5E1", fontSize: 13 }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={sendingWishes}
+                    style={{
+                      background: "#2563EB",
+                      color: "#FFFFFF",
+                      border: "none",
+                      borderRadius: 6,
+                      padding: "8px 16px",
+                      fontSize: 13,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Send Preview Email →
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            {/* Today's Celebrants Table */}
+            <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: 14, padding: 24, marginBottom: 24 }}>
+              <h3 style={{ margin: "0 0 14px", fontSize: 16, fontWeight: 800, color: "#0F172A", display: "flex", alignItems: "center", gap: 8 }}>
+                🌟 Today's Birthday Celebrants ({birthdayData.today.length})
+              </h3>
+              {birthdayData.today.length === 0 ? (
+                <div style={{ padding: 24, textAlign: "center", color: "#64748B", background: "#F8FAFC", borderRadius: 8, fontSize: 13.5 }}>
+                  No donor birthdays recorded for today ({new Date().toLocaleDateString("en-IN", { month: "short", day: "numeric" })}).
+                </div>
+              ) : (
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13.5 }}>
+                  <thead>
+                    <tr style={{ background: "#F8FAFC", borderBottom: "2px solid #E2E8F0", textAlign: "left" }}>
+                      <th style={{ padding: "10px 14px", color: "#475569" }}>Donor Name</th>
+                      <th style={{ padding: "10px 14px", color: "#475569" }}>Email Address</th>
+                      <th style={{ padding: "10px 14px", color: "#475569" }}>Birth Date</th>
+                      <th style={{ padding: "10px 14px", color: "#475569" }}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {birthdayData.today.map((donor, idx) => (
+                      <tr key={donor.id || idx} style={{ borderBottom: "1px solid #E2E8F0" }}>
+                        <td style={{ padding: "12px 14px", fontWeight: 700, color: "#0F172A" }}>{donor.name}</td>
+                        <td style={{ padding: "12px 14px", color: "#334155" }}>{donor.email}</td>
+                        <td style={{ padding: "12px 14px", color: "#134B36", fontWeight: 700 }}>
+                          {String(donor.dob).split("T")[0]}
+                        </td>
+                        <td style={{ padding: "12px 14px" }}>
+                          {donor.last_birthday_wish_year === new Date().getFullYear() ? (
+                            <span style={{ background: "#DCFCE7", color: "#166534", padding: "4px 10px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>
+                              ✓ Wish Sent
+                            </span>
+                          ) : (
+                            <span style={{ background: "#FEF3C7", color: "#92400E", padding: "4px 10px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>
+                              ⏳ Pending Today
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            {/* All Registered Donors with DOB */}
+            <div style={{ background: "#FFFFFF", border: "1.5px solid #E2E8F0", borderRadius: 14, padding: 24 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: "#0F172A" }}>
+                  📋 Registered Donors Date of Birth Directory ({birthdayData.allDonorsWithDob.length})
+                </h3>
+                <button
+                  type="button"
+                  onClick={fetchBirthdays}
+                  style={{ background: "#F1F5F9", border: "1px solid #CBD5E1", borderRadius: 6, padding: "6px 12px", fontSize: 12, fontWeight: 700, cursor: "pointer", color: "#334155" }}
+                >
+                  🔄 Refresh List
+                </button>
+              </div>
+
+              {birthdayData.allDonorsWithDob.length === 0 ? (
+                <div style={{ padding: 24, textAlign: "center", color: "#64748B", background: "#F8FAFC", borderRadius: 8, fontSize: 13.5 }}>
+                  No donor records found yet. Date of Birth will be automatically registered when donors donate via the donation portal.
+                </div>
+              ) : (
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13.5 }}>
+                  <thead>
+                    <tr style={{ background: "#F8FAFC", borderBottom: "2px solid #E2E8F0", textAlign: "left" }}>
+                      <th style={{ padding: "10px 14px", color: "#475569" }}>Donor Name</th>
+                      <th style={{ padding: "10px 14px", color: "#475569" }}>Email</th>
+                      <th style={{ padding: "10px 14px", color: "#475569" }}>Date of Birth</th>
+                      <th style={{ padding: "10px 14px", color: "#475569" }}>Last Greeting Year</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {birthdayData.allDonorsWithDob.map((donor, idx) => (
+                      <tr key={donor.id || idx} style={{ borderBottom: "1px solid #E2E8F0" }}>
+                        <td style={{ padding: "12px 14px", fontWeight: 700, color: "#0F172A" }}>{donor.name}</td>
+                        <td style={{ padding: "12px 14px", color: "#334155" }}>{donor.email}</td>
+                        <td style={{ padding: "12px 14px", color: "#134B36", fontWeight: 600 }}>
+                          {String(donor.dob).split("T")[0]}
+                        </td>
+                        <td style={{ padding: "12px 14px", color: "#64748B" }}>
+                          {donor.last_birthday_wish_year || "Not yet sent"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         )}

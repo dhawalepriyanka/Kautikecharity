@@ -35,8 +35,8 @@ const apiUrl = typeof window !== "undefined" && window.location.hostname !== "lo
 
 export default function DonatePage() {
   const [step, setStep] = useState<1 | 2>(1);
-  const [citizenship, setCitizenship] = useState<"indian" | "nri">("indian");
-  const [isMonthly, setIsMonthly] = useState(false);
+  const [citizenship, setCitizenship] = useState<"indian">("indian");
+
   const [selectedAmount, setSelectedAmount] = useState<number>(5000);
   const [customAmount, setCustomAmount] = useState<string>("");
   const [cause, setCause] = useState<string>("Child Education & Nutrition in Maharashtra");
@@ -171,8 +171,8 @@ export default function DonatePage() {
       return;
     }
 
-    if (!donor.name.trim() || !donor.email.trim() || !donor.phone.trim()) {
-      alert("Please enter your Full Name, Email, and Mobile Number to proceed.");
+    if (!donor.name.trim() || !donor.dob.trim() || !donor.email.trim() || !donor.phone.trim()) {
+      alert("Please enter your Full Name, Date of Birth, Email, and Mobile Number to proceed.");
       return;
     }
 
@@ -181,7 +181,7 @@ export default function DonatePage() {
       const createOrder = await fetch(`${apiUrl}/api/donations/create-order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ donorName: donor.name, email: donor.email, phone: donor.phone, amount: effectiveAmount, purpose: cause }),
+        body: JSON.stringify({ donorName: donor.name, email: donor.email, phone: donor.phone, dob: donor.dob, amount: effectiveAmount, purpose: cause }),
       });
       const orderPayload = await createOrder.json().catch(() => null);
       if (!createOrder.ok) {
@@ -213,7 +213,7 @@ export default function DonatePage() {
         amount: effectiveAmount * 100,
         currency: "INR",
         name: "Kautike Charitable Foundation",
-        description: `Donation for ${cause} (${isMonthly ? "Monthly" : "One-Time"})`,
+        description: `Donation for ${cause} (One-Time Donation)`,
         image: "/kautike-logo.png",
         prefill: {
           name: donor.name,
@@ -222,6 +222,7 @@ export default function DonatePage() {
         },
         notes: {
           pan: donor.pan,
+          dob: donor.dob,
           address: `${donor.address}, ${donor.city}, ${donor.state} - ${donor.pincode}`,
           cause: cause,
           citizenship: citizenship,
@@ -244,7 +245,7 @@ export default function DonatePage() {
               await fetch(`${apiUrl}/api/donations/verify-payment`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ donationId, razorpay_payment_id: payId, razorpay_order_id: ordId, razorpay_signature: sig, amount: effectiveAmount, donorName: donor.name, email: donor.email }),
+                body: JSON.stringify({ donationId, razorpay_payment_id: payId, razorpay_order_id: ordId, razorpay_signature: sig, amount: effectiveAmount, donorName: donor.name, email: donor.email, dob: donor.dob, phone: donor.phone }),
               });
             } catch (vErr) {
               console.warn("Server verification note:", vErr);
@@ -510,38 +511,13 @@ export default function DonatePage() {
                           />
                           Indian Citizen
                         </label>
-                        <label className="cry-citizen-label">
-                          <input
-                            type="radio"
-                            name="citizenship"
-                            checked={citizenship === "nri"}
-                            onChange={() => setCitizenship("nri")}
-                          />
-                          Foreign Citizen/NRI
-                        </label>
                       </div>
                       <p className="cry-citizen-subtext">
-                        Indian citizen option is for transacting through Indian bank accounts or cards issued by Indian banks.
+                        For donations made through Indian bank accounts, UPI, or cards issued by Indian banks.
                       </p>
                     </div>
 
-                    {/* Frequency: Give Once vs Give Monthly */}
-                    <div className="cry-freq-row">
-                      <button
-                        type="button"
-                        className={`cry-freq-btn ${!isMonthly ? "active" : ""}`}
-                        onClick={() => setIsMonthly(false)}
-                      >
-                        Give Once
-                      </button>
-                      <button
-                        type="button"
-                        className={`cry-freq-btn ${isMonthly ? "active" : ""}`}
-                        onClick={() => setIsMonthly(true)}
-                      >
-                        Give Monthly
-                      </button>
-                    </div>
+
 
                     {/* Choose Amount Label */}
                     <div className="cry-choose-amount-label">
@@ -623,8 +599,8 @@ export default function DonatePage() {
                       >
                         ← Change Amount (₹{effectiveAmount.toLocaleString("en-IN")})
                       </button>
-                      <span style={{ fontSize: "12px", fontWeight: 800, background: "#FEF3C7", color: "#92400E", padding: "3px 10px", borderRadius: "99px" }}>
-                        {isMonthly ? "Monthly Pledge" : "One-Time"}
+                      <span style={{ fontSize: "12px", fontWeight: 800, background: "#EBF5FF", color: "#1E40AF", padding: "3px 10px", borderRadius: "99px" }}>
+                        One-Time Donation (80G)
                       </span>
                     </div>
 
@@ -649,9 +625,12 @@ export default function DonatePage() {
 
                       {/* Date of Birth */}
                       <div className="cry-underline-field">
-                        <label>Date of Birth</label>
+                        <label>
+                          Date of Birth<span className="red-star">*</span>
+                        </label>
                         <input
                           type="date"
+                          required
                           value={donor.dob}
                           onChange={(e) => setDonor({ ...donor, dob: e.target.value })}
                           className="cry-underline-input"

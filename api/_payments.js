@@ -32,7 +32,7 @@ export function onlyPost(request, response) {
 }
 
 export async function createDonationOrder(body) {
-  const { donorName, email, phone, amount, purpose = "General Donation" } = body ?? {};
+  const { donorName, email, phone, dob, amount, purpose = "General Donation" } = body ?? {};
   if (!donorName?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email?.trim() ?? "") || !/^[0-9+\-\s()]{8,20}$/.test(phone?.trim() ?? "") || !Number.isInteger(amount) || amount < 1 || amount > 1000000) {
     const error = new Error("Enter a valid name, email, mobile number, and amount from ₹1 to ₹10,00,000.");
     error.status = 400;
@@ -46,8 +46,8 @@ export async function createDonationOrder(body) {
     try {
       const database = getPool();
       const created = await database.query(
-        "INSERT INTO donation_intents (donor_name, email, phone, amount_inr, campaign) VALUES ($1,$2,$3,$4,$5) RETURNING id",
-        [donorName.trim(), email.trim().toLowerCase(), phone.trim(), amount, String(purpose).slice(0, 180)],
+        "INSERT INTO donation_intents (donor_name, email, phone, dob, amount_inr, campaign) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id",
+        [donorName.trim(), email.trim().toLowerCase(), phone.trim(), dob || null, amount, String(purpose).slice(0, 180)],
       );
       if (created.rows[0]?.id) donationId = created.rows[0].id;
     } catch (e) {
@@ -59,7 +59,7 @@ export async function createDonationOrder(body) {
     amount: amount * 100,
     currency: "INR",
     receipt: `kcf_${String(donationId).replaceAll("-", "").slice(0, 28)}`,
-    notes: { donation_id: donationId, purpose, donor_name: donorName, donor_email: email },
+    notes: { donation_id: donationId, purpose, donor_name: donorName, donor_email: email, dob: dob || "" },
   });
 
   if (process.env.DATABASE_URL) {
@@ -75,7 +75,7 @@ export async function createDonationOrder(body) {
 }
 
 export async function verifyDonationPayment(body) {
-  const { donationId, razorpay_payment_id: paymentId, razorpay_order_id: orderId, razorpay_signature: signature, donorName, email, amount } = body ?? {};
+  const { donationId, razorpay_payment_id: paymentId, razorpay_order_id: orderId, razorpay_signature: signature, donorName, email, dob, phone, amount } = body ?? {};
   if (!paymentId || !orderId) {
     const error = new Error("Payment verification data is incomplete.");
     error.status = 400;
@@ -97,8 +97,8 @@ export async function verifyDonationPayment(body) {
     try {
       const database = getPool();
       await database.query(
-        "UPDATE donation_intents SET status = 'paid', razorpay_payment_id = $1, razorpay_signature = $2, updated_at = NOW() WHERE id = $3 AND status <> 'paid'",
-        [paymentId, signature || "", donationId],
+        "UPDATE donation_intents SET status = 'paid', razorpay_payment_id = $1, razorpay_signature = $2, dob = COALESCE($3, dob), updated_at = NOW() WHERE id = $4 AND status <> 'paid'",
+        [paymentId, signature || "", dob || null, donationId],
       );
     } catch (dbErr) {
       console.warn("DB update skipped:", dbErr?.message);

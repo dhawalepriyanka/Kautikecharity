@@ -40,7 +40,6 @@ export const menus: DropdownMenu[] = [
   {
     title: "Resources",
     links: [
-      { label: "Recognitions & Awards", href: "/recognition-awards" },
       { label: "Events & Photo Gallery", href: "/events" },
       { label: "Impact Reports", href: "/impact" },
       { label: "Stories & News", href: "/stories" },

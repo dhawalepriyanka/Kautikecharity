@@ -386,6 +386,8 @@ app.post("/api/donations/send-email", async (request, response) => {
   const {
     donorName,
     email,
+    phone,
+    dob,
     amount,
     receiptNumber,
     paymentId,
@@ -477,6 +479,27 @@ app.post("/api/donations/send-email", async (request, response) => {
     if (mailTransporter) {
       const info = await mailTransporter.sendMail(mailOptions);
       console.log(`[Email Service] Live email sent to ${email} (MessageID: ${info.messageId}) with ${attachments.length} PDF attachments.`);
+
+      // Also check if today is donor's birthday, and send birthday greeting email
+      if (dob) {
+        try {
+          const now = new Date();
+          const parts = String(dob).split("T")[0].split("-").map(Number);
+          if (parts.length >= 3 && parts[1] === (now.getMonth() + 1) && parts[2] === now.getDate()) {
+            const bHtml = buildBirthdayEmailHtml({ donorName });
+            await mailTransporter.sendMail({
+              from: smtpFrom,
+              to: email,
+              subject: `🎂 Happy Birthday from Kautike Charitable Foundation, ${donorName}! 🎉`,
+              html: bHtml,
+            });
+            console.log(`[Email Service] Live birthday greeting also sent immediately to ${donorName} (${email})`);
+          }
+        } catch (bErr) {
+          console.error("[Email Service Birthday Dispatch Note]", bErr);
+        }
+      }
+
       return response.json({
         ok: true,
         sent: true,

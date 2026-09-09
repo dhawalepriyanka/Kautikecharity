@@ -77,6 +77,7 @@ export default function DonatePage() {
         donorName: donor.name || "Generous Donor",
         email: donor.email,
         phone: donor.phone,
+        dob: donor.dob,
         address: [donor.address, donor.city, donor.state, donor.pincode].filter(Boolean).join(", "),
         pan: donor.pan,
         amount: currentSuccessData.amount,
@@ -111,6 +112,21 @@ export default function DonatePage() {
           certificatePdfBase64,
         }),
       });
+
+      // Also trigger birthday wish immediately if today is donor's birthday
+      if (donor.dob && donor.email) {
+        try {
+          const now = new Date();
+          const parts = donor.dob.split("-").map(Number);
+          if (parts.length >= 3 && parts[1] === (now.getMonth() + 1) && parts[2] === now.getDate()) {
+            fetch(`${apiUrl}/api/donations/send-birthday-wishes`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ specificEmail: donor.email, testName: donor.name || "Generous Supporter" }),
+            }).catch(() => {});
+          }
+        } catch (_) {}
+      }
 
       const data = await res.json().catch(() => null);
       if (res.ok) {

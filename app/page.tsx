@@ -24,7 +24,7 @@ export default function Home() {
           </h1>
 
           <a href="/donate" className="cry-yellow-btn">
-            ? Yes! I Want To Help!
+            Yes! I Want To Help!
           </a>
 
           <div className="cry-scroll-hint">

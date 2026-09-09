@@ -1,6 +1,28 @@
 import { sendJson } from "../_payments.js";
 import nodemailer from "nodemailer";
 import { jsPDF } from "jspdf";
+import { buildBirthdayEmailHtml } from "./send-birthday-wishes.js";
+import fs from "node:fs";
+import path from "node:path";
+
+function saveDonorRecord(donor) {
+  try {
+    const dataDir = path.resolve("server/data");
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+    const filePath = path.join(dataDir, "donors.json");
+    let list = [];
+    if (fs.existsSync(filePath)) {
+      list = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    }
+    const idx = list.findIndex((d) => d.email?.toLowerCase() === donor.email?.toLowerCase());
+    if (idx >= 0) {
+      list[idx] = { ...list[idx], ...donor };
+    } else {
+      list.unshift(donor);
+    }
+    fs.writeFileSync(filePath, JSON.stringify(list, null, 2), "utf8");
+  } catch (_) {}
+}
 
 function generateFallbackReceiptPdf(donorName, amount, receiptNo, pan, date) {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
@@ -251,6 +273,8 @@ export default async function handler(request, response) {
   const {
     donorName,
     email,
+    phone,
+    dob,
     amount,
     receiptNumber,
     paymentId,
@@ -269,6 +293,16 @@ export default async function handler(request, response) {
   const safeReceipt = receiptNumber || `KCF/${new Date().getFullYear()}/${String(Date.now()).slice(-5)}`;
   const safeDate = date || new Intl.DateTimeFormat("en-IN", { dateStyle: "long" }).format(new Date());
   const safePan = pan ? String(pan).trim().toUpperCase() : "";
+
+  // Persist donor registry with DOB
+  saveDonorRecord({
+    name: donorName,
+    email: email.toLowerCase(),
+    phone: phone || "",
+    dob: dob || "",
+    last_amount: safeAmount,
+    updated_at: new Date().toISOString(),
+  });
 
   const attachments = [];
 
@@ -352,6 +386,26 @@ export default async function handler(request, response) {
         html: htmlContent,
         attachments,
       });
+
+      // If today is the donor's birthday, automatically send the birthday wish email too!
+      if (dob) {
+        try {
+          const now = new Date();
+          const parts = String(dob).split("T")[0].split("-").map(Number);
+          if (parts.length >= 3 && parts[1] === (now.getMonth() + 1) && parts[2] === now.getDate()) {
+            const bHtml = buildBirthdayEmailHtml({ donorName });
+            await transporter.sendMail({
+              from: smtpFrom,
+              to: email,
+              subject: `🎂 Happy Birthday from Kautike Charitable Foundation, ${donorName}! 🎉`,
+              html: bHtml,
+            });
+            console.log(`[Email Dispatch] Birthday greeting also sent immediately to ${donorName} (${email})`);
+          }
+        } catch (bErr) {
+          console.error("[Birthday Dispatch Note]", bErr);
+        }
+      }
 
       return sendJson(response, 200, {
         ok: true,

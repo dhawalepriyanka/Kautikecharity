@@ -218,16 +218,20 @@ export default async function handler(request, response) {
   for (const d of fileDonors) {
     if (d.dob && d.email) {
       try {
-        const [y, m, day] = d.dob.split("-").map(Number);
-        if (m === currentMonth && day === currentDay) {
-          if (!donorsToWish.some(x => x.email.toLowerCase() === d.email.toLowerCase())) {
-            donorsToWish.push({
-              id: d.id,
-              name: d.name,
-              email: d.email,
-              dob: d.dob,
-              lastYear: d.last_birthday_wish_year,
-            });
+        const parts = String(d.dob).split("T")[0].split("-").map(Number);
+        if (parts.length >= 3) {
+          const m = parts[1];
+          const day = parts[2];
+          if (m === currentMonth && day === currentDay) {
+            if (!donorsToWish.some(x => x.email.toLowerCase() === d.email.toLowerCase())) {
+              donorsToWish.push({
+                id: d.id,
+                name: d.name,
+                email: d.email,
+                dob: d.dob,
+                lastYear: d.last_birthday_wish_year,
+              });
+            }
           }
         }
       } catch (_) {}
